@@ -1,0 +1,119 @@
+# 投資組合持股配置
+# 可自訂追蹤持股，新增或移除股票無需修改程式碼
+#
+# fetch_news: true/false - 控制該股票是否爬取新聞
+# enabled: true/false - 控制該股票是否啟用（用於暫停某些股票而不刪除配置）
+
+holdings:
+  # 核心持倉
+  核心持倉:
+    Unity Software:
+      symbol: "U"
+      fetch_news: true
+      enabled: true
+      position: 16.9%
+
+    Intel:
+      symbol: "INTC"
+      fetch_news: true
+      enabled: true
+      position: 11.9%
+
+    Amrize Inc.:
+      symbol: "AMRZ"
+      fetch_news: true
+      enabled: true
+      position: 8.0%
+
+    Pinterest:
+      symbol: "PINS"
+      fetch_news: true
+      enabled: true
+      position: 5.4%
+
+    Upstart:
+      symbol: "UPST"
+      fetch_news: true
+      enabled: true
+      position: 4.7%
+
+    United Parcel Service:
+      symbol: "UPS"
+      fetch_news: true
+      enabled: true
+      position: 3.9%
+
+    Tesla:
+      symbol: "TSLA"
+      fetch_news: true
+      enabled: true
+      position: 3.4%
+
+    Alphabet:
+      symbol: "GOOGL"
+      fetch_news: true
+      enabled: true
+      position: 3.7%
+
+  # 一般持倉
+  一般持倉:
+    Vail Resorts:
+      symbol: "MTN"
+      fetch_news: true
+      enabled: true
+      position: 3.0%
+
+    Oscar Health:
+      symbol: "OSCR"
+      fetch_news: false
+      enabled: true
+      position: 1.2%
+
+    Option Care Health:
+      symbol: "OPCH"
+      fetch_news: false
+      enabled: true
+      position: 1.2%
+
+    Mobileye:
+      symbol: "MBLY"
+      fetch_news: true
+      enabled: true
+      position: 0.9%
+
+    JPMorgan:
+      symbol: "JPM"
+      fetch_news: true
+      enabled: true
+      position: 0.5%
+
+  # 小倉位
+  小倉位:
+    Luminar Technologies:
+      symbol: "LAZR"
+      fetch_news: false
+      enabled: true
+      position: 0.02%
+
+  # 選擇權相關標的（潛在持股）
+  選擇權標的:
+    DraftKings:
+      symbol: "DKNG"
+      fetch_news: true
+      enabled: true
+      position: "選擇權"
+
+    Alaska Air:
+      symbol: "ALK"
+      fetch_news: false
+      enabled: true
+      position: "選擇權"
+
+  # 其他（新加坡股票暫不支援）
+  其他:
+    Stoneweg Europe Trust:
+      symbol: "SET.SI"
+      fetch_news: false
+      enabled: false
+      position: 0.6%
+      note: "新加坡股票，yfinance可能不支援"
