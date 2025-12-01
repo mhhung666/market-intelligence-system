@@ -25,10 +25,10 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 配置
-OLLAMA_MODEL="${OLLAMA_MODEL:-llama3.1:8b}"  # 預設模型
-TEMPERATURE="${TEMPERATURE:-0.3}"             # 較低溫度,更精確
-MAX_NEWS_TO_ANALYZE=50                        # 最多分析前 50 則新聞
-TOP_K=10                                      # 篩選出前 10 則重要新聞
+OLLAMA_MODEL="${OLLAMA_MODEL:-gpt-oss:20b}"  # 預設模型
+TEMPERATURE="${TEMPERATURE:-0.3}"                # 較低溫度,更精確
+MAX_NEWS_TO_ANALYZE=50                           # 最多分析前 50 則新聞
+TOP_K=10                                         # 篩選出前 10 則重要新聞
 
 # 日期
 TODAY=$(date +"%Y-%m-%d")
@@ -129,13 +129,15 @@ analyze_news_importance() {
 
     # 收集新聞內容
     local news_files
-    mapfile -t news_files < <(collect_news_files)
+    IFS=$'\n' read -r -d '' -a news_files < <(collect_news_files && printf '\0')
     local news_content
     news_content=$(read_news_content "${news_files[@]}")
 
     # 生成篩選 Prompt
     cat > "${PROMPT_FILE}" <<EOF
 你是一位專業的市場新聞分析師,擅長快速評估新聞的重要性和市場影響。
+
+**重要：請使用繁體中文（Traditional Chinese）回答，不要使用簡體中文。**
 
 ## 任務
 
@@ -189,7 +191,8 @@ EOF
     # 調用 Ollama
     mkdir -p "${ANALYSIS_DIR}"
 
-    if ollama run "${OLLAMA_MODEL}" < "${PROMPT_FILE}" > "${FILTERED_NEWS}" 2>&1; then
+    # 使用 script 工具來過濾 ANSI 控制碼，或使用 sed 清理輸出
+    if ollama run "${OLLAMA_MODEL}" < "${PROMPT_FILE}" 2>/dev/null | sed -e 's/\x1b\[[0-9;]*[a-zA-Z]//g' -e 's/\x1b\[?[0-9;]*[a-zA-Z]//g' -e '/^Thinking\.\.\.$/,/^\.\.\.done thinking\.$/d' > "${FILTERED_NEWS}"; then
         echo -e "${GREEN}   ✅ 新聞篩選完成${NC}"
         echo -e "${GREEN}   結果已保存至: ${FILTERED_NEWS}${NC}"
         echo ""
@@ -215,6 +218,8 @@ analyze_market_sentiment() {
     # 生成情緒分析 Prompt
     cat > "${PROMPT_FILE}" <<EOF
 你是一位市場情緒分析專家,擅長從新聞中評估市場整體情緒。
+
+**重要：請使用繁體中文（Traditional Chinese）回答，不要使用簡體中文。**
 
 ## 任務
 
@@ -275,7 +280,7 @@ ${filtered_news}
 EOF
 
     # 調用 Ollama
-    if ollama run "${OLLAMA_MODEL}" < "${PROMPT_FILE}" > "${SENTIMENT_REPORT}" 2>&1; then
+    if ollama run "${OLLAMA_MODEL}" < "${PROMPT_FILE}" 2>/dev/null | sed -e 's/\x1b\[[0-9;]*[a-zA-Z]//g' -e 's/\x1b\[?[0-9;]*[a-zA-Z]//g' -e '/^Thinking\.\.\.$/,/^\.\.\.done thinking\.$/d' > "${SENTIMENT_REPORT}"; then
         echo -e "${GREEN}   ✅ 情緒分析完成${NC}"
         echo -e "${GREEN}   結果已保存至: ${SENTIMENT_REPORT}${NC}"
         echo ""

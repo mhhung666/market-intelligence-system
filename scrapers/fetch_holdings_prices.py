@@ -17,6 +17,8 @@ from common import (
     print_warning,
     get_project_root,
     safe_exit,
+    setup_output_path,
+    generate_dated_filename,
 )
 
 
@@ -210,17 +212,20 @@ def format_markdown_table(holdings_data):
 
 def main():
     parser = create_argument_parser(
-        description='獲取持倉股票的當天價格資訊',
+        description='獲取持倉股票的當天價格資訊（預設存成 output/market-data/{YEAR}/Daily/holdings-prices-YYYY-MM-DD.md）',
         epilog="""
 使用範例:
   # 分析預設的 holdings 檔案
   python fetch_holdings_prices.py
 
-  # 指定 holdings 檔案並輸出到檔案
-  python fetch_holdings_prices.py -i portfolio/2025/holdings.md -o portfolio/2025/prices-today.md
+  # 指定輸出檔案
+  python fetch_holdings_prices.py -o output/market-data/2025/Daily/holdings-prices-2025-12-02.md
 
   # 顯示詳細資訊
   python fetch_holdings_prices.py -v
+
+說明:
+  若未指定 -o，程式會自動產生 output/market-data/{YEAR}/Daily/holdings-prices-YYYY-MM-DD.md
         """
     )
 
@@ -234,7 +239,7 @@ def main():
     parser.add_argument(
         '-o', '--output',
         type=str,
-        help='輸出檔案路徑 (若未指定則輸出到螢幕)'
+        help='輸出檔案路徑（若未指定則自動產生檔名）'
     )
 
     parser.add_argument(
@@ -286,17 +291,17 @@ def main():
     # 產生 Markdown 表格
     markdown_output = format_markdown_table(holdings_data)
 
-    # 輸出結果
-    from pathlib import Path
-    output_path = None
-    if args.output:
-        output_file = args.output
-        if not output_file.startswith('/'):
-            output_path = project_root / output_file
-        else:
-            output_path = Path(output_file)
+    # 決定輸出檔案路徑
+    filename = generate_dated_filename("holdings-prices", "md")
+    output_file = setup_output_path(
+        output_arg=args.output,
+        default_filename=filename,
+        default_subdir="Daily",
+        use_stdout=False
+    )
 
-    write_output(markdown_output, output_path, verbose=True)
+    # 寫入檔案
+    write_output(markdown_output, output_file, verbose=True)
 
     print_status(f"\n成功獲取 {len(holdings_data)}/{len(symbols)} 隻股票的價格資訊")
 
