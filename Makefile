@@ -10,7 +10,7 @@ PYTEST := $(BIN)/pytest
 help:
 	@echo "Common targets:"
 	@echo "  make venv           - Create virtual environment"
-	@echo "  make install        - Install dependencies into venv"
+	@echo "  make install        - Install dependencies into .venv"
 	@echo "  make test           - Run pytest"
 	@echo "  make clean          - Remove __pycache__ and pytest cache"
 	@echo "  make clean-venv     - Delete virtual environment"
