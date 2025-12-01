@@ -134,6 +134,7 @@
   - 將 `get_project_root()` 指向新專案根目錄 ✅
   - 更新輸出路徑為可配置 (環境變數) ✅
   - 移除對原專案的硬編碼路徑 ✅
+  - **改用 config/holdings.yaml 取代 portfolio/2025/holdings.md** ✅
 
 - [x] **建立獨立文檔** ✅
   - 撰寫新的 `README.md` (爬蟲專案文檔) ✅
