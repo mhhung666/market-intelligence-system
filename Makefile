@@ -18,7 +18,7 @@ help:
 	@echo "Scraper targets:"
 	@echo "  make fetch-global   - Fetch global market indices"
 	@echo "  make fetch-holdings - Fetch holdings prices"
-	@echo "  make fetch-news     - Fetch market news"
+	@echo "  make fetch-news     - Fetch market news for configured symbols"
 	@echo "  make fetch-all      - Run all scrapers"
 
 venv:
@@ -46,13 +46,13 @@ fetch-holdings: install
 	$(PYTHON_BIN) scrapers/fetch_holdings_prices.py
 
 fetch-news: install
-	$(PYTHON_BIN) scrapers/fetch_market_news.py
+	$(PYTHON_BIN) scrapers/fetch_all_news.py
 
 fetch-all: install
 	@echo "Running all scrapers..."
 	$(PYTHON_BIN) scrapers/fetch_global_indices.py
 	$(PYTHON_BIN) scrapers/fetch_holdings_prices.py
-	$(PYTHON_BIN) scrapers/fetch_market_news.py
+	$(PYTHON_BIN) scrapers/fetch_all_news.py
 	@echo "All scrapers completed!"
 
 .PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all

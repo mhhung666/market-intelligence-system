@@ -7,9 +7,10 @@
 這是一個輕量級的市場數據爬蟲服務,可以:
 - 爬取全球主要市場指數 (台灣、美國、日本、香港、中國、韓國、歐洲等)
 - 獲取投資組合持倉價格
-- 收集市場新聞
+- 批次收集股票和指數市場新聞 (基於配置檔自動化)
 - 支援 Docker 容器化部署
 - 支援 Cron 定時任務
+- 所有配置均基於 YAML,無需修改程式碼
 
 ## 專案結構
 
@@ -19,14 +20,22 @@ market-data-crawler/
 │   ├── common.py               # 共用模組
 │   ├── fetch_global_indices.py # 全球指數爬蟲
 │   ├── fetch_holdings_prices.py# 持倉價格爬蟲
-│   ├── fetch_market_news.py    # 市場新聞爬蟲
-│   └── fetch_market_data.py    # 通用市場數據爬蟲
+│   ├── fetch_market_news.py    # 單一股票/指數新聞爬蟲
+│   ├── fetch_all_news.py       # 批次新聞爬蟲 (從配置檔讀取)
+│   ├── fetch_market_data.py    # 通用市場數據爬蟲
+│   └── README.md               # 爬蟲詳細說明
 ├── config/                      # 配置檔案
-│   ├── indices.yaml            # 指數配置
-│   └── holdings.yaml           # 持倉配置
+│   ├── indices.yaml            # 指數配置 (含 fetch_news 設定)
+│   └── holdings.yaml           # 持倉配置 (含 fetch_news 設定)
 ├── tests/                       # 測試檔案
 ├── cron/                        # Cron 設定檔
 ├── output/                      # 輸出目錄 (gitignore)
+│   └── market-data/
+│       └── {YEAR}/
+│           ├── Daily/          # 每日指數數據
+│           ├── Stocks/         # 個股歷史數據
+│           └── News/           # 新聞數據
+├── Makefile                     # Make 快捷指令
 ├── Dockerfile                   # Docker 映像檔
 ├── docker-compose.yml          # Docker Compose 配置
 ├── requirements.txt            # Python 依賴
@@ -51,18 +60,43 @@ pip install -r requirements.txt
 
 #### 執行爬蟲
 
+**使用 Makefile (推薦):**
 ```bash
-# 爬取台灣市場數據
-python scrapers/fetch_global_indices.py -r 台灣
+# 查看所有可用指令
+make help
 
-# 爬取多個市場
-python scrapers/fetch_global_indices.py -r 台灣 美國 日本
+# 執行所有爬蟲
+make fetch-all
 
-# 輸出到螢幕 (不儲存檔案)
-python scrapers/fetch_global_indices.py -r 台灣 --stdout
+# 只爬取全球指數
+make fetch-global
 
-# 指定輸出檔案
-python scrapers/fetch_global_indices.py -r 台灣 -o my-data.md
+# 只爬取持倉價格
+make fetch-holdings
+
+# 只爬取新聞 (從配置檔讀取)
+make fetch-news
+
+# 執行測試
+make test
+```
+
+**直接執行腳本:**
+```bash
+# 爬取全球市場指數
+python scrapers/fetch_global_indices.py
+
+# 爬取持倉價格
+python scrapers/fetch_holdings_prices.py
+
+# 批次爬取新聞 (從配置檔自動讀取)
+python scrapers/fetch_all_news.py
+
+# 爬取單一股票新聞
+python scrapers/fetch_market_news.py AAPL
+
+# 查看詳細用法
+python scrapers/fetch_global_indices.py --help
 ```
 
 ### 2. Docker 環境

@@ -88,61 +88,130 @@ python3 tools/python/scrapers/fetch_global_indices.py --no-emoji
 - 自動計算漲跌幅並用 🔺/🔻 標示
 - 預設儲存至 `data/market-data/{YEAR}/Daily/global-indices-{YYYY-MM-DD}.md`（年份自動取得）
 
-## 3. 金融新聞爬蟲 (`fetch_market_news.py`)
+## 3. 金融新聞爬蟲
+
+### 批次新聞爬蟲 (`fetch_all_news.py`) ⭐ 推薦
+
+從配置檔自動批次爬取所有配置的股票和指數新聞。
+
+**使用 Makefile（推薦）：**
+```bash
+# 爬取所有配置的新聞
+make fetch-news
+
+# 執行所有爬蟲（包含新聞）
+make fetch-all
+```
+
+**直接執行腳本：**
+```bash
+python3 scrapers/fetch_all_news.py
+```
+
+**功能特色：**
+- ✅ 自動從 `config/holdings.yaml` 和 `config/indices.yaml` 讀取配置
+- ✅ 只爬取標記為 `fetch_news: true` 且 `enabled: true` 的項目
+- ✅ 自動產生帶日期的檔名（格式：`SYMBOL-YYYY-MM-DD.md`）
+- ✅ 顯示進度和成功/失敗統計
+- ✅ 支援股票和指數兩種類型
+
+**配置範例：**
+
+在 `config/holdings.yaml` 中設定：
+```yaml
+holdings:
+  核心持倉:
+    Tesla:
+      symbol: "TSLA"
+      fetch_news: true    # 啟用新聞爬取
+      enabled: true
+```
+
+在 `config/indices.yaml` 中設定：
+```yaml
+global_indices:
+  美國:
+    S&P 500:
+      symbol: "^GSPC"
+      fetch_news: true    # 啟用新聞爬取
+```
+
+**輸出範例：**
+```
+正在載入配置檔...
+從 holdings.yaml 找到 12 隻需要爬取新聞的股票
+從 indices.yaml 找到 11 個需要爬取新聞的指數
+總共需要爬取 23 個項目的新聞
+
+[1/23] 正在爬取 Tesla (TSLA) 的新聞...
+  ✓ 完成
+
+[2/23] 正在爬取 S&P 500 (^GSPC) 的新聞...
+  ✓ 完成
+
+新聞爬取完成!
+成功: 23/23
+```
+
+### 單一新聞爬蟲 (`fetch_market_news.py`)
 
 從 Yahoo Finance 爬取特定股票或市場指數的最新金融新聞。
 
-### 使用範例
-
 **爬取個股新聞：**
 ```bash
-# 爬取 Apple 最新新聞（預設 10 則）
-python3 tools/python/scrapers/fetch_market_news.py AAPL
+# 爬取 Apple 最新新聞（預設 10 則，自動產生檔名）
+python3 scrapers/fetch_market_news.py AAPL
 
 # 爬取 Tesla 最新 5 則新聞並儲存
-python3 tools/python/scrapers/fetch_market_news.py TSLA -l 5 -o data/market-data/2025/News/TSLA-2025-11-18.md
+python3 scrapers/fetch_market_news.py TSLA -l 5
 
 # 爬取 NVIDIA 新聞並輸出為 JSON 格式
-python3 tools/python/scrapers/fetch_market_news.py NVDA --json -o data/market-data/2025/News/NVDA-2025-11-18.json
+python3 scrapers/fetch_market_news.py NVDA --json
 
-# 標準用法 - 儲存到 News 目錄
-python3 tools/python/scrapers/fetch_market_news.py GOOGL -o data/market-data/2025/News/GOOGL-2025-11-18.md
+# 指定輸出檔案
+python3 scrapers/fetch_market_news.py GOOGL -o data/market-data/2025/News/GOOGL-2025-12-01.md
+
+# 輸出到螢幕
+python3 scrapers/fetch_market_news.py GOOGL --stdout
 ```
 
 **爬取大盤指數新聞：**
 ```bash
 # S&P 500 新聞
-python3 tools/python/scrapers/fetch_market_news.py "^GSPC" -o data/market-data/2025/News/SP500-2025-11-18.md
+python3 scrapers/fetch_market_news.py "^GSPC"
 
 # NASDAQ 新聞
-python3 tools/python/scrapers/fetch_market_news.py "^IXIC" -o data/market-data/2025/News/NASDAQ-2025-11-18.md
+python3 scrapers/fetch_market_news.py "^IXIC"
 
 # 道瓊工業指數新聞
-python3 tools/python/scrapers/fetch_market_news.py "^DJI" -o data/market-data/2025/News/DowJones-2025-11-18.md
+python3 scrapers/fetch_market_news.py "^DJI"
 
 # 恆生指數新聞
-python3 tools/python/scrapers/fetch_market_news.py "^HSI" -o data/market-data/2025/News/HangSeng-2025-11-18.md
+python3 scrapers/fetch_market_news.py "^HSI"
 ```
 
-> 命名時請沿用 `data/market-data/{YEAR}/News/{SYMBOL}-{YYYY-MM-DD}.md` 格式，方便依日期追蹤。
+> 💡 預設會自動產生檔名：`{SYMBOL}-{YYYY-MM-DD}.md`，並儲存至 `output/market-data/{YEAR}/News/` 目錄。
 
 ### 參數說明
 
 - `symbol`: 股票代碼或指數代碼（必填）
 - `-l, --limit`: 新聞數量（預設 10 則）
-- `-o, --output`: 輸出檔案路徑
+- `-o, --output`: 輸出檔案路徑（若未指定則自動產生）
 - `--json`: 輸出為 JSON 格式（預設 Markdown）
+- `--stdout`: 輸出到螢幕而非檔案
 
 ### 支援的代碼
 
 **個股代碼：**
 - 科技股: `AAPL` (Apple), `TSLA` (Tesla), `NVDA` (Nvidia), `MSFT` (Microsoft), `GOOGL` (Google)
 - 金融股: `JPM` (JP Morgan), `BAC` (Bank of America), `GS` (Goldman Sachs)
-- 其他: `UPS`, `AMZN` (Amazon), `META` (Meta/Facebook)
+- 其他: `UPS`, `AMZN` (Amazon), `META` (Meta/Facebook), `INTC` (Intel), `PINS` (Pinterest)
 
 **市場指數代碼：**
-- 美國: `^GSPC` (S&P 500), `^DJI` (Dow Jones), `^IXIC` (NASDAQ)
+- 美國: `^GSPC` (S&P 500), `^DJI` (Dow Jones), `^IXIC` (NASDAQ), `^VIX` (恐慌指數), `^SOX` (費城半導體)
 - 亞洲: `^HSI` (恆生指數), `^N225` (日經225), `^TWII` (台灣加權)
+- 商品: `GC=F` (黃金期貨), `CL=F` (WTI原油), `BTC-USD` (比特幣)
+- 債券: `^TNX` (美國10年期公債殖利率)
 
 ### 輸出格式
 
@@ -157,7 +226,7 @@ python3 tools/python/scrapers/fetch_market_news.py "^HSI" -o data/market-data/20
 - 包含 `id`, `title`, `summary`, `publisher`, `published_at`, `url`, `content_type`
 - 可用於進一步分析或整合
 
-預設儲存路徑：`data/market-data/{YEAR}/News/{SYMBOL}-{YYYY-MM-DD}.md`（年份自動取得）
+預設儲存路徑：`output/market-data/{YEAR}/News/{SYMBOL}-{YYYY-MM-DD}.md`（年份自動取得）
 
 ### 新聞資訊來源
 
