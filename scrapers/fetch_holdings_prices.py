@@ -7,6 +7,7 @@
 import re
 from datetime import datetime
 import yfinance as yf
+import yaml
 
 from common import (
     create_argument_parser,
@@ -19,12 +20,12 @@ from common import (
 )
 
 
-def extract_holdings_from_md(holdings_file):
+def extract_holdings_from_yaml(holdings_file):
     """
-    從 holdings.md 檔案中提取股票代碼
+    從 holdings.yaml 檔案中提取股票代碼
 
     Args:
-        holdings_file: holdings.md 檔案路徑
+        holdings_file: holdings.yaml 檔案路徑
 
     Returns:
         list: 股票代碼列表
@@ -33,38 +34,28 @@ def extract_holdings_from_md(holdings_file):
 
     try:
         with open(holdings_file, 'r', encoding='utf-8') as f:
-            content = f.read()
+            config = yaml.safe_load(f)
 
-        # 查找持倉明細表格
-        # 匹配表格中的股票代碼行
-        # 格式: | 股票代碼 | 公司名稱 | 股數 | ...
-        # 支援: AAPL, SET.SI, BRK.B 等格式
-        pattern = r'\|\s*([A-Z]+(?:\.[A-Z]+)?)\s*\|[^|]+\|[^|]+\|'
+        # 遍歷所有持股群組
+        if 'holdings' not in config:
+            print_error("YAML 檔案中未找到 'holdings' 欄位")
+            safe_exit(False)
 
-        in_holdings_section = False
-        for line in content.split('\n'):
-            # 偵測是否進入持倉明細區域
-            if '## 📈 當前持倉' in line or '### 持倉明細' in line:
-                in_holdings_section = True
-                continue
-
-            # 偵測是否離開持倉明細區域
-            if in_holdings_section and line.startswith('##'):
-                break
-
-            # 在持倉明細區域內提取股票代碼
-            if in_holdings_section:
-                match = re.match(pattern, line)
-                if match:
-                    symbol = match.group(1)
-                    # 排除表頭
-                    if symbol not in ['股票代碼', 'Date', 'SYMBOL']:
+        for group_name, stocks in config['holdings'].items():
+            for stock_name, stock_info in stocks.items():
+                # 只提取啟用的股票
+                if stock_info.get('enabled', True):  # 預設為啟用
+                    symbol = stock_info.get('symbol')
+                    if symbol:
                         holdings.append(symbol)
 
-        print_status(f"從 {holdings_file} 中提取到 {len(holdings)} 隻股票")
+        print_status(f"從 {holdings_file} 中提取到 {len(holdings)} 隻啟用的股票")
 
     except FileNotFoundError:
         print_error(f"找不到檔案 {holdings_file}")
+        safe_exit(False)
+    except yaml.YAMLError as e:
+        print_error(f"解析 YAML 檔案時發生錯誤: {e}")
         safe_exit(False)
     except Exception as e:
         print_error(f"讀取檔案時發生錯誤: {e}")
@@ -236,8 +227,8 @@ def main():
     parser.add_argument(
         '-i', '--input',
         type=str,
-        default='portfolio/2025/holdings.md',
-        help='holdings.md 檔案路徑 (預設: portfolio/2025/holdings.md)'
+        default='config/holdings.yaml',
+        help='holdings.yaml 檔案路徑 (預設: config/holdings.yaml)'
     )
 
     parser.add_argument(
@@ -266,7 +257,7 @@ def main():
         print_status(f"Holdings 檔案: {holdings_file}")
 
     # 提取股票代碼
-    symbols = extract_holdings_from_md(holdings_file)
+    symbols = extract_holdings_from_yaml(holdings_file)
 
     if not symbols:
         print_error("未找到任何股票代碼")
