@@ -14,6 +14,12 @@ help:
 	@echo "  make test           - Run pytest"
 	@echo "  make clean          - Remove __pycache__ and pytest cache"
 	@echo "  make clean-venv     - Delete virtual environment"
+	@echo ""
+	@echo "Scraper targets:"
+	@echo "  make fetch-global   - Fetch global market indices"
+	@echo "  make fetch-holdings - Fetch holdings prices"
+	@echo "  make fetch-news     - Fetch market news"
+	@echo "  make fetch-all      - Run all scrapers"
 
 venv:
 	$(PYTHON) -m venv $(VENV)
@@ -31,3 +37,22 @@ clean:
 
 clean-venv:
 	rm -rf $(VENV)
+
+# Scraper targets
+fetch-global: install
+	$(PYTHON_BIN) scrapers/fetch_global_indices.py
+
+fetch-holdings: install
+	$(PYTHON_BIN) scrapers/fetch_holdings_prices.py
+
+fetch-news: install
+	$(PYTHON_BIN) scrapers/fetch_market_news.py
+
+fetch-all: install
+	@echo "Running all scrapers..."
+	$(PYTHON_BIN) scrapers/fetch_global_indices.py
+	$(PYTHON_BIN) scrapers/fetch_holdings_prices.py
+	$(PYTHON_BIN) scrapers/fetch_market_news.py
+	@echo "All scrapers completed!"
+
+.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all
