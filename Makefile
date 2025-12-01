@@ -20,6 +20,10 @@ help:
 	@echo "  make fetch-holdings - Fetch holdings prices"
 	@echo "  make fetch-news     - Fetch market news for configured symbols"
 	@echo "  make fetch-all      - Run all scrapers"
+	@echo ""
+	@echo "Analysis targets:"
+	@echo "  make analyze-daily  - Run daily market analysis (Claude AI)"
+	@echo "  make daily          - Complete daily workflow (fetch + analyze)"
 
 venv:
 	$(PYTHON) -m venv $(VENV)
@@ -55,4 +59,12 @@ fetch-all: install
 	$(PYTHON_BIN) scrapers/fetch_all_news.py
 	@echo "All scrapers completed!"
 
-.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all
+# Analysis targets
+analyze-daily: install
+	@echo "Starting daily market analysis..."
+	$(PYTHON_BIN) analyzers/run_daily_analysis.py
+
+daily: fetch-all analyze-daily
+	@echo "✅ Daily workflow completed (fetch + analyze)!"
+
+.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily daily
