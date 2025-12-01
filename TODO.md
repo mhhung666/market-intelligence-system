@@ -71,77 +71,90 @@ market-intelligence-system/ (MIS)
 
 ## 🔵 Phase 1: AI 分析引擎整合 (進行中)
 
-### 1.0 技術選型決策 ⚠️ 待決定
+### 1.0 技術選型決策 ✅ 已決定
 
-- [ ] **選擇 Claude 使用方式**
+**最終決定: 使用 Claude CLI + Ollama CLI (本機執行)**
 
-  **選項 A: Claude CLI (Bash 腳本)** - 參考 FAS
-  - ✅ 簡單直接,跟 FAS 一致
-  - ✅ 只需安裝 `npm install -g @anthropic-ai/claude-cli`
-  - ✅ Bash 腳本,易於理解
-  - ❌ 較難整合複雜邏輯 (如 Ollama 預處理)
+- [x] **已選擇方案 A: Claude CLI + Ollama CLI**
 
-  **選項 B: Anthropic Python SDK** - 目前實作
-  - ✅ 更靈活,可加入複雜邏輯
-  - ✅ Token 統計更方便
-  - ✅ 易於整合 Ollama 雙引擎
-  - ❌ 需要安裝 `pip install anthropic`
+  **優勢**:
+  - [x] **無需 API Key** - 直接使用 Claude CLI (已登入)
+  - [x] **本機執行** - 通過 Bash 腳本 + Makefile + cronjob
+  - [x] **簡單直接** - 純 Bash 腳本,易於維護和調試
+  - [x] **成本透明** - Claude CLI 使用同樣計費,但無需管理 token
+  - [x] **Ollama 免費** - 本機推論,零 API 成本
+  - [x] **易於自動化** - 適合 cron 定時任務
 
-  **費用**: 兩種方式完全相同,按 token 計費
-  - Claude Sonnet 4: Input $3/1M tokens, Output $15/1M tokens
-  - 預估每日成本: ~$0.15 (月成本 ~$4.5)
+  **實作內容**:
+  - `utils/run_daily_analysis_claude_cli.sh` - Claude CLI 市場分析 ✅
+  - `utils/run_daily_analysis_ollama_cli.sh` - Ollama 新聞預處理 ✅
+  - Makefile targets: `analyze-daily`, `analyze-ollama`, `analyze-all` ✅
 
-  **建議**: 先用 Python SDK 測試,確認成本和品質後再決定
+  **保留選項 B (Python SDK)** 供未來參考:
+  - `analyzers/run_daily_analysis.py` (legacy)
+  - `make analyze-daily-python` (需要 CLAUDE_API_KEY)
 
-### 1.1 分析器測試與驗證
+### 1.1 CLI 分析器測試與驗證
+
+**前置需求**:
+```bash
+# 安裝 Claude CLI
+npm install -g @anthropic-ai/claude-cli
+claude login  # 登入你的 Claude 帳號
+
+# 安裝 Ollama (可選,用於成本優化)
+# macOS: brew install ollama
+# Linux: curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.1:8b  # 或 qwen2.5:14b
+```
+
+- [ ] **測試 Claude CLI 分析**
+  - 確保已執行 `claude login`
+  - 執行 `make analyze-daily` (單獨測試 Claude)
+  - 檢視生成的報告: `cat analysis/market-analysis-YYYY-MM-DD.md`
+  - 評估報告品質
+
+- [ ] **測試 Ollama 預處理** (可選)
+  - 執行 `make analyze-ollama`
+  - 檢視篩選後的新聞: `cat analysis/filtered-news-YYYY-MM-DD.md`
+  - 檢視情緒分析: `cat analysis/sentiment-analysis-YYYY-MM-DD.md`
 
 - [ ] **測試完整 daily 流程**
-  - 設定 `CLAUDE_API_KEY` 環境變數
-  - 執行 `make daily` (爬取 + 分析)
-  - 檢視生成的報告品質
-  - 記錄 token 使用量和成本
+  - 執行 `make daily` (爬取 + Claude 分析)
+  - 或執行 `make fetch-all && make analyze-all` (爬取 + Ollama + Claude)
+  - 確認工作流程順暢
 
-- [ ] **成本與品質評估**
-  - 連續執行 3-5 天,收集數據
+- [ ] **品質評估** (連續執行 3-5 天)
   - 評估報告品質是否符合需求
-  - 計算平均每日成本
-  - 決定是否需要優化 (Ollama 預處理 / 改用 Haiku)
+  - 觀察分析的穩定性和準確性
+  - 決定是否需要調整 Prompt
 
-- [ ] **決定技術方案**
-  - 基於測試結果,選擇 Claude CLI 或 Python SDK
-  - 如需要,重構為 Bash 版本 (參考 FAS)
-  - 更新文檔
+### 1.2 分析腳本開發 ✅ 已完成
 
-- [ ] **Ollama 分析器測試** (可選,成本優化)
-  - 安裝 Ollama (本地或 Docker)
-  - 下載模型 (`llama3.1:8b` 或 `qwen2.5:14b`)
-  - 測試新聞篩選功能
-  - 測試情緒分析功能
-  - 驗證推論次數統計
-
-- [ ] **雙引擎協作測試** (可選,成本優化)
-  - 實作完整的分析流程:
-    1. Ollama 篩選 100 則新聞 → 10 則
-    2. Claude 深度分析這 10 則新聞
-  - 比較單引擎 vs 雙引擎的成本差異
-  - 驗證分析品質
-
-### 1.2 分析腳本開發
-
-- [ ] **建立分析執行腳本**
-  ```python
-  # analyzers/run_daily_analysis.py
-  - 讀取最新的市場指數數據
-  - 執行 Ollama 預處理
-  - 執行 Claude 深度分析
-  - 儲存分析報告到 analysis/
+- [x] **建立 Claude CLI 分析腳本** ✅
+  ```bash
+  # utils/run_daily_analysis_claude_cli.sh
+  - 讀取市場指數、持股價格、新聞數據
+  - 生成完整的分析 Prompt
+  - 調用 Claude CLI 進行深度分析
+  - 儲存報告到 analysis/market-analysis-YYYY-MM-DD.md
   ```
 
-- [ ] **整合到 Makefile**
+- [x] **建立 Ollama 預處理腳本** ✅
+  ```bash
+  # utils/run_daily_analysis_ollama_cli.sh
+  - 收集所有當日新聞
+  - 使用 Ollama 篩選最重要的 10 則新聞
+  - 進行市場情緒分析
+  - 儲存結果供 Claude 使用 (降低 token 成本)
+  ```
+
+- [x] **整合到 Makefile** ✅
   ```makefile
-  analyze-market:    # 分析市場指數
-  analyze-news:      # 分析市場新聞
-  analyze-all:       # 執行完整分析流程
+  make analyze-daily   # Claude CLI 市場分析
+  make analyze-ollama  # Ollama 新聞預處理
+  make analyze-all     # 完整流程 (Ollama + Claude)
+  make daily           # 爬取 + 分析完整工作流程
   ```
 
 ---

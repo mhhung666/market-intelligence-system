@@ -27,9 +27,10 @@
 - 所有配置均基於 YAML,無需修改程式碼
 
 ### 2. AI 智能分析 🤖
-- **Claude 深度分析**: 市場趨勢、投資洞察、風險評估
-- **Ollama 快速篩選**: 新聞重要性評估、情緒分析、關鍵字提取
-- **雙引擎協作**: 成本優化 - 用 Ollama 預處理,Claude 深度分析
+- **Claude CLI 深度分析**: 市場趨勢、投資洞察、風險評估 (本機執行)
+- **Ollama 快速篩選**: 新聞重要性評估、情緒分析 (本機推論,零成本)
+- **雙引擎協作**: 成本優化 - Ollama 預處理 + Claude 深度分析
+- **無需 API Key**: 使用 Claude CLI,已登入即可使用
 
 ### 3. 自動化流程 ⚙️
 - Docker 容器化部署
@@ -47,7 +48,11 @@ market-intelligence-system/
 │   ├── fetch_market_news.py    # 單一股票/指數新聞爬蟲
 │   ├── fetch_all_news.py       # 批次新聞爬蟲
 │   └── README.md               # 爬蟲詳細說明
-├── analyzers/                   # AI 分析引擎 ⭐ 新增
+├── utils/                       # 🆕 分析工具腳本 (CLI 版本)
+│   ├── run_daily_analysis_claude_cli.sh   # Claude CLI 分析
+│   ├── run_daily_analysis_ollama_cli.sh   # Ollama 預處理
+│   └── README.md               # 詳細使用說明
+├── analyzers/                   # AI 分析引擎 (Python SDK - Legacy)
 │   ├── analyzer_base.py        # 抽象基類
 │   ├── claude_analyzer.py      # Claude 市場分析器
 │   ├── ollama_analyzer.py      # Ollama 市場分析器
@@ -73,77 +78,182 @@ market-intelligence-system/
 └── README.md                   # 本檔案
 ```
 
-## 快速開始
+## 🚀 快速開始
+
+> **5 分鐘快速上手** - 詳細請參考 [QUICKSTART.md](QUICKSTART.md)
 
 ### 1. 安裝依賴
 
 ```bash
-# 建立虛擬環境
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+# Python 依賴 (爬蟲)
+make install
 
-# 安裝依賴
-pip install -r requirements.txt
+# Claude CLI (分析引擎)
+npm install -g @anthropic-ai/claude-cli
+claude login  # 登入你的 Claude 帳號
 
-# AI 分析引擎依賴
-pip install anthropic  # Claude
-pip install ollama     # Ollama
+# Ollama (可選,用於成本優化)
+# macOS: brew install ollama
+# Linux: curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.1:8b
 ```
 
-### 2. 配置環境變數
+### 2. 執行完整分析
 
 ```bash
-cp .env.example .env
+# 一鍵執行: 爬取數據 + Claude 分析
+make daily
+
+# 或使用 Ollama 預處理 (降低成本)
+make fetch-all && make analyze-all
 ```
 
-編輯 `.env`:
+### 3. 查看結果
+
 ```bash
-# Claude API Key (用於深度分析)
-CLAUDE_API_KEY=sk-ant-...
-
-# Ollama 服務地址 (可選,預設 localhost)
-OLLAMA_HOST=http://localhost:11434
-
-# 輸出目錄
-OUTPUT_DIR=./output
-
-# 時區
-TZ=Asia/Taipei
+# 查看生成的市場分析報告
+cat analysis/market-analysis-$(date +%Y-%m-%d).md
 ```
 
-### 3. 執行爬蟲
+✅ **完成！** 你已經獲得一份專業的市場情報分析報告。
+
+---
+
+## 📖 詳細文檔
+
+- [QUICKSTART.md](QUICKSTART.md) - 快速開始指南 **← 從這裡開始**
+- [utils/README.md](utils/README.md) - CLI 工具詳細說明
+- [TODO.md](TODO.md) - 開發路線圖
+- [CHANGELOG.md](CHANGELOG.md) - 技術選型決策記錄
+
+---
+
+## ⚙️ 配置說明
+
+### 配置持股清單
+
+編輯 [config/holdings.yaml](config/holdings.yaml):
+
+```yaml
+holdings:
+  # 美股
+  - symbol: AAPL
+    name: Apple Inc.
+
+  # 台股 (加 .TW)
+  - symbol: 2330.TW
+    name: 台積電
+```
+
+### 配置全球指數
+
+編輯 [config/indices.yaml](config/indices.yaml):
+
+```yaml
+indices:
+  taiwan:
+    - symbol: ^TWII
+      name: 台灣加權指數
+
+  us:
+    - symbol: ^GSPC
+      name: S&P 500
+    - symbol: ^IXIC
+      name: Nasdaq
+```
+
+---
+
+## 🛠️ 常用命令
+
+### 爬蟲相關
 
 ```bash
-# 使用 Makefile
-make fetch-all      # 執行所有爬蟲
+make fetch-all       # 執行所有爬蟲 (指數 + 持股 + 新聞)
 make fetch-global   # 只爬取全球指數
 make fetch-holdings # 只爬取持倉價格
 make fetch-news     # 只爬取新聞
 ```
 
-### 4. 執行 AI 分析
+### 分析相關
 
-```python
-from analyzers import ClaudeAnalyzer, OllamaAnalyzer
-
-# 初始化分析器
-claude = ClaudeAnalyzer()
-ollama = OllamaAnalyzer()
-
-claude.initialize()
-ollama.initialize()
-
-# 分析市場指數
-result = claude.analyze_market_indices(
-    "output/market-data/2025/Daily/global-indices-2025-12-01.md",
-    regions=['美國', '台灣'],
-    focus='trend'
-)
-
-print(result)
+```bash
+make analyze-daily   # Claude CLI 市場分析
+make analyze-ollama  # Ollama 新聞預處理 (可選)
+make analyze-all     # 完整分析 (Ollama + Claude)
 ```
 
-詳細使用方法請參考 [analyzers/README.md](analyzers/README.md)
+### 完整工作流程
+
+```bash
+make daily           # 爬取 + Claude 分析 (推薦)
+make help            # 顯示所有可用命令
+```
+
+---
+
+## 🤖 自動化執行
+
+設定 cron 定時任務:
+
+```bash
+# 編輯 crontab
+crontab -e
+
+# 每天早上 8:00 執行 (亞洲市場收盤後)
+0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
+
+# 每天晚上 21:00 執行 (美國市場收盤後)
+0 21 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
+```
+
+---
+
+## 📊 輸出範例
+
+### 市場分析報告
+
+生成的報告 (analysis/market-analysis-YYYY-MM-DD.md) 包含:
+
+- 📊 **執行摘要**: 市場概況、關鍵數據、情緒評估
+- 🌍 **全球市場分析**: 美國、亞洲、歐洲市場深度分析
+- 💼 **持倉股票分析**: 持股表現評估與操作建議
+- 📰 **重要新聞解讀**: 新聞影響分析與投資啟示
+- ⚠️ **風險與機會**: 市場風險識別與投資機會
+- 💡 **投資策略建議**: 短期/中長期可執行策略
+- 🔮 **後市展望**: 情境分析與關鍵催化劑
+
+---
+
+## 🐛 故障排除
+
+### Claude CLI 相關
+
+```bash
+# 確認安裝
+which claude
+
+# 重新登入
+claude login
+
+# 測試
+echo "Hello" | claude
+```
+
+### Ollama 相關
+
+```bash
+# 檢查服務
+ollama list
+
+# 下載模型
+ollama pull llama3.1:8b
+
+# 啟動服務
+ollama serve
+```
+
+詳細請參考 [utils/README.md](utils/README.md)
 
 ## 使用 Docker
 

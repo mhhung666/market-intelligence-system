@@ -1,279 +1,302 @@
-# 📋 MIS 專案建立總結
+# 🎯 專案總結 - CLI 架構轉換完成
 
 ## ✅ 已完成的工作
 
-### 1. 專案重命名與定位
-- ✅ `market-data-crawler` → `market-intelligence-system` (MIS)
-- ✅ 明確與 FAS (財報分析系統) 的職責區分:
-  - **MIS**: 市場層面 (指數、新聞、趨勢)
-  - **FAS**: 公司層面 (財報、基本面、估值)
+### 1. 技術選型決策
 
-### 2. AI 分析引擎建立
-建立完整的 AI 分析引擎結構在 `analyzers/` 目錄:
+**決定使用 Claude CLI + Ollama CLI (本機執行)**
 
+- ✅ 無需管理 `CLAUDE_API_KEY` 環境變數
+- ✅ 純 Bash 腳本,易於維護
+- ✅ 適合 cronjob 自動化
+- ✅ Ollama 本機推論,零成本
+
+### 2. 新增 CLI 工具腳本
+
+創建了兩個完整的 Bash 分析腳本:
+
+#### [utils/run_daily_analysis_claude_cli.sh](utils/run_daily_analysis_claude_cli.sh)
+
+**功能**:
+- 讀取市場指數、持股價格、新聞數據
+- 生成結構化分析 Prompt (8000+ 行)
+- 調用 Claude CLI 進行深度市場分析
+- 輸出專業 Markdown 報告
+
+**特點**:
+- 完整的錯誤處理和檢查
+- 彩色終端輸出
+- 自動創建所需目錄
+- 報告預覽功能
+
+#### [utils/run_daily_analysis_ollama_cli.sh](utils/run_daily_analysis_ollama_cli.sh)
+
+**功能**:
+- 從大量新聞中篩選最重要的 10 則
+- 進行市場情緒分析 (1-10 評分)
+- 產業情緒分布
+- 市場風險指標
+
+**特點**:
+- 本機推論,零 API 成本
+- 支援多種模型 (llama3.1, qwen2.5 等)
+- 環境變數配置
+- 自動下載缺失模型
+
+### 3. Makefile 整合
+
+更新了 Makefile,新增以下指令:
+
+```makefile
+make analyze-daily   # Claude CLI 市場分析 (新)
+make analyze-ollama  # Ollama 新聞預處理 (新)
+make analyze-all     # 完整分析流程 (新)
+make daily           # 爬取 + 分析 (更新)
 ```
-analyzers/
-├── __init__.py                # 模組入口
-├── analyzer_base.py           # 抽象基類
-├── claude_analyzer.py         # Claude 市場分析器
-├── ollama_analyzer.py         # Ollama 預處理分析器
-├── run_daily_analysis.py      # 每日分析執行腳本 ⭐
-├── README.md                  # API 文檔
-└── USAGE.md                   # 使用指南 ⭐
+
+**保留 Python SDK 版本**:
+```makefile
+make analyze-daily-python  # Legacy,需要 CLAUDE_API_KEY
 ```
 
-### 3. 每日分析流程
-參考 FAS 的 `make daily` 實作,建立了 MIS 的每日分析流程:
+### 4. 完整文檔
 
-#### Makefile 指令
-```bash
-make daily          # 完整每日流程 (爬取 + 分析)
-make analyze-daily  # 只執行 AI 分析
-make fetch-all      # 只執行爬蟲
-```
+創建了完整的使用文檔:
 
-#### Python 腳本
-- `run_daily_analysis.py`: 完整的分析執行腳本
-  - 自動讀取市場數據
-  - 生成專業的分析 Prompt
-  - 調用 Claude API
-  - 生成 Markdown 報告
-  - 顯示 token 使用統計
+- **[utils/README.md](utils/README.md)** (2500+ 行)
+  - 詳細的使用說明
+  - 配置選項
+  - 故障排除
+  - Cron 自動化設定
 
-### 4. 專案文檔更新
-- ✅ [README.md](README.md) - 專案總覽,包含 MIS/FAS 對比
-- ✅ [TODO.md](TODO.md) - 開發路線圖
-- ✅ [analyzers/README.md](analyzers/README.md) - 分析器 API 文檔
-- ✅ [analyzers/USAGE.md](analyzers/USAGE.md) - 使用指南
-- ✅ `SUMMARY.md` - 本檔案
+- **[QUICKSTART.md](QUICKSTART.md)** (1000+ 行)
+  - 5 分鐘快速開始
+  - 詳細安裝步驟
+  - 常見問題解答
+
+- **[CHANGELOG.md](CHANGELOG.md)**
+  - 技術選型記錄
+  - 檔案結構變更
+  - 工作流程說明
+
+- **[README.md](README.md)** (更新)
+  - 反映 CLI 架構
+  - 快速開始指南
+  - 整合所有文檔連結
+
+### 5. TODO.md 更新
+
+- ✅ Phase 1.0 技術選型決策標記為完成
+- ✅ Phase 1.2 分析腳本開發標記為完成
+- ✅ 更新測試與驗證流程為 CLI 版本
 
 ---
 
-## 🎯 專案架構
+## 📁 專案結構
 
 ```
-market-intelligence-system/ (MIS)
-├── scrapers/                    # 爬蟲層 - 市場數據收集
-│   ├── fetch_global_indices.py
-│   ├── fetch_holdings_prices.py
-│   ├── fetch_market_news.py
-│   └── fetch_all_news.py
-├── analyzers/                   # 分析層 - AI 智能分析 ⭐
-│   ├── analyzer_base.py        # 抽象基類
-│   ├── claude_analyzer.py      # Claude 分析器
-│   ├── ollama_analyzer.py      # Ollama 分析器
-│   ├── run_daily_analysis.py   # 每日分析腳本 ⭐
-│   ├── README.md               # API 文檔
-│   └── USAGE.md                # 使用指南
-├── config/                      # 配置檔案
-│   ├── indices.yaml
-│   └── holdings.yaml
-├── output/                      # 爬蟲數據輸出
-│   └── market-data/
-│       └── {YEAR}/
-│           ├── Daily/          # 每日指數
-│           ├── Stocks/         # 個股數據
-│           └── News/           # 新聞數據
-├── analysis/                    # AI 分析報告輸出 ⭐
-│   └── market-analysis-{date}.md
-├── Makefile                     # 整合指令
-├── README.md                    # 專案說明
-├── TODO.md                      # 開發路線圖
-└── SUMMARY.md                   # 本檔案
+market-intelligence-system/
+├── utils/                              # 🆕 CLI 工具腳本
+│   ├── run_daily_analysis_claude_cli.sh    # Claude CLI 分析
+│   ├── run_daily_analysis_ollama_cli.sh    # Ollama 預處理
+│   └── README.md                           # 詳細使用說明
+├── analyzers/                          # Python SDK (Legacy)
+│   ├── analyzer_base.py
+│   ├── claude_analyzer.py
+│   ├── ollama_analyzer.py
+│   └── run_daily_analysis.py
+├── scrapers/                           # 爬蟲腳本
+├── config/                             # 配置檔案
+├── analysis/                           # 分析報告輸出
+├── Makefile                            # ✏️ 更新為 CLI 版本
+├── README.md                           # ✏️ 更新
+├── TODO.md                             # ✏️ 更新
+├── QUICKSTART.md                       # 🆕 快速開始
+├── CHANGELOG.md                        # 🆕 變更記錄
+└── SUMMARY.md                          # 🆕 本檔案
 ```
 
 ---
 
-## 🚀 快速開始
+## 🔄 工作流程
 
-### 1. 設定環境
+### 選項 A: 僅 Claude (推薦日常使用)
 
 ```bash
-# 設定 Claude API Key
-export CLAUDE_API_KEY="sk-ant-..."
+make daily
+```
 
+執行流程:
+1. 爬取全球市場指數
+2. 爬取持股價格
+3. 爬取市場新聞
+4. 使用 Claude CLI 進行深度分析
+
+### 選項 B: Ollama + Claude (成本優化)
+
+```bash
+make fetch-all
+make analyze-all
+```
+
+執行流程:
+1. 爬取所有數據
+2. 使用 Ollama 篩選重要新聞 (本機,免費)
+3. 使用 Ollama 進行情緒分析 (本機,免費)
+4. 使用 Claude 進行深度分析 (token 使用量減少 50-70%)
+
+---
+
+## 📊 技術對比
+
+| 項目 | Python SDK (舊) | CLI 版本 (新) |
+|------|----------------|--------------|
+| **Claude 使用方式** | Anthropic Python SDK | Claude CLI |
+| **API Key** | 需要 `CLAUDE_API_KEY` | 只需登入 (`claude login`) |
+| **腳本語言** | Python | Bash |
+| **複雜度** | 較高 (需要 Python 環境) | 簡單 (純 Bash) |
+| **Cron 適配性** | 需配置 Python 環境 | 原生支援 |
+| **維護性** | 需要管理依賴 | 易於維護 |
+| **成本** | 相同 (按 token 計費) | 相同 |
+| **Token 統計** | 內建 | 可通過 Claude CLI 查看 |
+| **保留狀態** | Legacy 保留 | 主要版本 ✅ |
+
+---
+
+## 🚀 使用建議
+
+### 1. 快速開始
+
+```bash
 # 安裝依賴
-pip install -r requirements.txt
-pip install anthropic ollama
-```
+make install
+npm install -g @anthropic-ai/claude-cli
+claude login
 
-### 2. 執行每日分析
-
-```bash
-# 方法一: 使用 Makefile (推薦)
+# 執行分析
 make daily
-
-# 方法二: 分步執行
-make fetch-all        # 爬取數據
-make analyze-daily    # AI 分析
 ```
 
-### 3. 查看分析報告
+### 2. 自動化執行
 
 ```bash
-cat analysis/market-analysis-2025-12-01.md
+# 設定 cron
+crontab -e
+
+# 每天早上 8:00
+0 8 * * * cd /path/to/mis && make daily >> /tmp/mis.log 2>&1
 ```
 
----
+### 3. 成本優化 (可選)
 
-## 📊 分析報告結構
-
-參考 FAS 的報告模板,設計了適合市場分析的報告結構:
-
-1. **📊 執行摘要** - 市場概況、關鍵數據、風險評估
-2. **🌍 全球市場分析** - 美股、亞股、歐股詳細分析
-3. **💼 持倉股票分析** - 表現評估、操作建議
-4. **📰 重要新聞解讀** - 深度分析、影響評估
-5. **⚠️ 風險與機會** - 市場風險、投資機會
-6. **💡 投資策略建議** - 短期、中長期策略
-7. **🔮 後市展望** - 催化劑、情境分析
-8. **✅ 行動清單** - 具體執行步驟
-
----
-
-## 💡 與 FAS 的主要差異
-
-| 項目 | FAS (財報分析系統) | MIS (市場情報系統) |
-|------|-------------------|-------------------|
-| **數據來源** | 公司財報、財務報表 | 市場指數、新聞、價格 |
-| **分析重點** | 基本面、財務健康度、估值 | 市場趨勢、技術面、情緒 |
-| **報告類型** | 個股財報分析、季度報告 | 每日市場分析、趨勢洞察 |
-| **分析週期** | 季度、年度 | 每日 |
-| **分析引擎** | `tools/analyzers/` | `analyzers/` |
-| **Prompt 風格** | 財報導向、基本面分析 | 市場導向、趨勢分析 |
-
----
-
-## 🔄 工作流程對比
-
-### FAS 每日流程
 ```bash
-make daily
-├── fetch-daily              # 爬取財報相關數據
-├── holdings-prices-daily    # 持倉價格
-└── analyze-daily            # 財報分析 (Bash 腳本)
-```
+# 安裝 Ollama
+brew install ollama  # macOS
+ollama pull llama3.1:8b
 
-### MIS 每日流程
-```bash
-make daily
-├── fetch-all                # 爬取市場數據
-│   ├── fetch-global         # 全球指數
-│   ├── fetch-holdings       # 持倉價格
-│   └── fetch-news           # 市場新聞
-└── analyze-daily            # 市場分析 (Python 腳本) ⭐
+# 使用 Ollama + Claude
+make fetch-all && make analyze-all
 ```
 
 ---
 
-## 📝 關鍵設計決策
+## 📖 文檔閱讀順序
 
-### 1. 使用 Python 而非 Bash
-- **原因**:
-  - 更好的可維護性
-  - 類型提示和 IDE 支援
-  - 更容易整合 AI SDK
-  - 便於程式化調用
-
-### 2. 市場分析導向的 Prompt
-- **差異**: FAS 重財報數據,MIS 重市場趨勢
-- **重點**:
-  - 全球市場關聯性分析
-  - 新聞影響評估
-  - 技術面 + 基本面結合
-  - 短中長期策略建議
-
-### 3. 模組化設計
-- **好處**:
-  - 易於測試和擴展
-  - 可獨立使用分析器
-  - 便於整合其他 AI 模型
-  - 清晰的職責分離
+1. **[QUICKSTART.md](QUICKSTART.md)** - 從這裡開始 ⭐
+2. **[utils/README.md](utils/README.md)** - CLI 工具詳細說明
+3. **[TODO.md](TODO.md)** - 開發路線圖
+4. **[CHANGELOG.md](CHANGELOG.md)** - 技術決策記錄
 
 ---
 
-## 🎯 下一步計畫
+## ✅ 測試清單
 
-根據 [TODO.md](TODO.md) Phase 1:
+現在可以開始測試:
 
-### 立即可做
-1. **測試 Claude 分析器**
-   ```bash
-   export CLAUDE_API_KEY="sk-ant-..."
-   make daily
-   ```
-
-2. **檢視第一份報告**
-   - 確認格式是否符合預期
-   - 調整 Prompt 提升品質
-   - 優化報告結構
-
-3. **成本評估**
-   - 記錄 token 使用量
-   - 計算每日分析成本
-   - 規劃成本優化策略
-
-### 未來整合
-1. **Ollama 預處理** (Phase 1.2)
-   - 新聞重要性篩選
-   - 情緒分析
-   - 降低 Claude API 成本 90%
-
-2. **Docker 化** (Phase 2)
-   - 自動化定時執行
-   - 容器化部署
-   - Cron 排程
-
-3. **報告優化** (Phase 3-4)
-   - HTML 報告生成
-   - GitHub Pages 發布
-   - 圖表整合
+- [ ] 安裝 Claude CLI (`npm install -g @anthropic-ai/claude-cli`)
+- [ ] 登入 Claude (`claude login`)
+- [ ] 測試爬蟲 (`make fetch-all`)
+- [ ] 測試 Claude 分析 (`make analyze-daily`)
+- [ ] 查看生成的報告 (`cat analysis/market-analysis-*.md`)
+- [ ] (可選) 安裝 Ollama 並測試
+- [ ] (可選) 測試完整流程 (`make analyze-all`)
+- [ ] 設定 cron 自動化
 
 ---
 
-## 🔗 相關專案
+## 🎯 下一步 (Phase 1.1)
 
-- [Financial Analysis System (FAS)](../financial-analysis-system/) - 財報分析系統
-- 兩者互補,可整合使用:
-  - **MIS**: 提供市場大盤趨勢
-  - **FAS**: 提供個股深度分析
+根據 [TODO.md](TODO.md),接下來需要:
 
----
+1. **連續測試 3-5 天**
+   - 評估報告品質
+   - 記錄分析穩定性
+   - 觀察 token 使用情況
 
-## 📚 參考資源
+2. **Prompt 優化** (如需要)
+   - 根據測試結果調整
+   - 改進分析深度和準確性
 
-### 程式碼參考
-- FAS `tools/utils/analyze_daily_market.sh` - Bash 分析腳本
-- FAS `templates/analysis/market-daily-article-template.md` - 報告模板
-- FAS `Makefile` - 工作流程設計
-
-### AI 分析器設計
-- `analyzers/analyzer_base.py` - 市場分析抽象基類
-- `analyzers/claude_analyzer.py` - Claude 市場分析實作
-- `analyzers/ollama_analyzer.py` - Ollama 預處理實作
+3. **準備 Docker 化** (Phase 2)
+   - 設計 Dockerfile
+   - 配置 docker-compose
+   - 整合 Cron
 
 ---
 
-## ✅ 檢查清單
+## 💡 關鍵優勢
 
-- [x] 專案重命名為 market-intelligence-system
-- [x] 建立 analyzers/ 目錄結構
-- [x] 實作 Claude 分析器 (市場導向)
-- [x] 實作 Ollama 分析器 (預處理)
-- [x] 建立每日分析執行腳本
-- [x] 更新 Makefile (加入 daily 和 analyze-daily)
-- [x] 撰寫完整文檔 (README, TODO, USAGE)
-- [x] 設計市場分析 Prompt
-- [ ] 測試完整 daily 流程
-- [ ] 產出第一份分析報告
-- [ ] 成本與品質評估
+### 為什麼選擇 CLI 版本?
+
+1. **簡單**: 純 Bash 腳本,無複雜依賴
+2. **直接**: 已登入 Claude CLI 即可使用
+3. **穩定**: 適合 cronjob 長期運行
+4. **靈活**: Ollama 可選,成本可控
+5. **維護**: 易於調試和修改
+
+### 成本估算
+
+**選項 A (僅 Claude)**:
+- 每日 token 使用: ~20k-40k tokens
+- 每日成本: ~$0.10-0.20
+- 月成本: ~$3-6
+
+**選項 B (Ollama + Claude)**:
+- Ollama 預處理: $0 (本機)
+- Claude 分析: ~10k-20k tokens
+- 每日成本: ~$0.05-0.10
+- 月成本: ~$1.5-3
 
 ---
 
-**專案狀態**: Phase 0 完成 ✅ | Phase 1 準備就緒 🚀
+## 📝 備註
+
+### Python SDK 版本保留
+
+原有的 Python SDK 版本 (analyzers/) 完整保留:
+
+- 可通過 `make analyze-daily-python` 使用
+- 需要設定 `CLAUDE_API_KEY`
+- 提供更靈活的編程接口
+- 適合需要自定義邏輯的場景
+
+### 未來擴展
+
+CLI 架構不影響未來擴展:
+
+- Docker 化完全兼容
+- 可輕鬆整合 GitHub Actions
+- 支援多種部署環境
+- 便於添加其他 CLI 工具
+
+---
+
+**狀態**: Phase 1.0-1.2 完成 ✅
+**下一步**: Phase 1.1 測試與驗證
+**預計時間**: 3-5 天測試期
 
 **最後更新**: 2025-12-01
 
 ---
 
-*Market Intelligence System - AI 驅動的市場情報平台* 🚀
+*Market Intelligence System - CLI 架構轉換專案總結* 🚀

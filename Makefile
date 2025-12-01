@@ -22,8 +22,13 @@ help:
 	@echo "  make fetch-all      - Run all scrapers"
 	@echo ""
 	@echo "Analysis targets:"
-	@echo "  make analyze-daily  - Run daily market analysis (Claude AI)"
+	@echo "  make analyze-daily  - Run daily market analysis (Claude CLI)"
+	@echo "  make analyze-ollama - Run Ollama news preprocessing"
+	@echo "  make analyze-all    - Complete analysis (Ollama + Claude)"
 	@echo "  make daily          - Complete daily workflow (fetch + analyze)"
+	@echo ""
+	@echo "Legacy Python SDK targets:"
+	@echo "  make analyze-daily-python - Use Python SDK (requires CLAUDE_API_KEY)"
 
 venv:
 	$(PYTHON) -m venv $(VENV)
@@ -59,12 +64,24 @@ fetch-all: install
 	$(PYTHON_BIN) scrapers/fetch_all_news.py
 	@echo "All scrapers completed!"
 
-# Analysis targets
-analyze-daily: install
-	@echo "Starting daily market analysis..."
-	$(PYTHON_BIN) analyzers/run_daily_analysis.py
+# Analysis targets (CLI-based, no Python SDK required)
+analyze-daily:
+	@echo "Starting daily market analysis (Claude CLI)..."
+	./utils/run_daily_analysis_claude_cli.sh
+
+analyze-ollama:
+	@echo "Starting Ollama news analysis..."
+	./utils/run_daily_analysis_ollama_cli.sh
+
+analyze-all: analyze-ollama analyze-daily
+	@echo "✅ Complete analysis workflow (Ollama + Claude)!"
 
 daily: fetch-all analyze-daily
 	@echo "✅ Daily workflow completed (fetch + analyze)!"
 
-.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily daily
+# Analysis targets (Legacy Python SDK version, requires CLAUDE_API_KEY)
+analyze-daily-python: install
+	@echo "Starting daily market analysis (Python SDK)..."
+	$(PYTHON_BIN) analyzers/run_daily_analysis.py
+
+.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily
