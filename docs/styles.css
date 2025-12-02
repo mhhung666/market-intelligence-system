@@ -20,6 +20,23 @@
     --font-mono: "JetBrains Mono", "Fira Code", "SFMono-Regular", Menlo, monospace;
 }
 
+body.theme-light {
+    --bg: #f3f6fb;
+    --bg-soft: #e9f0fb;
+    --panel: #ffffff;
+    --panel-2: #f4f7fd;
+    --panel-3: #eef3fb;
+    --text: #0b1b32;
+    --muted: #51607a;
+    --accent: #0ea5e9;
+    --accent-2: #0284c7;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --border: #d5deed;
+    --shadow: 0 10px 45px rgba(2, 132, 199, 0.16);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -35,6 +52,13 @@ body {
     color: var(--text);
     line-height: 1.7;
     min-height: 100vh;
+}
+
+body.theme-light {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(2, 132, 199, 0.08), transparent 32%),
+        radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.08), transparent 32%),
+        var(--bg);
 }
 
 a {
@@ -70,6 +94,10 @@ a:hover {
     z-index: 50;
 }
 
+body.theme-light .top-nav {
+    background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(14, 165, 233, 0.08));
+}
+
 .nav-brand,
 .nav-home {
     font-weight: 800;
@@ -81,6 +109,32 @@ a:hover {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.theme-toggle {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 700;
+}
+
+.theme-toggle:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+    color: var(--accent-2);
+}
+
+body.theme-light .theme-toggle {
+    background: #eef3fb;
 }
 
 .nav-link {
@@ -143,6 +197,15 @@ header:not(.report-hero) h1 {
     background: radial-gradient(circle, rgba(56, 189, 248, 0.18), transparent 60%);
     filter: blur(20px);
     pointer-events: none;
+}
+
+body.theme-light .report-hero {
+    background: linear-gradient(145deg, #ffffff, #f4f7fd);
+    border-color: var(--border);
+}
+
+body.theme-light .report-hero::after {
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.22), transparent 60%);
 }
 
 .eyebrow {

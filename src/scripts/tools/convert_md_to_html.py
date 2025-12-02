@@ -131,6 +131,9 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
                 <a href="market.html"{active_class("market")}>Market Analysis</a>
                 <a href="holdings.html"{active_class("holdings")}>Holdings Analysis</a>
             </div>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">🌙 夜間模式</button>
+            </div>
         </nav>
 
         <header class="report-hero">
@@ -173,6 +176,27 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
     </div>
 
     <script>
+        // 主題切換
+        function getPreferredTheme() {{
+            const stored = localStorage.getItem('mis-theme');
+            if (stored === 'light' || stored === 'dark') return stored;
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }}
+
+        function applyTheme(theme) {{
+            const body = document.body;
+            body.classList.toggle('theme-light', theme === 'light');
+            body.classList.toggle('theme-dark', theme === 'dark');
+            localStorage.setItem('mis-theme', theme);
+
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) {{
+                const label = theme === 'light' ? '🌙 夜間模式' : '🌞 白天模式';
+                toggle.textContent = label;
+                toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '夜間' : '日間'}}模式`);
+            }}
+        }}
+
         // 產生 TOC
         function generateTOC() {{
             const content = document.getElementById('mainContent');
@@ -264,6 +288,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
         }}
 
         document.addEventListener('DOMContentLoaded', () => {{
+            applyTheme(getPreferredTheme());
             generateTOC();
             highlightActiveTOC();
             handleBackToTop();
@@ -287,6 +312,14 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
 
             const overlay = document.getElementById('tocOverlay');
             if (overlay) overlay.addEventListener('click', () => setTOCState(false));
+
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {{
+                themeToggle.addEventListener('click', () => {{
+                    const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+                    applyTheme(nextTheme);
+                }});
+            }}
 
             window.addEventListener('resize', () => {{
                 setTOCState(false);
