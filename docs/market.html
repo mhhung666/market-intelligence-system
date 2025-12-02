@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Mobile TOC Toggle -->
+    <button class="toc-mobile-toggle" id="tocMobileToggle">📑 目錄</button>
+
+    <!-- Table of Contents Sidebar -->
+    <nav class="toc-sidebar hidden" id="tocSidebar">
+        <div class="toc-header">
+            <span class="toc-title">📑 目錄</span>
+            <button class="toc-toggle" id="tocToggle">×</button>
+        </div>
+        <ul class="toc-list" id="tocList">
+            <!-- TOC items will be generated here by JavaScript -->
+        </ul>
+    </nav>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">↑</button>
+
     <div class="container">
         <!-- Navigation -->
         <nav>
@@ -916,5 +933,139 @@
             <p>All data is for informational purposes only</p>
         </footer>
     </div>
+
+    <script>
+        // Table of Contents Generator and Manager
+        document.addEventListener('DOMContentLoaded', function() {
+            const tocList = document.getElementById('tocList');
+            const tocSidebar = document.getElementById('tocSidebar');
+            const tocToggle = document.getElementById('tocToggle');
+            const tocMobileToggle = document.getElementById('tocMobileToggle');
+            const backToTop = document.getElementById('backToTop');
+            const content = document.querySelector('.content');
+
+            // Generate TOC from h2 and h3 headings
+            function generateTOC() {
+                const headings = content.querySelectorAll('h2, h3');
+                let tocHTML = '';
+
+                headings.forEach((heading, index) => {
+                    const level = heading.tagName.toLowerCase();
+                    const text = heading.textContent;
+                    const id = `section-${index}`;
+
+                    // Add ID to heading for anchor link
+                    heading.id = id;
+
+                    // Create TOC item
+                    tocHTML += `<li class="toc-item">
+                        <a href="#${id}" class="toc-link level-${level.charAt(1)}">${text}</a>
+                    </li>`;
+                });
+
+                tocList.innerHTML = tocHTML;
+
+                // Add click event to all TOC links
+                const tocLinks = tocList.querySelectorAll('.toc-link');
+                tocLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                            // Close TOC on mobile after clicking
+                            if (window.innerWidth <= 768) {
+                                tocSidebar.classList.add('hidden');
+                                tocMobileToggle.classList.remove('active');
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Highlight active section on scroll
+            function highlightActiveSection() {
+                const headings = content.querySelectorAll('h2, h3');
+                const tocLinks = tocList.querySelectorAll('.toc-link');
+
+                let current = '';
+                const scrollPosition = window.scrollY + 150;
+
+                headings.forEach(heading => {
+                    const sectionTop = heading.offsetTop;
+                    if (scrollPosition >= sectionTop) {
+                        current = heading.id;
+                    }
+                });
+
+                tocLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // Toggle TOC visibility
+            function toggleTOC() {
+                tocSidebar.classList.toggle('hidden');
+                tocMobileToggle.classList.toggle('active');
+            }
+
+            // Show/hide back to top button
+            function handleBackToTop() {
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            }
+
+            // Initialize TOC
+            generateTOC();
+
+            // Show TOC on desktop by default
+            if (window.innerWidth > 768) {
+                tocSidebar.classList.remove('hidden');
+                content.classList.add('content-with-toc');
+            }
+
+            // Event listeners
+            tocToggle.addEventListener('click', toggleTOC);
+            tocMobileToggle.addEventListener('click', toggleTOC);
+
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Scroll event listeners
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                // Debounce scroll events for better performance
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    highlightActiveSection();
+                    handleBackToTop();
+                }, 50);
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    tocSidebar.classList.remove('hidden');
+                    content.classList.add('content-with-toc');
+                    tocMobileToggle.classList.remove('active');
+                } else {
+                    content.classList.remove('content-with-toc');
+                }
+            });
+
+            // Initial call to set active section
+            highlightActiveSection();
+        });
+    </script>
 </body>
 </html>
