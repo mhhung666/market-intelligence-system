@@ -266,6 +266,10 @@ body.theme-light .report-hero::after {
     position: relative;
 }
 
+.page-layout.no-toc {
+    display: block;
+}
+
 .content {
     background: var(--panel);
     border: 1px solid var(--border);

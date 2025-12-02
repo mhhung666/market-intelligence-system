@@ -149,21 +149,8 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
             </div>
         </header>
 
-        <main class="page-layout">
-            <button class="toc-mobile-toggle" id="tocMobileToggle" aria-label="開啟目錄" aria-expanded="false">📑 目錄</button>
-
-            <div class="toc-wrapper">
-                <aside class="toc-sidebar" id="tocSidebar">
-                    <div class="toc-header">
-                        <span class="toc-title">📑 目錄</span>
-                        <button class="toc-toggle" id="tocToggle" aria-label="收合目錄">×</button>
-                    </div>
-                    <nav class="toc-list" id="tocList"></nav>
-                </aside>
-            </div>
-            <div class="toc-overlay" id="tocOverlay" aria-hidden="true"></div>
-
-            <section class="content content-with-toc" id="mainContent">
+        <main class="page-layout no-toc">
+            <section class="content" id="mainContent">
 {content_html}
             </section>
         </main>
@@ -197,86 +184,6 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
             }}
         }}
 
-        // 產生 TOC
-        function generateTOC() {{
-            const content = document.getElementById('mainContent');
-            const tocList = document.getElementById('tocList');
-            const headings = content.querySelectorAll('h2, h3, h4');
-
-            let tocHTML = '';
-            headings.forEach((heading, index) => {{
-                const level = heading.tagName.toLowerCase();
-                const id = `section-${{index}}`;
-                heading.id = id;
-                tocHTML += `<li class="toc-item level-${{level.charAt(1)}}">
-                    <a href="#${{id}}" class="toc-link">${{heading.textContent}}</a>
-                </li>`;
-            }});
-
-            tocList.innerHTML = tocHTML;
-        }}
-
-        // TOC active 狀態
-        function highlightActiveTOC() {{
-            const headings = document.querySelectorAll('#mainContent h2, #mainContent h3, #mainContent h4');
-            const tocLinks = document.querySelectorAll('.toc-link');
-            let currentId = null;
-            const offset = 160;
-
-            headings.forEach((heading) => {{
-                const rect = heading.getBoundingClientRect();
-                if (rect.top <= offset && rect.bottom >= 0) {{
-                    currentId = heading.id;
-                }}
-            }});
-
-            tocLinks.forEach((link) => {{
-                if (link.getAttribute('href') === `#${{currentId}}`) {{
-                    link.classList.add('active');
-                }} else {{
-                    link.classList.remove('active');
-                }}
-            }});
-        }}
-
-        function setTOCState(open) {{
-            const sidebar = document.getElementById('tocSidebar');
-            const toggle = document.getElementById('tocMobileToggle');
-            const overlay = document.getElementById('tocOverlay');
-            const isMobile = window.matchMedia('(max-width: 1024px)').matches;
-
-            if (!sidebar || !toggle) return;
-
-            if (!isMobile) {{
-                sidebar.classList.remove('is-open');
-                document.body.classList.remove('toc-open');
-                toggle.setAttribute('aria-expanded', 'false');
-                if (overlay) overlay.classList.remove('visible');
-                return;
-            }}
-
-            if (open) {{
-                sidebar.classList.add('is-open');
-                document.body.classList.add('toc-open');
-                toggle.classList.add('active');
-                toggle.setAttribute('aria-expanded', 'true');
-                if (overlay) overlay.classList.add('visible');
-            }} else {{
-                sidebar.classList.remove('is-open');
-                document.body.classList.remove('toc-open');
-                toggle.classList.remove('active');
-                toggle.setAttribute('aria-expanded', 'false');
-                if (overlay) overlay.classList.remove('visible');
-            }}
-        }}
-
-        // TOC 顯示切換
-        function toggleTOC() {{
-            const sidebar = document.getElementById('tocSidebar');
-            const isOpen = sidebar?.classList.contains('is-open');
-            setTOCState(!isOpen);
-        }}
-
         // Back to top
         function handleBackToTop() {{
             const btn = document.getElementById('backToTop');
@@ -289,29 +196,19 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
 
         document.addEventListener('DOMContentLoaded', () => {{
             applyTheme(getPreferredTheme());
-            generateTOC();
-            highlightActiveTOC();
             handleBackToTop();
-            setTOCState(false);
 
             let scrollTimeout;
             window.addEventListener('scroll', () => {{
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(() => {{
-                    highlightActiveTOC();
                     handleBackToTop();
                 }}, 60);
             }});
 
-            document.getElementById('tocToggle').addEventListener('click', toggleTOC);
-            document.getElementById('tocMobileToggle').addEventListener('click', toggleTOC);
-
             document.getElementById('backToTop').addEventListener('click', () => {{
                 window.scrollTo({{ top: 0, behavior: 'smooth' }});
             }});
-
-            const overlay = document.getElementById('tocOverlay');
-            if (overlay) overlay.addEventListener('click', () => setTOCState(false));
 
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) {{
@@ -320,16 +217,6 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
                     applyTheme(nextTheme);
                 }});
             }}
-
-            window.addEventListener('resize', () => {{
-                setTOCState(false);
-            }});
-
-            document.getElementById('tocList').addEventListener('click', (event) => {{
-                if (event.target.classList.contains('toc-link') && window.matchMedia('(max-width: 1024px)').matches) {{
-                    setTOCState(false);
-                }}
-            }});
         }});
     </script>
 </body>
