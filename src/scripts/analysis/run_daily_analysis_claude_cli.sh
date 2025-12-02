@@ -131,7 +131,11 @@ generate_market_analysis_prompt() {
     # 讀取新聞數據
     local news_data=""
     local news_files
-    mapfile -t news_files < <(collect_news_files)
+    # 相容 bash 3.x (macOS 默認版本)
+    news_files=()
+    while IFS= read -r line; do
+        news_files+=("$line")
+    done < <(collect_news_files)
 
     for news_file in "${news_files[@]}"; do
         if [[ -f "${news_file}" ]]; then
