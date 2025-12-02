@@ -10,11 +10,13 @@ Markdown → HTML converter tailored for the Market Intelligence System.
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
+from zoneinfo import ZoneInfo
 
 try:
     from markdown import Markdown
@@ -63,9 +65,18 @@ def extract_title_and_date(content: str, source_path: Path) -> Tuple[str, str]:
         date = date_match.group(1)
     else:
         file_match = re.search(r"(\d{4}-\d{2}-\d{2})", source_path.name)
-        date = file_match.group(1) if file_match else datetime.now().strftime("%Y-%m-%d")
+        date = file_match.group(1) if file_match else localized_now().strftime("%Y-%m-%d")
 
     return title, date
+
+
+def localized_now() -> datetime:
+    """Return current time with a stable tz (default Asia/Taipei, overridable via env)."""
+    tz_name = os.environ.get("MIS_REPORT_TZ") or os.environ.get("TZ") or "Asia/Taipei"
+    try:
+        return datetime.now(ZoneInfo(tz_name))
+    except Exception:
+        return datetime.now()
 
 
 def post_process_html(html: str) -> str:
@@ -108,7 +119,8 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
     """建立完整頁面 HTML。"""
     page_names = {"market": "Market Analysis", "holdings": "Holdings Analysis", "home": "Home"}
     current_page = page_names.get(page_type, "Analysis")
-    generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
+    generated_at_dt = localized_now()
+    generated_at = generated_at_dt.strftime("%Y-%m-%d %H:%M %Z%z").strip()
 
     def active_class(target: str) -> str:
         return ' class="nav-link active"' if target == page_type else ' class="nav-link"'
