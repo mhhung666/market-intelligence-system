@@ -83,6 +83,13 @@ python3 -m http.server 8000
 2. **自動轉換成 HTML 並更新 GitHub Pages** ✨
 3. 只需推送到 GitHub 即可
 
+### 🤖 GitHub Actions 自動轉換 (CI)
+
+- Workflow: `.github/workflows/build-pages.yml`
+- 觸發: push 到 `main` 並變動 `reports/markdown/**` (或轉檔腳本/Makefile), 也可在 Actions 手動執行。
+- 行為: 安裝依賴 → `make update-pages` 生成 `docs/*.html` → 如有變動自動 commit/push 回 `main`，觸發 GitHub Pages 重新部署。
+- 必要設定: GitHub Pages 指向 `/docs`；倉庫允許 Actions 使用預設 `GITHUB_TOKEN`；如使用其他分支請調整 workflow 的 `branches`。
+
 ```bash
 # 完整的每日工作流程
 make daily

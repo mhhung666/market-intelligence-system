@@ -411,7 +411,7 @@ holdings:
 
 ## 未來計畫
 
-- [ ] GitHub Pages 自動發布分析報告
+- [x] GitHub Pages 自動發布分析報告 (build-pages GitHub Action)
 - [ ] Telegram/Discord 通知整合
 - [ ] 更多 AI 模型支援 (GPT-4, Gemini)
 - [ ] 技術指標分析 (RSI, MACD, 布林通道)
@@ -424,6 +424,12 @@ MIT License
 ## 相關專案
 
 - [Financial Analysis System (FAS)](../financial-analysis-system/) - 財報分析系統
+
+## CI / GitHub Actions
+
+- `build-pages.yml`: 監聽 `reports/markdown/**` 變動(或轉檔腳本/Makefile)，自動在 GitHub Actions 上安裝依賴 → 執行 `make update-pages` → 若產生新 HTML 則自動 commit/push 到 `main`，讓 GitHub Pages 重新部署。
+- 觸發條件: push 到 `main`，或在 Actions 介面手動 `Run workflow`。
+- 確認項目: GitHub Pages 設定來源為 `docs/`；倉庫啟用 Actions；如使用不同分支請調整 workflow `branches`。
 
 ---
 
