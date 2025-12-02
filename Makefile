@@ -27,6 +27,16 @@ help:
 	@echo "  make analyze-all    - Complete analysis (Ollama + Claude)"
 	@echo "  make daily          - Complete daily workflow (fetch + analyze)"
 	@echo ""
+	@echo "GitHub Pages targets:"
+	@echo "  make update-pages   - Update GitHub Pages HTML from latest reports"
+	@echo "  make preview-pages  - Preview GitHub Pages locally (port 8000)"
+	@echo ""
+	@echo "Git & Deploy targets:"
+	@echo "  make commit         - Commit reports and pages (interactive message)"
+	@echo "  make commit-auto    - Commit with auto-generated message"
+	@echo "  make push           - Push to GitHub (triggers Pages deployment)"
+	@echo "  make deploy         - Full deploy (update-pages + commit-auto + push)"
+	@echo ""
 	@echo "Legacy Python SDK targets:"
 	@echo "  make analyze-daily-python - Use Python SDK (requires CLAUDE_API_KEY)"
 
@@ -79,9 +89,49 @@ analyze-all: analyze-ollama analyze-daily
 daily: fetch-all analyze-daily
 	@echo "✅ Daily workflow completed (fetch + analyze)!"
 
+# GitHub Pages targets
+update-pages:
+	@echo "Updating GitHub Pages HTML from latest reports..."
+	./utils/update_github_pages.sh
+
+preview-pages:
+	@echo "Starting preview server at http://localhost:8000"
+	@echo "Press Ctrl+C to stop"
+	@cd docs && python3 -m http.server 8000
+
+# Git & Deploy targets
+commit:
+	@echo "📝 Committing changes..."
+	@git add docs/ analysis/
+	@git status
+	@echo ""
+	@echo "Enter commit message (or press Ctrl+C to cancel):"
+	@read -p "> " msg; \
+	git commit -m "$$msg"
+	@echo "✅ Changes committed!"
+
+commit-auto:
+	@echo "📝 Committing with auto-generated message..."
+	@git add docs/ analysis/
+	@git commit -m "feat(daily): Update analysis reports and GitHub Pages for $$(date +%Y-%m-%d)" || echo "Nothing to commit"
+	@echo "✅ Changes committed!"
+
+push:
+	@echo "🚀 Pushing to GitHub..."
+	@git push origin main
+	@echo "✅ Pushed to GitHub! Pages will update in 1-2 minutes."
+
+deploy: update-pages commit-auto push
+	@echo "🎉 Full deployment complete!"
+	@echo "   1. ✅ HTML pages updated"
+	@echo "   2. ✅ Changes committed"
+	@echo "   3. ✅ Pushed to GitHub"
+	@echo ""
+	@echo "Check your GitHub Pages site in 1-2 minutes!"
+
 # Analysis targets (Legacy Python SDK version, requires CLAUDE_API_KEY)
 analyze-daily-python: install
 	@echo "Starting daily market analysis (Python SDK)..."
 	$(PYTHON_BIN) analyzers/run_daily_analysis.py
 
-.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily
+.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily update-pages preview-pages commit commit-auto push deploy

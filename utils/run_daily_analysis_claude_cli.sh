@@ -796,6 +796,22 @@ cleanup() {
 # 主程式
 ###############################################################################
 
+update_github_pages() {
+    echo -e "${BLUE}📝 更新 GitHub Pages...${NC}"
+    echo ""
+
+    # 檢查更新腳本是否存在
+    local update_script="${PROJECT_ROOT}/utils/update_github_pages.sh"
+    if [[ -x "${update_script}" ]]; then
+        "${update_script}"
+        echo -e "${GREEN}   ✅ GitHub Pages 更新完成${NC}"
+        echo ""
+    else
+        echo -e "${YELLOW}   ⚠️  未找到更新腳本,跳過 GitHub Pages 更新${NC}"
+        echo ""
+    fi
+}
+
 main() {
     print_header
     check_dependencies
@@ -812,6 +828,10 @@ main() {
     run_holdings_analysis
 
     show_results
+
+    # 自動更新 GitHub Pages HTML
+    update_github_pages
+
     cleanup
 
     echo -e "${GREEN}✅ 每日雙報告分析完成!${NC}"

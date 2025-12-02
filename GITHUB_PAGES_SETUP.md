@@ -75,30 +75,75 @@ python3 -m http.server 8000
 
 ## 🔄 更新報告流程
 
-當有新的分析報告時 (例如 2025-12-03):
+### 🎯 自動化流程 (推薦)
 
-### 選項 A: 手動更新 (簡單方法)
+**每次執行 `make analyze-daily` 時,會自動:**
 
-1. 將新的 markdown 報告轉換為 HTML (可以請 Claude 幫忙)
-2. 替換 `docs/market.html` 或 `docs/holdings.html`
-3. 更新首頁的日期
-4. 提交並推送
+1. 生成 markdown 分析報告
+2. **自動轉換成 HTML 並更新 GitHub Pages** ✨
+3. 只需推送到 GitHub 即可
 
 ```bash
-git add docs/
-git commit -m "Update reports for 2025-12-03"
+# 完整的每日工作流程
+make daily
+
+# 或者只執行分析 (會自動更新 HTML)
+make analyze-daily
+
+# 查看更新後的網頁
+make preview-pages
+```
+
+### 🔧 手動更新 HTML (可選)
+
+如果需要單獨更新 HTML:
+
+```bash
+# 從最新的 markdown 報告更新 HTML
+make update-pages
+
+# 或直接執行腳本
+./utils/update_github_pages.sh
+```
+
+### 📤 推送到 GitHub
+
+#### 方式 1: 一鍵部署 (推薦) ✨
+
+```bash
+# 更新 HTML + 提交 + 推送,一次完成!
+make deploy
+```
+
+這會自動:
+1. ✅ 更新 HTML 頁面 (`make update-pages`)
+2. ✅ 添加並提交變更 (自動生成 commit message)
+3. ✅ 推送到 GitHub
+4. ✅ 觸發 GitHub Pages 部署
+
+#### 方式 2: 分步執行
+
+```bash
+# 步驟 1: 提交變更 (自動生成訊息)
+make commit-auto
+
+# 步驟 2: 推送到 GitHub
+make push
+
+# 或使用自訂訊息
+make commit  # 會提示輸入 commit message
+make push
+```
+
+#### 方式 3: 手動操作
+
+```bash
+git add docs/ analysis/
+git commit -m "feat(daily): Update analysis reports and GitHub Pages for $(date +%Y-%m-%d)"
 git push origin main
 ```
 
-### 選項 B: 自動化腳本 (建議)
-
-創建一個轉換腳本:
-
-```bash
-# 在 market-intelligence-system/ 目錄下
-./scripts/convert_to_html.py analysis/market-analysis-2025-12-03.md docs/market.html
-./scripts/convert_to_html.py analysis/holdings-analysis-2025-12-03.md docs/holdings.html
-```
+GitHub Pages 會在 1-2 分鐘內自動更新。
 
 ## 📱 功能特色
 
