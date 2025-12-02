@@ -23,7 +23,7 @@ help:
 	@echo ""
 	@echo "Analysis targets:"
 	@echo "  make analyze-daily  - Run daily market analysis (Claude CLI)"
-	@echo "  make analyze-ollama - Run Ollama news preprocessing"
+	@echo "  make analyze-ollama - Run Ollama full analysis (same as Claude)"
 	@echo "  make analyze-all    - Complete analysis (Ollama + Claude)"
 	@echo "  make daily          - Complete daily workflow (fetch + analyze)"
 	@echo ""
