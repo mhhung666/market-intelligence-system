@@ -37,7 +37,7 @@ ANALYSIS_DIR="${PROJECT_ROOT}/analysis"
 
 # 檔案路徑
 GLOBAL_INDICES="${DAILY_DIR}/global-indices-${TODAY}.md"
-PRICES="${DAILY_DIR}/prices-${TODAY}.md"
+PRICES="${DAILY_DIR}/holdings-prices-${TODAY}.md"
 ANALYSIS_OUTPUT="${ANALYSIS_DIR}/market-analysis-${TODAY}.md"
 PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}.txt"
 
@@ -57,14 +57,21 @@ print_header() {
 check_dependencies() {
     echo -e "${BLUE}🔍 檢查依賴...${NC}"
 
-    # 檢查 claude CLI
-    if ! command -v claude &> /dev/null; then
+    # 檢查 claude CLI (支援多個可能的安裝位置)
+    CLAUDE_BIN=""
+    if command -v claude &> /dev/null; then
+        CLAUDE_BIN="claude"
+    elif [[ -x "${HOME}/.local/bin/claude" ]]; then
+        CLAUDE_BIN="${HOME}/.local/bin/claude"
+    elif [[ -x "/usr/local/bin/claude" ]]; then
+        CLAUDE_BIN="/usr/local/bin/claude"
+    else
         echo -e "${RED}❌ 錯誤: 未安裝 claude CLI${NC}"
         echo -e "${YELLOW}請執行: npm install -g @anthropic-ai/claude-cli${NC}"
         exit 1
     fi
 
-    echo -e "${GREEN}   ✅ Claude CLI 已安裝${NC}"
+    echo -e "${GREEN}   ✅ Claude CLI 已安裝 (${CLAUDE_BIN})${NC}"
     echo ""
 }
 
@@ -411,8 +418,8 @@ run_claude_analysis() {
     mkdir -p "${ANALYSIS_DIR}"
 
     # 調用 Claude CLI
-    # 使用 --no-stream 避免串流輸出,直接儲存完整結果
-    if claude --no-stream < "${PROMPT_FILE}" > "${ANALYSIS_OUTPUT}" 2>&1; then
+    # 使用互動模式,透過 stdin 傳遞 prompt
+    if cat "${PROMPT_FILE}" | "${CLAUDE_BIN}" > "${ANALYSIS_OUTPUT}" 2>&1; then
         echo -e "${GREEN}   ✅ 分析完成!${NC}"
         echo ""
     else

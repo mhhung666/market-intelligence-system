@@ -108,16 +108,17 @@ claude login  # 登入你的 Claude 帳號
 ollama pull llama3.1:8b  # 或 qwen2.5:14b
 ```
 
-- [ ] **測試 Claude CLI 分析**
-  - 確保已執行 `claude login`
-  - 執行 `make analyze-daily` (單獨測試 Claude)
-  - 檢視生成的報告: `cat analysis/market-analysis-YYYY-MM-DD.md`
-  - 評估報告品質
+- [x] **測試 Claude CLI 分析** ✅
+  - 確保已執行 `claude login` ✅
+  - 執行 `make analyze-daily` (單獨測試 Claude) ✅
+  - 檢視生成的報告: `cat analysis/market-analysis-YYYY-MM-DD.md` ✅
+  - 評估報告品質 ✅
 
-- [ ] **測試 Ollama 預處理** (可選)
-  - 執行 `make analyze-ollama`
-  - 檢視篩選後的新聞: `cat analysis/filtered-news-YYYY-MM-DD.md`
-  - 檢視情緒分析: `cat analysis/sentiment-analysis-YYYY-MM-DD.md`
+- [x] **測試 Ollama 預處理** (可選) ✅
+  - 執行 `make analyze-ollama` ✅
+  - 檢視篩選後的新聞: `cat analysis/filtered-news-YYYY-MM-DD.md` ✅
+  - 檢視情緒分析: `cat analysis/sentiment-analysis-YYYY-MM-DD.md` ✅
+  - **備註**: 使用 30b 模型，效果普通，未來可考慮優化或使用其他模型
 
 - [ ] **測試完整 daily 流程**
   - 執行 `make daily` (爬取 + Claude 分析)
