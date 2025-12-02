@@ -42,42 +42,19 @@
 
 ```
 market-intelligence-system/
-├── scrapers/                    # 爬蟲腳本
-│   ├── common.py               # 共用模組
-│   ├── fetch_global_indices.py # 全球指數爬蟲
-│   ├── fetch_holdings_prices.py# 持倉價格爬蟲
-│   ├── fetch_market_news.py    # 單一股票/指數新聞爬蟲
-│   ├── fetch_all_news.py       # 批次新聞爬蟲
-│   └── README.md               # 爬蟲詳細說明
-├── utils/                       # 🆕 分析工具腳本 (CLI 版本)
-│   ├── run_daily_analysis_claude_cli.sh   # Claude CLI 分析
-│   ├── run_daily_analysis_ollama_cli.sh   # Ollama 預處理
-│   └── README.md               # 詳細使用說明
-├── analyzers/                   # AI 分析引擎 (Python SDK - Legacy)
-│   ├── analyzer_base.py        # 抽象基類
-│   ├── claude_analyzer.py      # Claude 市場分析器
-│   ├── ollama_analyzer.py      # Ollama 市場分析器
-│   └── README.md               # 分析引擎說明
-├── config/                      # 配置檔案
-│   ├── indices.yaml            # 指數配置
-│   └── holdings.yaml           # 持倉配置
-├── tests/                       # 測試檔案
-├── cron/                        # Cron 設定檔
-├── output/                      # 爬蟲數據輸出
-│   └── market-data/
-│       └── {YEAR}/
-│           ├── Daily/          # 每日指數數據
-│           ├── Stocks/         # 個股歷史數據
-│           └── News/           # 新聞數據
-├── analysis/                    # AI 分析報告輸出 ⭐ 雙報告系統
-│   ├── market-analysis-{date}.md    # 市場分析報告
-│   └── holdings-analysis-{date}.md  # 持倉分析報告
-├── Makefile                     # Make 快捷指令
-├── Dockerfile                   # Docker 映像檔
-├── docker-compose.yml          # Docker Compose 配置
-├── requirements.txt            # Python 依賴
-├── .env.example                # 環境變數範例
-└── README.md                   # 本檔案
+├── src/
+│   ├── scrapers/                    # 爬蟲腳本（市場指數/持倉/新聞）
+│   ├── scripts/                     # CLI 腳本 (analysis/deployment/tools)
+│   └── legacy/                      # Python SDK (保留)
+├── config/                          # 指數/持倉/共用設定
+├── output/market-data/{YEAR}/       # 爬蟲輸出 (Daily/News/Stocks)
+├── reports/markdown/                # 報告輸出 (市場/持倉/情緒)
+├── docs/web/                        # GitHub Pages 靜態網站
+├── tests/                           # 單元測試
+├── Makefile                         # 常用工作流
+├── CHANGELOG.md                     # 版本更新記錄
+├── DEVELOPMENT.md                   # 開發筆記與架構說明
+└── QUICKSTART.md                    # 快速開始指南
 ```
 
 ## 🚀 快速開始
@@ -114,10 +91,10 @@ make fetch-all && make analyze-all
 
 ```bash
 # 查看市場分析報告 (全球市場趨勢)
-cat analysis/market-analysis-$(date +%Y-%m-%d).md
+cat reports/markdown/market-analysis-$(date +%Y-%m-%d).md
 
 # 查看持倉分析報告 (投資組合表現)
-cat analysis/holdings-analysis-$(date +%Y-%m-%d).md
+cat reports/markdown/holdings-analysis-$(date +%Y-%m-%d).md
 ```
 
 ✅ **完成！** 你已經獲得兩份專業的分析報告：市場分析 + 持倉分析。
@@ -127,9 +104,9 @@ cat analysis/holdings-analysis-$(date +%Y-%m-%d).md
 ## 📖 詳細文檔
 
 - [QUICKSTART.md](QUICKSTART.md) - 快速開始指南 **← 從這裡開始**
-- [utils/README.md](utils/README.md) - CLI 工具詳細說明
-- [TODO.md](TODO.md) - 開發路線圖
-- [CHANGELOG.md](CHANGELOG.md) - 技術選型決策記錄
+- [src/scripts/README.md](src/scripts/README.md) - CLI 工具詳細說明
+- [DEVELOPMENT.md](DEVELOPMENT.md) - 開發路線圖與架構說明
+- [CHANGELOG.md](CHANGELOG.md) - 版本更新記錄
 
 ---
 
@@ -275,23 +252,11 @@ ollama pull llama3.1:8b
 ollama serve
 ```
 
-詳細請參考 [utils/README.md](utils/README.md)
+詳細請參考 [src/scripts/README.md](src/scripts/README.md)
 
-## 使用 Docker
+## Docker / 部署
 
-```bash
-# 建置映像檔
-docker-compose build
-
-# 啟動服務
-docker-compose up -d
-
-# 查看日誌
-docker-compose logs -f
-
-# 停止服務
-docker-compose down
-```
+Docker 設定尚未隨倉庫提供，建議先使用 Makefile 在本機驗證；若需要容器化可依需求新增 Dockerfile/compose 配置。
 
 ## 工作流程
 
@@ -332,7 +297,7 @@ docker-compose down
          ▼
 ┌─────────────────┐
 │ 生成分析報告    │
-│ analysis/       │
+│ reports/markdown│
 └─────────────────┘
 ```
 

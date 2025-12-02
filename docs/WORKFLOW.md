@@ -24,15 +24,15 @@
 │    ├─ 查找最新的 markdown 報告                             │
 │    ├─ 使用 Claude CLI 轉換成 HTML                          │
 │    ├─ 保持完全相同的格式和樣式                             │
-│    ├─ 更新 docs/market.html                                │
-│    ├─ 更新 docs/holdings.html                              │
-│    └─ 更新 docs/index.html 的日期                          │
+│    ├─ 更新 docs/web/market.html                            │
+│    ├─ 更新 docs/web/holdings.html                          │
+│    └─ 更新 docs/web/index.html 的日期                      │
 └─────────────────┬───────────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 3. 完成! 現在可以推送到 GitHub                              │
-│    git add docs/ analysis/                                  │
+│    git add docs/ reports/markdown/                           │
 │    git commit -m "Update reports for {date}"                │
 │    git push origin main                                     │
 └─────────────────┬───────────────────────────────────────────┘
@@ -53,15 +53,15 @@ make analyze-daily
 ```
 
 這會:
-- ✅ 生成 `analysis/market-analysis-2025-12-02.md`
-- ✅ 生成 `analysis/holdings-analysis-2025-12-02.md`
+- ✅ 生成 `reports/markdown/market-analysis-2025-12-02.md`
+- ✅ 生成 `reports/markdown/holdings-analysis-2025-12-02.md`
 
 ### Step 2: 自動轉換 HTML (新增!)
 
 在 Step 1 完成後,**自動執行**:
 
 ```bash
-./utils/update_github_pages.sh
+./src/scripts/deployment/update_github_pages.sh
 ```
 
 這會:
@@ -72,8 +72,8 @@ make analyze-daily
   - 相同的 TOC (目錄) 功能
   - 相同的 Back to Top 按鈕
   - 所有 emoji 和樣式
-- ✅ 更新 `docs/market.html`
-- ✅ 更新 `docs/holdings.html`
+- ✅ 更新 `docs/web/market.html`
+- ✅ 更新 `docs/web/holdings.html`
 - ✅ 更新首頁日期
 
 ### Step 3: 推送到 GitHub
@@ -195,8 +195,8 @@ make preview-pages
 # update_github_pages.sh 的核心邏輯
 
 1. 查找最新的 markdown 報告
-   ├─ analysis/market-analysis-*.md (最新)
-   └─ analysis/holdings-analysis-*.md (最新)
+   ├─ reports/markdown/market-analysis-*.md (最新)
+   └─ reports/markdown/holdings-analysis-*.md (最新)
 
 2. 使用 Claude CLI 轉換
    ├─ 讀取 markdown 內容
@@ -204,9 +204,9 @@ make preview-pages
    └─ 輸出完整的 HTML
 
 3. 更新文件
-   ├─ 覆蓋 docs/market.html
-   ├─ 覆蓋 docs/holdings.html
-   └─ 更新 docs/index.html 日期
+   ├─ 覆蓋 docs/web/market.html
+   ├─ 覆蓋 docs/web/holdings.html
+   └─ 更新 docs/web/index.html 日期
 ```
 
 ## ⚙️ 配置
@@ -231,7 +231,7 @@ make update-pages
 ### Q: 可以手動編輯 HTML 嗎?
 
 A: 可以,但下次自動更新會覆蓋。建議:
-- 樣式修改 → 編輯 `docs/styles.css`
+- 樣式修改 → 編輯 `docs/web/styles.css`
 - 結構修改 → 修改 `update_github_pages.sh` 的 prompt
 
 ### Q: 轉換需要多久?
@@ -250,8 +250,8 @@ make preview-pages
 ## 📚 相關文件
 
 - [GITHUB_PAGES_SETUP.md](../GITHUB_PAGES_SETUP.md) - GitHub Pages 完整設置指南
-- [utils/run_daily_analysis_claude_cli.sh](../utils/run_daily_analysis_claude_cli.sh) - 主分析腳本
-- [utils/update_github_pages.sh](../utils/update_github_pages.sh) - HTML 更新腳本
+- [src/scripts/run_daily_analysis_claude_cli.sh](../src/scripts/run_daily_analysis_claude_cli.sh) - 主分析腳本
+- [src/scripts/update_github_pages.sh](../src/scripts/update_github_pages.sh) - HTML 更新腳本
 - [Makefile](../Makefile) - 所有可用指令
 
 ## 🎉 總結

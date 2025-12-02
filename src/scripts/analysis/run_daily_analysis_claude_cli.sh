@@ -11,7 +11,7 @@
 #   - 已登入 Claude CLI (claude login)
 #
 # 使用方式:
-#   ./utils/run_daily_analysis_v2.sh
+#   ./src/scripts/analysis/run_daily_analysis_claude_cli.sh
 ###############################################################################
 
 set -e  # 遇到錯誤立即退出
@@ -28,20 +28,20 @@ TODAY=$(date +"%Y-%m-%d")
 YEAR=$(date +"%Y")
 
 # 路徑
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 OUTPUT_DIR="${PROJECT_ROOT}/output/market-data/${YEAR}"
 DAILY_DIR="${OUTPUT_DIR}/Daily"
 NEWS_DIR="${OUTPUT_DIR}/News"
-ANALYSIS_DIR="${PROJECT_ROOT}/analysis"
+REPORTS_DIR="${PROJECT_ROOT}/reports/markdown"
 CONFIG_DIR="${PROJECT_ROOT}/config"
 
 # 檔案路徑
 GLOBAL_INDICES="${DAILY_DIR}/global-indices-${TODAY}.md"
 PRICES="${DAILY_DIR}/holdings-prices-${TODAY}.md"
 HOLDINGS_CONFIG="${CONFIG_DIR}/holdings.yaml"
-PORTFOLIO_HOLDINGS="../financial-analysis-system/portfolio/${YEAR}/holdings.md"
-MARKET_ANALYSIS_OUTPUT="${ANALYSIS_DIR}/market-analysis-${TODAY}.md"
-HOLDINGS_ANALYSIS_OUTPUT="${ANALYSIS_DIR}/holdings-analysis-${TODAY}.md"
+PORTFOLIO_HOLDINGS="${PROJECT_ROOT}/../financial-analysis-system/portfolio/${YEAR}/holdings.md"
+MARKET_ANALYSIS_OUTPUT="${REPORTS_DIR}/market-analysis-${TODAY}.md"
+HOLDINGS_ANALYSIS_OUTPUT="${REPORTS_DIR}/holdings-analysis-${TODAY}.md"
 MARKET_PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}.txt"
 HOLDINGS_PROMPT_FILE="/tmp/holdings-analysis-prompt-${TODAY}.txt"
 
@@ -396,7 +396,7 @@ run_market_analysis() {
     echo -e "${YELLOW}   這可能需要幾分鐘,請稍候...${NC}"
     echo ""
 
-    mkdir -p "${ANALYSIS_DIR}"
+    mkdir -p "${REPORTS_DIR}"
 
     if cat "${MARKET_PROMPT_FILE}" | "${CLAUDE_BIN}" > "${MARKET_ANALYSIS_OUTPUT}" 2>&1; then
         echo -e "${GREEN}   ✅ 市場分析完成!${NC}"
@@ -738,7 +738,7 @@ run_holdings_analysis() {
     echo -e "${YELLOW}   這可能需要幾分鐘,請稍候...${NC}"
     echo ""
 
-    mkdir -p "${ANALYSIS_DIR}"
+    mkdir -p "${REPORTS_DIR}"
 
     if cat "${HOLDINGS_PROMPT_FILE}" | "${CLAUDE_BIN}" > "${HOLDINGS_ANALYSIS_OUTPUT}" 2>&1; then
         echo -e "${GREEN}   ✅ 持倉分析完成!${NC}"
@@ -801,7 +801,7 @@ update_github_pages() {
     echo ""
 
     # 檢查更新腳本是否存在
-    local update_script="${PROJECT_ROOT}/utils/update_github_pages.sh"
+    local update_script="${PROJECT_ROOT}/src/scripts/deployment/update_github_pages.sh"
     if [[ -x "${update_script}" ]]; then
         "${update_script}"
         echo -e "${GREEN}   ✅ GitHub Pages 更新完成${NC}"

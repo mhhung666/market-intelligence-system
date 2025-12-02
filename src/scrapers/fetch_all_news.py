@@ -9,7 +9,7 @@ import sys
 import yaml
 from pathlib import Path
 from fetch_market_news import fetch_market_news
-from common import print_status, print_error, safe_exit
+from common import print_status, print_error, safe_exit, get_project_root
 
 
 def load_config(config_file):
@@ -60,8 +60,7 @@ def extract_symbols_from_indices(config):
 
 def main():
     # 取得配置檔路徑
-    script_dir = Path(__file__).parent
-    config_dir = script_dir.parent / 'config'
+    config_dir = get_project_root() / 'config'
     holdings_config_file = config_dir / 'holdings.yaml'
     indices_config_file = config_dir / 'indices.yaml'
 

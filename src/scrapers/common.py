@@ -28,9 +28,8 @@ def get_project_root() -> Path:
     Returns:
         Path: 專案根目錄的絕對路徑
     """
-    # 從 scrapers 目錄往上一層到達專案根目錄
-    script_dir = Path(__file__).parent
-    return script_dir.parent.resolve()
+    # 從 src/scrapers 目錄往上回到專案根目錄
+    return Path(__file__).resolve().parents[2]
 
 
 def get_data_directory(year: Optional[int] = None, subdir: str = "") -> Path:

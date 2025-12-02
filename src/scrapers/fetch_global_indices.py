@@ -20,6 +20,7 @@ from common import (
     print_success,
     print_warning,
     generate_dated_filename,
+    get_project_root,
 )
 
 
@@ -30,7 +31,7 @@ def load_indices_config():
     Returns:
         dict: 全球指數配置字典
     """
-    config_path = Path(__file__).parent.parent / "config" / "indices.yaml"
+    config_path = get_project_root() / "config" / "indices.yaml"
 
     if not config_path.exists():
         print_error(f"找不到配置檔: {config_path}")

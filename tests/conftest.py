@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-# 將 scrapers 目錄加入 Python 路徑
-scrapers_dir = Path(__file__).parent.parent / "scrapers"
+# 將 src/scrapers 目錄加入 Python 路徑
+scrapers_dir = Path(__file__).parent.parent / "src" / "scrapers"
 sys.path.insert(0, str(scrapers_dir))
 
 

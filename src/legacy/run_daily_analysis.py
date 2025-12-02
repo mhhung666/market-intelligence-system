@@ -13,10 +13,10 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Optional
 
-# 將專案根目錄加入 Python 路徑
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# 將 src 目錄加入 Python 路徑，便於引用 legacy 套件
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from analyzers import ClaudeAnalyzer, OllamaAnalyzer
+from legacy import ClaudeAnalyzer, OllamaAnalyzer
 
 
 class DailyMarketAnalyzer:
@@ -30,11 +30,11 @@ class DailyMarketAnalyzer:
         self.output_dir = Path("output/market-data") / self.year
         self.daily_dir = self.output_dir / "Daily"
         self.news_dir = self.output_dir / "News"
-        self.analysis_dir = Path("analysis")
+        self.analysis_dir = Path("reports/markdown")
 
         # 檔案路徑
         self.global_indices_file = self.daily_dir / f"global-indices-{self.today}.md"
-        self.prices_file = self.daily_dir / f"prices-{self.today}.md"
+        self.prices_file = self.daily_dir / f"holdings-prices-{self.today}.md"
         self.analysis_output = self.analysis_dir / f"market-analysis-{self.today}.md"
 
         # 初始化分析器

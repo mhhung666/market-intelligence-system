@@ -28,10 +28,10 @@ make daily
 
 ```bash
 # 查看生成的市場分析報告
-cat analysis/market-analysis-$(date +%Y-%m-%d).md
+cat reports/markdown/market-analysis-$(date +%Y-%m-%d).md
 
 # 或使用 less 分頁查看
-less analysis/market-analysis-$(date +%Y-%m-%d).md
+less reports/markdown/market-analysis-$(date +%Y-%m-%d).md
 ```
 
 ✅ 完成！你已經獲得一份專業的市場情報分析報告。
@@ -109,13 +109,13 @@ make analyze-daily
 
 ```bash
 # 查看最新報告
-ls -lh analysis/
+ls -lh reports/markdown/
 
 # 讀取報告內容
-cat analysis/market-analysis-2025-12-01.md
+cat reports/markdown/market-analysis-2025-12-01.md
 
 # 使用 less 分頁查看
-less analysis/market-analysis-2025-12-01.md
+less reports/markdown/market-analysis-2025-12-01.md
 ```
 
 ---
@@ -161,10 +161,10 @@ make analyze-all  # Ollama + Claude
 
 ```bash
 # 篩選後的重要新聞
-cat analysis/filtered-news-2025-12-01.md
+cat reports/markdown/filtered-news-2025-12-01.md
 
 # 市場情緒分析
-cat analysis/sentiment-analysis-2025-12-01.md
+cat reports/markdown/sentiment-analysis-2025-12-01.md
 ```
 
 ---
@@ -189,7 +189,7 @@ crontab -e
 tail -f /tmp/mis.log
 
 # 查看生成的報告
-ls -lt analysis/ | head -5
+ls -lt reports/markdown/ | head -5
 ```
 
 ---
@@ -243,10 +243,10 @@ output/market-data/2025/
     └── TSLA-2025-12-01.md
 ```
 
-### 分析報告 (analysis/)
+### 分析報告 (reports/markdown/)
 
 ```
-analysis/
+reports/markdown/
 ├── market-analysis-2025-12-01.md     # Claude 市場分析報告
 ├── filtered-news-2025-12-01.md       # Ollama 篩選新聞 (可選)
 └── sentiment-analysis-2025-12-01.md  # Ollama 情緒分析 (可選)
@@ -303,9 +303,9 @@ make fetch-all
 ## 📚 更多資訊
 
 - [README.md](README.md) - 專案總覽
-- [TODO.md](TODO.md) - 開發路線圖
-- [utils/README.md](utils/README.md) - 分析工具詳細說明
-- [CHANGELOG.md](CHANGELOG.md) - 技術選型決策記錄
+- [DEVELOPMENT.md](DEVELOPMENT.md) - 開發路線圖與架構說明
+- [src/scripts/README.md](src/scripts/README.md) - 分析工具詳細說明
+- [CHANGELOG.md](CHANGELOG.md) - 版本更新記錄
 
 ---
 
@@ -350,7 +350,7 @@ make analyze-daily
 2. **調整配置**
    - 修改持股清單 ([config/holdings.yaml](config/holdings.yaml))
    - 調整新聞來源 (如需要)
-   - 優化分析 Prompt ([utils/run_daily_analysis_claude_cli.sh](utils/run_daily_analysis_claude_cli.sh))
+   - 優化分析 Prompt ([src/scripts/run_daily_analysis_claude_cli.sh](src/scripts/run_daily_analysis_claude_cli.sh))
 
 3. **設定自動化**
    - 配置 cron 定時任務
@@ -361,4 +361,4 @@ make analyze-daily
 
 **快速開始就這麼簡單！** 🎉
 
-如有問題,請參考 [utils/README.md](utils/README.md) 的詳細說明。
+如有問題,請參考 [src/scripts/README.md](src/scripts/README.md) 的詳細說明。

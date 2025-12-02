@@ -99,11 +99,8 @@ make preview-pages
 如果需要單獨更新 HTML:
 
 ```bash
-# 從最新的 markdown 報告更新 HTML
+# 從最新的 markdown 報告更新 HTML (使用本地轉換器)
 make update-pages
-
-# 或直接執行腳本
-./utils/update_github_pages.sh
 ```
 
 ### 📤 推送到 GitHub
@@ -138,7 +135,7 @@ make push
 #### 方式 3: 手動操作
 
 ```bash
-git add docs/ analysis/
+git add docs/ reports/
 git commit -m "feat(daily): Update analysis reports and GitHub Pages for $(date +%Y-%m-%d)"
 git push origin main
 ```

@@ -42,7 +42,7 @@ class TestGetProjectRoot:
         """路徑應該包含預期的專案結構"""
         result = get_project_root()
         # 專案根目錄應該包含專案核心目錄
-        assert (result / "scrapers").exists()
+        assert (result / "src" / "scrapers").exists()
         assert (result / "config").exists()
 
 

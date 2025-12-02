@@ -73,7 +73,7 @@ python3 analyzers/run_daily_analysis.py
          ▼
 ┌─────────────────┐
 │ 生成分析報告    │
-│ analysis/       │
+│ reports/markdown/       │
 │ market-analysis-│
 │ 2025-12-01.md   │
 └─────────────────┘
@@ -81,10 +81,10 @@ python3 analyzers/run_daily_analysis.py
 
 ## 輸出範例
 
-執行完成後,會在 `analysis/` 目錄生成報告:
+執行完成後,會在 `reports/markdown/` 目錄生成報告:
 
 ```
-analysis/
+reports/markdown/
 └── market-analysis-2025-12-01.md
 ```
 

@@ -1,4 +1,4 @@
-# 🛠️ Utils - 分析工具腳本
+# 🛠️ Scripts - 分析工具腳本
 
 這個目錄包含市場分析的 Bash 工具腳本,使用 CLI 工具進行本機分析。
 
@@ -37,7 +37,7 @@ claude login
 **使用方式**:
 ```bash
 # 直接執行
-./utils/run_daily_analysis_claude_cli.sh
+./src/scripts/analysis/run_daily_analysis_claude_cli.sh
 
 # 或通過 Makefile
 make analyze-daily
@@ -45,8 +45,8 @@ make analyze-daily
 
 **輸出 (雙報告)**:
 ```
-analysis/market-analysis-YYYY-MM-DD.md      # 市場分析報告
-analysis/holdings-analysis-YYYY-MM-DD.md    # 持倉分析報告
+reports/markdown/market-analysis-YYYY-MM-DD.md      # 市場分析報告
+reports/markdown/holdings-analysis-YYYY-MM-DD.md    # 持倉分析報告
 ```
 
 #### 報告 1: 市場分析 (`market-analysis-*.md`)
@@ -101,19 +101,19 @@ ollama pull llama3.1:8b
 **使用方式**:
 ```bash
 # 直接執行
-./utils/run_daily_analysis_ollama_cli.sh
+./src/scripts/analysis/run_daily_analysis_ollama_cli.sh
 
 # 或通過 Makefile
 make analyze-ollama
 
 # 也可以指定不同模型
-OLLAMA_MODEL=qwen2.5:14b ./utils/run_daily_analysis_ollama_cli.sh
+OLLAMA_MODEL=qwen2.5:14b ./src/scripts/analysis/run_daily_analysis_ollama_cli.sh
 ```
 
 **輸出**:
 ```
-analysis/filtered-news-YYYY-MM-DD.md      # 篩選後的重要新聞
-analysis/sentiment-analysis-YYYY-MM-DD.md  # 市場情緒分析
+reports/markdown/filtered-news-YYYY-MM-DD.md      # 篩選後的重要新聞
+reports/markdown/sentiment-analysis-YYYY-MM-DD.md  # 市場情緒分析
 ```
 
 **情緒分析內容**:
@@ -199,7 +199,7 @@ crontab -e
 tail -f /tmp/mis-cron.log
 
 # 查看生成的報告
-ls -lh analysis/
+ls -lh reports/markdown/
 ```
 
 ---
@@ -210,7 +210,7 @@ ls -lh analysis/
 
 可以通過修改 [run_daily_analysis_claude_cli.sh](run_daily_analysis_claude_cli.sh) 調整:
 
-- **資料路徑**: 修改 `OUTPUT_DIR`, `ANALYSIS_DIR`
+- **資料路徑**: 修改 `OUTPUT_DIR`, `REPORTS_DIR`
 - **Prompt 模板**: 修改 `generate_analysis_prompt()` 函數
 - **Claude 參數**: 修改 `claude` 命令選項 (例如 `--model`)
 
@@ -390,18 +390,18 @@ ollama serve &
 
 ```bash
 # 確保腳本可執行
-chmod +x utils/*.sh
+chmod +x src/scripts/analysis/*.sh src/scripts/deployment/*.sh
 
 # 檢查權限
-ls -l utils/
+ls -l src/scripts/analysis/
 ```
 
 ---
 
 ## 📚 相關文檔
 
-- [TODO.md](../TODO.md) - 專案開發路線圖
-- [analyzers/README.md](../analyzers/README.md) - Python SDK 版本 (legacy)
+- [DEVELOPMENT.md](../DEVELOPMENT.md) - 專案開發路線圖與架構
+- [src/legacy/README.md](../src/legacy/README.md) - Python SDK 版本 (legacy)
 - [Claude CLI 官方文檔](https://github.com/anthropics/claude-cli)
 - [Ollama 官方文檔](https://ollama.com/docs)
 

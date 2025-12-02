@@ -10,7 +10,7 @@
 #   - 已下載模型 (ollama pull llama3.1:8b 或 qwen2.5:14b)
 #
 # 使用方式:
-#   ./analyzers/run_daily_analysis_ollama_cli.sh
+#   ./src/scripts/analysis/run_daily_analysis_ollama_cli.sh
 #   或
 #   make analyze-ollama
 ###############################################################################
@@ -35,14 +35,14 @@ TODAY=$(date +"%Y-%m-%d")
 YEAR=$(date +"%Y")
 
 # 路徑
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 OUTPUT_DIR="${PROJECT_ROOT}/output/market-data/${YEAR}"
 NEWS_DIR="${OUTPUT_DIR}/News"
-ANALYSIS_DIR="${PROJECT_ROOT}/analysis"
+REPORTS_DIR="${PROJECT_ROOT}/reports/markdown"
 
 # 輸出檔案
-FILTERED_NEWS="${ANALYSIS_DIR}/filtered-news-${TODAY}.md"
-SENTIMENT_REPORT="${ANALYSIS_DIR}/sentiment-analysis-${TODAY}.md"
+FILTERED_NEWS="${REPORTS_DIR}/filtered-news-${TODAY}.md"
+SENTIMENT_REPORT="${REPORTS_DIR}/sentiment-analysis-${TODAY}.md"
 PROMPT_FILE="/tmp/ollama-analysis-prompt-${TODAY}.txt"
 
 ###############################################################################
@@ -189,7 +189,7 @@ ${news_content}
 EOF
 
     # 調用 Ollama
-    mkdir -p "${ANALYSIS_DIR}"
+    mkdir -p "${REPORTS_DIR}"
 
     # 使用 script 工具來過濾 ANSI 控制碼，或使用 sed 清理輸出
     if ollama run "${OLLAMA_MODEL}" < "${PROMPT_FILE}" 2>/dev/null | sed -e 's/\x1b\[[0-9;]*[a-zA-Z]//g' -e 's/\x1b\[?[0-9;]*[a-zA-Z]//g' -e '/^Thinking\.\.\.$/,/^\.\.\.done thinking\.$/d' > "${FILTERED_NEWS}"; then
