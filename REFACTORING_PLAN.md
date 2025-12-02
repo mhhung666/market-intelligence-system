@@ -124,7 +124,7 @@ market-intelligence-system/
 | `utils/` | `src/scripts/` | 明確主腳本職責 |
 | `analyzers/` | `src/legacy/` | 標記為 Legacy |
 | `analysis/` | `reports/markdown/` | 明確報告性質 |
-| `docs/*.html` | `docs/web/` | 分離文檔和網站 |
+| `docs/*.html` | `docs/` | GitHub Pages 靜態站點集中於 docs/ 根目錄 |
 | `QUICK_START.md` | ❌ 刪除 | 與 QUICKSTART.md 重複 |
 | `SUMMARY.md` | → `DEVELOPMENT.md` | 整合開發文檔 |
 | `TODO.md` | → `DEVELOPMENT.md` | 整合開發文檔 |
@@ -146,7 +146,7 @@ mkdir -p src/legacy
 mkdir -p reports/{markdown,html}
 
 # 3. 創建 docs/ 子目錄
-mkdir -p docs/{guide,web}
+mkdir -p docs/guide
 
 # 4. 創建統一配置文件
 touch config/settings.yaml
@@ -172,8 +172,7 @@ mv analyzers/* src/legacy/
 mv analysis/*.md reports/markdown/
 
 # 5. 重組 docs/
-mv docs/*.html docs/web/
-mv docs/styles.css docs/web/
+# 保留 GitHub Pages 靜態頁在 docs/ 根目錄 (index/market/holdings/styles)
 ```
 
 ### Phase 3: 更新路徑引用 (45分鐘)
@@ -201,7 +200,7 @@ mv docs/styles.css docs/web/
 
 4. **src/scripts/deployment/update_github_pages.sh**
    - 更新報告來源路徑: `reports/markdown/`
-   - 更新 HTML 輸出路徑: `docs/web/`
+   - 更新 HTML 輸出路徑: `docs/`
 
 ### Phase 4: 簡化文檔 (60分鐘)
 

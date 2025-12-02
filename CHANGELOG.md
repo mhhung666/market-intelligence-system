@@ -4,7 +4,7 @@
 ### Added
 - 雙報告流程：市場分析 `market-analysis-YYYY-MM-DD.md` 與持倉分析 `holdings-analysis-YYYY-MM-DD.md` 分離
 - CLI 腳本移至 `src/scripts/analysis/`，報告輸出改為 `reports/markdown/`
-- GitHub Pages 靜態站點重組到 `docs/web/`
+- GitHub Pages 靜態站點集中在 `docs/` (index/market/holdings/styles)
 - 新增 `config/settings.yaml` 以集中預設路徑與模型設定
 
 ### Changed

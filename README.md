@@ -49,7 +49,7 @@ market-intelligence-system/
 ├── config/                          # 指數/持倉/共用設定
 ├── output/market-data/{YEAR}/       # 爬蟲輸出 (Daily/News/Stocks)
 ├── reports/markdown/                # 報告輸出 (市場/持倉/情緒)
-├── docs/web/                        # GitHub Pages 靜態網站
+├── docs/                            # GitHub Pages 靜態網站 (index/market/holdings)
 ├── tests/                           # 單元測試
 ├── Makefile                         # 常用工作流
 ├── CHANGELOG.md                     # 版本更新記錄

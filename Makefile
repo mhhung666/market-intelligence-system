@@ -97,26 +97,25 @@ update-pages: install
 	if [ -z "$$latest_market" ] && [ -z "$$latest_holdings" ]; then \
 		echo "No markdown reports found in reports/markdown/"; exit 1; \
 	fi; \
-	mkdir -p docs/web; \
 	if [ -n "$$latest_market" ]; then \
 		echo "  -> market: $$latest_market"; \
-		$(PYTHON_BIN) src/scripts/tools/convert_md_to_html.py "$$latest_market" docs/web/market.html market; \
+		$(PYTHON_BIN) src/scripts/tools/convert_md_to_html.py "$$latest_market" docs/market.html market; \
 	fi; \
 	if [ -n "$$latest_holdings" ]; then \
 		echo "  -> holdings: $$latest_holdings"; \
-		$(PYTHON_BIN) src/scripts/tools/convert_md_to_html.py "$$latest_holdings" docs/web/holdings.html holdings; \
+		$(PYTHON_BIN) src/scripts/tools/convert_md_to_html.py "$$latest_holdings" docs/holdings.html holdings; \
 	fi; \
 	today=$$(date +%Y-%m-%d); \
-	if [ -f docs/web/index.html ]; then \
-		sed -i "s/最後更新: [0-9-]\\+/最後更新: $$today/g" docs/web/index.html; \
-		sed -i "s/<span class=\"date\">[0-9-]\\+<\\/span>/<span class=\"date\">$$today<\\/span>/g" docs/web/index.html; \
+	if [ -f docs/index.html ]; then \
+		sed -i "s/最後更新: [0-9-]\\+/最後更新: $$today/g" docs/index.html; \
+		sed -i "s/<span class=\"date\">[0-9-]\\+<\\/span>/<span class=\"date\">$$today<\\/span>/g" docs/index.html; \
 	fi; \
 	echo "✅ GitHub Pages HTML updated."
 
 preview-pages: install
 	@echo "Starting preview server at http://localhost:8000"
 	@echo "Press Ctrl+C to stop"
-	@cd docs/web && $(PYTHON_BIN) -m http.server 8000
+	@cd docs && $(PYTHON_BIN) -m http.server 8000
 
 # Git & Deploy targets
 commit:

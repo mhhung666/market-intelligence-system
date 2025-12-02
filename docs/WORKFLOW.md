@@ -24,9 +24,9 @@
 │    ├─ 查找最新的 markdown 報告                             │
 │    ├─ 使用 Claude CLI 轉換成 HTML                          │
 │    ├─ 保持完全相同的格式和樣式                             │
-│    ├─ 更新 docs/web/market.html                            │
-│    ├─ 更新 docs/web/holdings.html                          │
-│    └─ 更新 docs/web/index.html 的日期                      │
+│    ├─ 更新 docs/market.html                            │
+│    ├─ 更新 docs/holdings.html                          │
+│    └─ 更新 docs/index.html 的日期                      │
 └─────────────────┬───────────────────────────────────────────┘
                   │
                   ▼
@@ -72,8 +72,8 @@ make analyze-daily
   - 相同的 TOC (目錄) 功能
   - 相同的 Back to Top 按鈕
   - 所有 emoji 和樣式
-- ✅ 更新 `docs/web/market.html`
-- ✅ 更新 `docs/web/holdings.html`
+- ✅ 更新 `docs/market.html`
+- ✅ 更新 `docs/holdings.html`
 - ✅ 更新首頁日期
 
 ### Step 3: 推送到 GitHub
@@ -204,9 +204,9 @@ make preview-pages
    └─ 輸出完整的 HTML
 
 3. 更新文件
-   ├─ 覆蓋 docs/web/market.html
-   ├─ 覆蓋 docs/web/holdings.html
-   └─ 更新 docs/web/index.html 日期
+   ├─ 覆蓋 docs/market.html
+   ├─ 覆蓋 docs/holdings.html
+   └─ 更新 docs/index.html 日期
 ```
 
 ## ⚙️ 配置
@@ -231,7 +231,7 @@ make update-pages
 ### Q: 可以手動編輯 HTML 嗎?
 
 A: 可以,但下次自動更新會覆蓋。建議:
-- 樣式修改 → 編輯 `docs/web/styles.css`
+- 樣式修改 → 編輯 `docs/styles.css`
 - 結構修改 → 修改 `update_github_pages.sh` 的 prompt
 
 ### Q: 轉換需要多久?

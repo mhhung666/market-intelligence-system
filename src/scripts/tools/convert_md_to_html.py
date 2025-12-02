@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover - runtime dependency check
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Convert a markdown report into the styled HTML used by docs/web/*.html",
+        description="Convert a markdown report into the styled HTML used by docs/*.html",
     )
     parser.add_argument("input", type=Path, help="來源 markdown 檔案")
     parser.add_argument("output", type=Path, help="輸出 HTML 檔案路徑")

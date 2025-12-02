@@ -23,7 +23,7 @@ market-intelligence-system/
 ├── config/                    # holdings.yaml, indices.yaml, settings.yaml
 ├── output/market-data/{YEAR}/ # 爬蟲輸出 (Daily/News/Stocks)
 ├── reports/markdown/          # 報告輸出 (市場 / 持倉 / 情緒)
-├── docs/web/                  # GitHub Pages 靜態站點
+├── docs/                      # GitHub Pages 靜態站點
 ├── tests/                     # 單元測試
 └── Makefile                   # 常用工作流與自動化
 ```
@@ -35,7 +35,7 @@ market-intelligence-system/
   - Ollama 預處理：`./src/scripts/analysis/run_daily_analysis_ollama_cli.sh`
   - 快捷：`make analyze-daily`、`make analyze-ollama`、`make analyze-all`、`make daily`
 - 報告位置：`reports/markdown/market-analysis-YYYY-MM-DD.md`、`reports/markdown/holdings-analysis-YYYY-MM-DD.md`
-- GitHub Pages：`make update-pages`（生成 docs/web/*.html），`make preview-pages`
+- GitHub Pages：`make update-pages`（生成 docs/*.html），`make preview-pages`
 - 配置集中：`config/settings.yaml`（預設路徑與模型），`config/*.yaml`（市場/持倉設定）
 
 ## Legacy Python SDK（保留）
@@ -54,4 +54,3 @@ market-intelligence-system/
 - README 與 QUICKSTART：更新路徑與新版架構
 - GitHub Pages：確認 `make update-pages` 產出的 HTML 排版與鏈結
 - 監控：考慮增加生成報告後的最終檢查（檔案大小/日期提示）
-
