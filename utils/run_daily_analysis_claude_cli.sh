@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 ###############################################################################
-# Market Intelligence System - Daily Analysis (Claude CLI Version)
+# Market Intelligence System - Daily Analysis V2 (Dual Reports)
 #
-# 使用 Claude CLI 進行每日市場分析
-# 參考 FAS 的實作方式,使用純 Bash + Claude CLI
+# 生成兩個獨立的分析報告:
+# 1. 市場分析報告 (market-analysis-{date}.md) - 專注全球市場趨勢和新聞
+# 2. 持倉分析報告 (holdings-analysis-{date}.md) - 專注投資組合和持股表現
 #
 # 依賴:
 #   - claude CLI (npm install -g @anthropic-ai/claude-cli)
 #   - 已登入 Claude CLI (claude login)
 #
 # 使用方式:
-#   ./analyzers/run_daily_analysis_claude_cli.sh
-#   或
-#   make analyze-daily
+#   ./utils/run_daily_analysis_v2.sh
 ###############################################################################
 
 set -e  # 遇到錯誤立即退出
@@ -34,12 +33,17 @@ OUTPUT_DIR="${PROJECT_ROOT}/output/market-data/${YEAR}"
 DAILY_DIR="${OUTPUT_DIR}/Daily"
 NEWS_DIR="${OUTPUT_DIR}/News"
 ANALYSIS_DIR="${PROJECT_ROOT}/analysis"
+CONFIG_DIR="${PROJECT_ROOT}/config"
 
 # 檔案路徑
 GLOBAL_INDICES="${DAILY_DIR}/global-indices-${TODAY}.md"
 PRICES="${DAILY_DIR}/holdings-prices-${TODAY}.md"
-ANALYSIS_OUTPUT="${ANALYSIS_DIR}/market-analysis-${TODAY}.md"
-PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}.txt"
+HOLDINGS_CONFIG="${CONFIG_DIR}/holdings.yaml"
+PORTFOLIO_HOLDINGS="../financial-analysis-system/portfolio/${YEAR}/holdings.md"
+MARKET_ANALYSIS_OUTPUT="${ANALYSIS_DIR}/market-analysis-${TODAY}.md"
+HOLDINGS_ANALYSIS_OUTPUT="${ANALYSIS_DIR}/holdings-analysis-${TODAY}.md"
+MARKET_PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}.txt"
+HOLDINGS_PROMPT_FILE="/tmp/holdings-analysis-prompt-${TODAY}.txt"
 
 ###############################################################################
 # 函數定義
@@ -47,17 +51,19 @@ PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}.txt"
 
 print_header() {
     echo -e "${BLUE}============================================================${NC}"
-    echo -e "${BLUE}📊 Market Intelligence System - 每日市場分析 (Claude CLI)${NC}"
+    echo -e "${BLUE}📊 Market Intelligence System - 每日雙報告分析${NC}"
     echo -e "${BLUE}============================================================${NC}"
     echo ""
     echo -e "${GREEN}📅 分析日期: ${TODAY}${NC}"
+    echo -e "${GREEN}📄 報告 1: 市場分析 (market-analysis-${TODAY}.md)${NC}"
+    echo -e "${GREEN}📄 報告 2: 持倉分析 (holdings-analysis-${TODAY}.md)${NC}"
     echo ""
 }
 
 check_dependencies() {
     echo -e "${BLUE}🔍 檢查依賴...${NC}"
 
-    # 檢查 claude CLI (支援多個可能的安裝位置)
+    # 檢查 claude CLI
     CLAUDE_BIN=""
     if command -v claude &> /dev/null; then
         CLAUDE_BIN="claude"
@@ -94,8 +100,7 @@ check_data_files() {
             echo -e "${YELLOW}  - ${file}${NC}"
         done
         echo ""
-        echo -e "${YELLOW}請先執行爬蟲腳本:${NC}"
-        echo -e "${YELLOW}  make fetch-all${NC}"
+        echo -e "${YELLOW}請先執行爬蟲腳本: make fetch-all${NC}"
         exit 1
     fi
 
@@ -104,29 +109,24 @@ check_data_files() {
 }
 
 collect_news_files() {
-    echo -e "${BLUE}📰 收集當日新聞檔案...${NC}"
-
     # 查找新聞檔案
     local news_files=($(find "${NEWS_DIR}" -name "*-${TODAY}.md" 2>/dev/null || true))
     local count=${#news_files[@]}
 
-    echo -e "${GREEN}   找到 ${count} 個新聞檔案${NC}"
-    echo ""
-
-    # 返回檔案列表 (通過 stdout)
+    # 返回檔案列表
     printf '%s\n' "${news_files[@]}"
 }
 
-generate_analysis_prompt() {
-    echo -e "${BLUE}📝 生成分析 Prompt...${NC}"
+###############################################################################
+# 市場分析報告生成
+###############################################################################
+
+generate_market_analysis_prompt() {
+    echo -e "${BLUE}📝 生成市場分析 Prompt...${NC}"
 
     # 讀取全球指數數據
     local indices_data
     indices_data=$(<"${GLOBAL_INDICES}")
-
-    # 讀取持倉價格數據
-    local prices_data
-    prices_data=$(<"${PRICES}")
 
     # 讀取新聞數據
     local news_data=""
@@ -146,20 +146,22 @@ ${news_content}"
         fi
     done
 
-    # 生成完整 Prompt
-    cat > "${PROMPT_FILE}" <<EOF
-你是一位專業的市場情報分析師,擅長解讀全球市場數據和新聞,提供深度市場洞察。
+    local news_count=${#news_files[@]}
+
+    # 生成市場分析 Prompt
+    cat > "${MARKET_PROMPT_FILE}" <<'EOF'
+你是一位專業的全球市場分析師,擅長解讀市場數據和新聞,提供深度市場洞察。
 
 ## 📋 分析任務
 
-請根據以下今日市場數據,生成一份完整的**市場情報分析報告**。
+請根據以下今日市場數據,生成一份**全球市場情報分析報告**。
 
 ### 核心要求:
 1. **市場趨勢分析**: 識別全球市場的主要趨勢和驅動因素
 2. **新聞影響評估**: 深度解讀重要新聞對市場的潛在影響
-3. **持倉表現分析**: 評估持股表現並提供操作建議
+3. **產業輪動分析**: 分析資金流向和產業表現
 4. **風險與機會**: 識別當前市場風險和投資機會
-5. **可執行建議**: 提供具體、可操作的投資策略
+5. **後市展望**: 提供未來一週的市場展望
 
 ### 報告風格:
 - 專業但易懂
@@ -172,16 +174,14 @@ ${news_content}"
 ## 📊 今日市場數據
 
 ### 全球市場指數
-\`\`\`markdown
+```markdown
+EOF
+
+    cat >> "${MARKET_PROMPT_FILE}" <<EOF
 ${indices_data}
 \`\`\`
 
-### 持倉股票價格
-\`\`\`markdown
-${prices_data}
-\`\`\`
-
-### 市場新聞
+### 市場新聞 (${news_count} 則)
 \`\`\`markdown
 ${news_data}
 \`\`\`
@@ -192,18 +192,18 @@ ${news_data}
 
 請按照以下結構生成報告:
 
-# 📈 市場情報分析 - ${TODAY}
+# 📈 全球市場分析 - ${TODAY}
 
 > **報告生成時間**: $(date +"%Y-%m-%d %H:%M UTC")
-> **分析引擎**: Market Intelligence System (Claude CLI)
-> **報告類型**: 每日市場情報
+> **分析引擎**: Market Intelligence System v2.0
+> **報告類型**: 全球市場情報
 
 ---
 
 ## 📊 執行摘要
 
 ### 市場概況
-[用 2-3 段文字總結今日全球市場表現,包含:]
+[用 2-3 段文字總結今日全球市場表現:]
 - 主要市場趨勢 (美股、亞股、歐股)
 - 關鍵驅動因素
 - 市場情緒指標 (VIX)
@@ -217,7 +217,7 @@ ${news_data}
 | Nasdaq | XX,XXX.XX | +X.XX% | 🟢/🔴 描述 |
 | VIX | XX.XX | +X.XX% | 🟢/🔴 描述 |
 | 台股加權 | XX,XXX.XX | +X.XX% | 🟢/🔴 描述 |
-| 黃金 | \$X,XXX | +X.XX% | 🟢/🔴 描述 |
+| 黃金 | \\\$X,XXX | +X.XX% | 🟢/🔴 描述 |
 
 ### 市場情緒評估
 
@@ -229,7 +229,7 @@ ${news_data}
 
 ---
 
-## 🌍 全球市場分析
+## 🌍 全球市場深度分析
 
 ### 美國市場 🇺🇸
 
@@ -242,7 +242,7 @@ ${news_data}
 | Dow Jones | XX,XXX.XX | +X.XX% | 描述 |
 
 **市場分析**:
-[深入分析美國市場的表現,包含:]
+[深入分析美國市場:]
 - 主要驅動因素
 - 產業輪動情況
 - 技術面關鍵水平
@@ -259,44 +259,12 @@ ${news_data}
 | 🇰🇷 韓國 | KOSPI | X,XXX.XX | +X.XX% |
 
 **市場分析**:
-[分析亞洲市場趨勢和關鍵因素]
+[分析亞洲市場趨勢]
 
 ### 歐洲市場 🇪🇺
 
 **市場分析**:
 [簡要分析歐洲市場]
-
----
-
-## 💼 持倉股票分析
-
-### 整體表現
-
-| 分類 | 數量 | 平均漲跌 | 說明 |
-|------|------|----------|------|
-| 強勢上漲 (>+2%) | X 檔 | +X.XX% | 概述 |
-| 穩健上漲 (+0%~+2%) | X 檔 | +X.XX% | 概述 |
-| 輕微下跌 (0%~-2%) | X 檔 | -X.XX% | 概述 |
-| 重大虧損 (<-2%) | X 檔 | -X.XX% | 概述 |
-
-### 重點持股分析
-
-[針對表現突出的股票 (漲跌幅 > 2%) 進行詳細分析:]
-
-#### 📈 TICKER - 公司名稱 (+X.XX%)
-
-**價格資訊**:
-- 收盤價: \$XXX.XX
-- 變化: +X.XX% (+\$X.XX)
-- 當日區間: \$XXX.XX - \$XXX.XX
-
-**分析**:
-[結合新聞和市場數據,深入分析漲跌原因]
-
-**操作建議**:
-- **建議**: 持有 / 加碼 / 減碼 / 觀望
-- **理由**: 具體說明
-- **目標價**: \$XXX.XX (如適用)
 
 ---
 
@@ -316,12 +284,32 @@ ${news_data}
 
 ---
 
+## 🏭 產業輪動分析
+
+### 強勢產業
+
+| 產業 | 表現 | 驅動因素 |
+|------|------|----------|
+| 產業1 | +X.XX% | 簡述 |
+| 產業2 | +X.XX% | 簡述 |
+
+### 弱勢產業
+
+| 產業 | 表現 | 原因 |
+|------|------|------|
+| 產業1 | -X.XX% | 簡述 |
+
+**分析**: [深入分析產業輪動背後的邏輯]
+
+---
+
 ## ⚠️ 風險與機會
 
 ### 市場風險
 
 1. **風險1**: 詳細說明
 2. **風險2**: 詳細說明
+3. **風險3**: 詳細說明
 
 ### 投資機會
 
@@ -332,60 +320,54 @@ ${news_data}
 
 - **當前值**: XX.XX
 - **變化**: ±X.XX%
-- **解讀**: [分析市場情緒]
-
----
-
-## 💡 投資策略建議
-
-### 短期策略 (1-2週)
-
-**市場觀點**: [總結短期看法]
-
-**具體建議**:
-1. **建議1**: 詳細說明操作方向和條件
-2. **建議2**: 詳細說明
-
-**觸發式指令**:
-- 如果 XXX,則執行 YYY 操作
-
-### 中長期策略
-
-**配置建議**: [說明配置方向]
+- **解讀**: [分析市場情緒和波動性預期]
 
 ---
 
 ## 🔮 後市展望
 
-### 關鍵催化劑
+### 未來一週關鍵事件
 
-**未來一週關注**:
-1. 事件1: 時間、預期影響
-2. 事件2: 時間、預期影響
+**經濟數據**:
+- 日期: 數據名稱 - 預期影響
+- 日期: 數據名稱 - 預期影響
+
+**企業財報**:
+- 日期: 公司名稱 - 關注重點
+
+**其他重要事件**:
+- 事件描述
 
 ### 情境分析
 
 #### 樂觀情境 (機率: XX%)
-[條件、預期影響、策略]
+[條件、預期影響、市場反應]
 
 #### 基準情境 (機率: XX%)
-[同上]
+[條件、預期影響、市場反應]
 
 #### 悲觀情境 (機率: XX%)
-[同上]
+[條件、預期影響、市場反應]
 
 ---
 
-## ✅ 行動清單
+## 💡 投資策略建議
 
-### 立即執行 (本週)
+### 短期觀點 (1-2週)
 
-- [ ] **行動1**: 具體描述
-- [ ] **行動2**: 具體描述
+**市場看法**: [總結]
 
-### 中期追蹤
+**策略建議**:
+1. 建議1
+2. 建議2
 
-- [ ] **行動1**: 具體描述
+### 中期觀點 (1-3個月)
+
+**市場看法**: [總結]
+
+**策略建議**:
+1. 建議1
+2. 建議2
 
 ---
 
@@ -396,59 +378,418 @@ ${news_data}
 ---
 
 **報告製作**: Market Intelligence System
-**分析引擎**: Claude CLI
+**分析引擎**: Claude (Sonnet 4.5)
 **數據來源**: Yahoo Finance
-**報告版本**: v1.0
+**報告版本**: v2.0
 
 ---
 
-請直接開始生成完整的市場情報分析報告,從標題開始,不要有任何前置說明或詢問。
+請直接開始生成完整的市場分析報告,從標題開始,不要有任何前置說明或詢問。
 EOF
 
-    echo -e "${GREEN}   ✅ Prompt 已生成 (${PROMPT_FILE})${NC}"
+    echo -e "${GREEN}   ✅ 市場分析 Prompt 已生成${NC}"
     echo ""
 }
 
-run_claude_analysis() {
-    echo -e "${BLUE}🧠 調用 Claude CLI 進行市場分析...${NC}"
+run_market_analysis() {
+    echo -e "${BLUE}🧠 調用 Claude 進行市場分析...${NC}"
     echo -e "${YELLOW}   這可能需要幾分鐘,請稍候...${NC}"
     echo ""
 
-    # 確保分析目錄存在
     mkdir -p "${ANALYSIS_DIR}"
 
-    # 調用 Claude CLI
-    # 使用互動模式,透過 stdin 傳遞 prompt
-    if cat "${PROMPT_FILE}" | "${CLAUDE_BIN}" > "${ANALYSIS_OUTPUT}" 2>&1; then
-        echo -e "${GREEN}   ✅ 分析完成!${NC}"
+    if cat "${MARKET_PROMPT_FILE}" | "${CLAUDE_BIN}" > "${MARKET_ANALYSIS_OUTPUT}" 2>&1; then
+        echo -e "${GREEN}   ✅ 市場分析完成!${NC}"
         echo ""
     else
-        echo -e "${RED}   ❌ 分析失敗${NC}"
-        echo -e "${YELLOW}   請檢查 Claude CLI 是否已登入: claude login${NC}"
+        echo -e "${RED}   ❌ 市場分析失敗${NC}"
         exit 1
     fi
 }
 
+###############################################################################
+# 持倉分析報告生成
+###############################################################################
+
+generate_holdings_analysis_prompt() {
+    echo -e "${BLUE}📝 生成持倉分析 Prompt...${NC}"
+
+    # 讀取持倉價格數據
+    local prices_data
+    prices_data=$(<"${PRICES}")
+
+    # 讀取持倉配置數據
+    local holdings_config=""
+    if [[ -f "${HOLDINGS_CONFIG}" ]]; then
+        holdings_config=$(<"${HOLDINGS_CONFIG}")
+    fi
+
+    # 讀取投資組合完整資訊
+    local portfolio_data=""
+    if [[ -f "${PORTFOLIO_HOLDINGS}" ]]; then
+        portfolio_data=$(<"${PORTFOLIO_HOLDINGS}")
+    fi
+
+    # 生成持倉分析 Prompt
+    cat > "${HOLDINGS_PROMPT_FILE}" <<'EOF'
+你是一位專業的投資組合分析師,擅長評估持倉表現、資產配置和風險管理。
+
+## 📋 分析任務
+
+請根據以下投資組合數據,生成一份**持倉分析報告**。
+
+### 核心要求:
+1. **資產配置分析**: 評估現金/股票比例是否合理
+2. **持倉表現評估**: 分析每檔股票的表現（考慮成本、當前價、倉位）
+3. **選擇權風險管理**: 評估選擇權部位風險,提供到期處理建議
+4. **倉位調整建議**: 基於市場環境和個股表現提供加減碼建議
+5. **風險控制**: 識別倉位過重、損失過大等風險點
+
+### 報告風格:
+- 具體、可操作
+- 基於數據和成本價
+- 考慮選擇權約束
+- 提供明確的買賣建議
+
+---
+
+## 📊 投資組合數據
+
+### 投資組合完整資訊
+```markdown
+EOF
+
+    cat >> "${HOLDINGS_PROMPT_FILE}" <<EOF
+${portfolio_data}
+\`\`\`
+
+### 持倉配置詳情
+\`\`\`yaml
+${holdings_config}
+\`\`\`
+
+### 今日持倉價格
+\`\`\`markdown
+${prices_data}
+\`\`\`
+
+---
+
+## 📄 報告結構
+
+請按照以下結構生成報告:
+
+# 💼 投資組合分析 - ${TODAY}
+
+> **報告生成時間**: $(date +"%Y-%m-%d %H:%M UTC")
+> **分析引擎**: Market Intelligence System v2.0
+> **報告類型**: 持倉分析
+
+---
+
+## 📊 執行摘要
+
+### 組合概況
+
+| 項目 | 數值 | 狀態評估 |
+|------|------|----------|
+| 總資產淨值 | \\\$XXX,XXX.XX | - |
+| 股票市值 | \\\$XXX,XXX.XX (XX.X%) | 🟢/🟡/🔴 評估 |
+| 現金餘額 | \\\$XX,XXX.XX (XX.X%) | 🟢/🟡/🔴 評估 |
+| 未實現損益 | ±\\\$XX,XXX (±X.X%) | 🟢/🔴 評估 |
+| 購買力 | \\\$XXX,XXX.XX | - |
+
+### 今日關鍵變化
+
+- **最大漲幅**: TICKER +X.XX% (說明)
+- **最大跌幅**: TICKER -X.XX% (說明)
+- **組合變化**: ±X.XX% (vs 前一交易日)
+- **關鍵風險**: [列出需要注意的風險]
+
+---
+
+## 💰 資產配置分析
+
+### 當前配置
+
+| 資產類別 | 金額 | 佔比 | 建議範圍 | 評估 |
+|----------|------|------|----------|------|
+| 現金 | \\\$XX,XXX.XX | XX.X% | 10-30% | 🟢/🟡/🔴 |
+| 股票 | \\\$XXX,XXX.XX | XX.X% | 70-90% | 🟢/🟡/🔴 |
+
+**配置評估**:
+[詳細評估現金比例是否合理,考慮:]
+- 當前市場環境
+- 選擇權到期風險
+- 持倉表現
+- 加碼機會
+
+**調整建議**:
+- 是否需要增加/減少現金
+- 理由和具體操作建議
+
+---
+
+## 🎯 選擇權部位分析
+
+### 12/05 到期選擇權（3天後）⚠️
+
+| 標的 | 類型 | 數量 | 行權價 | 當前價 | 狀態 | 風險評估 |
+|------|------|------|--------|--------|------|----------|
+| TICKER | Type | -X | \\\$XX.XX | \\\$XX.XX | 價內/價外 | 高/中/低 |
+
+**處理建議**:
+1. **TICKER**: [具體建議 - 回補、讓執行、調整等]
+2. **TICKER**: [具體建議]
+
+### 12/19 到期選擇權（17天後）
+
+| 標的 | 類型 | 數量 | 行權價 | 當前價 | 狀態 | 風險評估 |
+|------|------|------|--------|--------|------|----------|
+| TICKER | Type | -X | \\\$XX.XX | \\\$XX.XX | 價內/價外 | 高/中/低 |
+
+**處理建議**:
+[評估是否需要提前行動]
+
+### 選擇權策略評估
+
+**當前策略**:
+- Covered Call 策略: [評估效果]
+- Cash Secured Put 策略: [評估效果]
+
+**風險與機會**:
+- 潛在被執行標的: [列出並評估影響]
+- 額外收益機會: [是否有新的選擇權機會]
+
+---
+
+## 📈 持倉表現分析
+
+### 今日漲跌分佈
+
+| 分類 | 數量 | 平均漲跌 | 對組合影響 |
+|------|------|----------|------------|
+| 強勢上漲 (>+2%) | X 檔 | +X.XX% | +\\\$X,XXX |
+| 穩健上漲 (+0%~+2%) | X 檔 | +X.XX% | +\\\$X,XXX |
+| 輕微下跌 (0%~-2%) | X 檔 | -X.XX% | -\\\$X,XXX |
+| 重大虧損 (<-2%) | X 檔 | -X.XX% | -\\\$X,XXX |
+
+### 重點持股深度分析
+
+[針對以下情況的股票進行分析:]
+- 今日漲跌幅 > 2%
+- 倉位 > 5%
+- 有選擇權部位
+- 虧損/獲利超過 10%
+
+#### 📊 TICKER - 公司名稱
+
+**基本資訊**:
+- 持股: XXX 股
+- 成本價: \\\$XX.XX
+- 當前價: \\\$XX.XX
+- 市值: \\\$XX,XXX
+- 倉位佔比: X.X%
+- 損益: ±\\\$X,XXX (±XX.X%)
+
+**今日表現**:
+- 收盤價: \\\$XX.XX
+- 變化: +X.XX% (+\\\$X.XX)
+- 區間: \\\$XX.XX - \\\$XX.XX
+
+**選擇權約束**:
+[如有選擇權,列出詳情和影響]
+
+**操作建議**:
+- **建議**: 持有 / 加碼 / 減碼 / 觀望
+- **理由**: [基於成本、倉位、表現、選擇權]
+- **具體操作**: [如"在 \\\$XX.XX 以下加碼 XX 股"]
+- **風險提示**: [關鍵風險點]
+
+[重複以上格式分析其他重點持股]
+
+---
+
+## ⚖️ 倉位結構分析
+
+### 倉位分佈
+
+| 倉位級別 | 股票數量 | 佔比 | 評估 |
+|----------|----------|------|------|
+| 核心持倉 (>10%) | X 檔 | XX.X% | 是否過度集中 |
+| 主要持倉 (5-10%) | X 檔 | XX.X% | 評估 |
+| 一般持倉 (2-5%) | X 檔 | XX.X% | 評估 |
+| 小倉位 (<2%) | X 檔 | XX.X% | 評估 |
+
+### 產業集中度
+
+| 產業 | 股票 | 佔比 | 評估 |
+|------|------|------|------|
+| 科技 | TICKER, TICKER | XX.X% | 🟢/🟡/🔴 |
+| 工業 | TICKER | XX.X% | 🟢/🟡/🔴 |
+
+**風險評估**:
+[評估是否過度集中在某個產業或股票]
+
+---
+
+## 🎯 倉位調整建議
+
+### 高優先級操作（本週內）
+
+#### 加碼建議
+
+1. **TICKER** (建議加碼至 X.X%)
+   - 當前倉位: X.X%
+   - 理由: [基於表現、估值、市場環境]
+   - 建議價位: \\\$XX.XX 以下
+   - 建議股數: XX 股
+   - 資金需求: \\\$X,XXX
+   - 風險: [關鍵風險]
+
+#### 減碼建議
+
+1. **TICKER** (建議減至 X.X%)
+   - 當前倉位: X.X%
+   - 理由: [倉位過重、表現不佳等]
+   - 建議價位: \\\$XX.XX 以上
+   - 建議股數: XX 股
+   - 預期回收: \\\$X,XXX
+   - 影響: [選擇權、稅務等]
+
+#### 觀望持有
+
+[列出建議繼續持有的股票及理由]
+
+### 中期操作（1-4週）
+
+[列出中期的倉位調整計劃]
+
+---
+
+## ⚠️ 風險提示
+
+### 高風險點
+
+1. **選擇權到期風險**: [12/05 即將到期的詳細分析]
+2. **倉位集中風險**: [是否過度集中]
+3. **虧損放大風險**: [虧損較大的持股]
+
+### 應對措施
+
+1. [針對每個風險點的具體應對措施]
+
+---
+
+## ✅ 行動清單
+
+### 立即執行（今日/明日）
+
+- [ ] **操作1**: 具體描述（如: 監控 U 選擇權,準備回補）
+- [ ] **操作2**: 具體描述
+
+### 本週執行
+
+- [ ] **操作1**: 具體描述
+- [ ] **操作2**: 具體描述
+
+### 持續監控
+
+- [ ] **監控1**: 具體描述
+- [ ] **監控2**: 具體描述
+
+---
+
+## 📊 績效追蹤
+
+### 本月績效（截至今日）
+
+| 指標 | 數值 |
+|------|------|
+| 月度報酬率 | ±X.XX% |
+| vs S&P 500 | ±X.XX% |
+| 最佳持股 | TICKER (+XX.X%) |
+| 最差持股 | TICKER (-XX.X%) |
+
+---
+
+## ⚠️ 免責聲明
+
+本報告僅供參考,不構成投資建議。投資有風險,請根據自身情況做出獨立決策。
+
+---
+
+**報告製作**: Market Intelligence System
+**分析引擎**: Claude (Sonnet 4.5)
+**數據來源**: Portfolio Management System
+**報告版本**: v2.0
+
+---
+
+請直接開始生成完整的持倉分析報告,從標題開始,不要有任何前置說明或詢問。
+EOF
+
+    echo -e "${GREEN}   ✅ 持倉分析 Prompt 已生成${NC}"
+    echo ""
+}
+
+run_holdings_analysis() {
+    echo -e "${BLUE}🧠 調用 Claude 進行持倉分析...${NC}"
+    echo -e "${YELLOW}   這可能需要幾分鐘,請稍候...${NC}"
+    echo ""
+
+    mkdir -p "${ANALYSIS_DIR}"
+
+    if cat "${HOLDINGS_PROMPT_FILE}" | "${CLAUDE_BIN}" > "${HOLDINGS_ANALYSIS_OUTPUT}" 2>&1; then
+        echo -e "${GREEN}   ✅ 持倉分析完成!${NC}"
+        echo ""
+    else
+        echo -e "${RED}   ❌ 持倉分析失敗${NC}"
+        exit 1
+    fi
+}
+
+###############################################################################
+# 結果展示
+###############################################################################
+
 show_results() {
     echo -e "${BLUE}============================================================${NC}"
-    echo -e "${GREEN}📄 分析報告已保存至:${NC}"
-    echo -e "${GREEN}   ${ANALYSIS_OUTPUT}${NC}"
+    echo -e "${GREEN}📄 分析報告已生成!${NC}"
     echo -e "${BLUE}============================================================${NC}"
     echo ""
 
-    # 顯示報告前 30 行預覽
-    echo -e "${BLUE}📋 報告預覽 (前 30 行):${NC}"
+    echo -e "${GREEN}📈 市場分析報告:${NC}"
+    echo -e "${GREEN}   ${MARKET_ANALYSIS_OUTPUT}${NC}"
+    echo ""
+
+    echo -e "${GREEN}💼 持倉分析報告:${NC}"
+    echo -e "${GREEN}   ${HOLDINGS_ANALYSIS_OUTPUT}${NC}"
+    echo ""
+
+    # 顯示市場分析預覽
+    echo -e "${BLUE}📋 市場分析預覽 (前 20 行):${NC}"
     echo -e "${BLUE}------------------------------------------------------------${NC}"
-    head -n 30 "${ANALYSIS_OUTPUT}"
+    head -n 20 "${MARKET_ANALYSIS_OUTPUT}"
     echo -e "${BLUE}------------------------------------------------------------${NC}"
     echo ""
-    echo -e "${GREEN}💡 查看完整報告: cat ${ANALYSIS_OUTPUT}${NC}"
+
+    # 顯示持倉分析預覽
+    echo -e "${BLUE}📋 持倉分析預覽 (前 20 行):${NC}"
+    echo -e "${BLUE}------------------------------------------------------------${NC}"
+    head -n 20 "${HOLDINGS_ANALYSIS_OUTPUT}"
+    echo -e "${BLUE}------------------------------------------------------------${NC}"
+    echo ""
+
+    echo -e "${GREEN}💡 查看完整報告:${NC}"
+    echo -e "${GREEN}   cat ${MARKET_ANALYSIS_OUTPUT}${NC}"
+    echo -e "${GREEN}   cat ${HOLDINGS_ANALYSIS_OUTPUT}${NC}"
     echo ""
 }
 
 cleanup() {
     # 清理臨時檔案
-    rm -f "${PROMPT_FILE}"
+    rm -f "${MARKET_PROMPT_FILE}" "${HOLDINGS_PROMPT_FILE}"
 }
 
 ###############################################################################
@@ -459,12 +800,21 @@ main() {
     print_header
     check_dependencies
     check_data_files
-    generate_analysis_prompt
-    run_claude_analysis
+
+    echo -e "${BLUE}📊 生成市場分析報告...${NC}"
+    echo ""
+    generate_market_analysis_prompt
+    run_market_analysis
+
+    echo -e "${BLUE}💼 生成持倉分析報告...${NC}"
+    echo ""
+    generate_holdings_analysis_prompt
+    run_holdings_analysis
+
     show_results
     cleanup
 
-    echo -e "${GREEN}✅ 每日市場分析完成!${NC}"
+    echo -e "${GREEN}✅ 每日雙報告分析完成!${NC}"
     echo ""
 }
 
