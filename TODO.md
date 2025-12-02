@@ -267,7 +267,7 @@ ollama pull llama3.1:8b  # 或 qwen2.5:14b
 
 - [ ] **Git 自動化腳本**
   ```bash
-  tools/git_automation/auto_commit.sh
+  utils/git_automation/auto_commit.sh
   - 自動 commit 分析報告
   - 自動 push 到 GitHub
   ```
