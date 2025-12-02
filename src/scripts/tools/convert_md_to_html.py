@@ -147,7 +147,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
         </header>
 
         <main class="page-layout">
-            <button class="toc-mobile-toggle" id="tocMobileToggle" aria-label="開啟目錄">📑 目錄</button>
+            <button class="toc-mobile-toggle" id="tocMobileToggle" aria-label="開啟目錄" aria-expanded="false">📑 目錄</button>
 
             <div class="toc-wrapper">
                 <aside class="toc-sidebar" id="tocSidebar">
@@ -158,6 +158,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
                     <nav class="toc-list" id="tocList"></nav>
                 </aside>
             </div>
+            <div class="toc-overlay" id="tocOverlay" aria-hidden="true"></div>
 
             <section class="content content-with-toc" id="mainContent">
 {content_html}
@@ -214,12 +215,42 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
             }});
         }}
 
+        function setTOCState(open) {{
+            const sidebar = document.getElementById('tocSidebar');
+            const toggle = document.getElementById('tocMobileToggle');
+            const overlay = document.getElementById('tocOverlay');
+            const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+
+            if (!sidebar || !toggle) return;
+
+            if (!isMobile) {{
+                sidebar.classList.remove('is-open');
+                document.body.classList.remove('toc-open');
+                toggle.setAttribute('aria-expanded', 'false');
+                if (overlay) overlay.classList.remove('visible');
+                return;
+            }}
+
+            if (open) {{
+                sidebar.classList.add('is-open');
+                document.body.classList.add('toc-open');
+                toggle.classList.add('active');
+                toggle.setAttribute('aria-expanded', 'true');
+                if (overlay) overlay.classList.add('visible');
+            }} else {{
+                sidebar.classList.remove('is-open');
+                document.body.classList.remove('toc-open');
+                toggle.classList.remove('active');
+                toggle.setAttribute('aria-expanded', 'false');
+                if (overlay) overlay.classList.remove('visible');
+            }}
+        }}
+
         // TOC 顯示切換
         function toggleTOC() {{
             const sidebar = document.getElementById('tocSidebar');
-            const toggle = document.getElementById('tocMobileToggle');
-            sidebar.classList.toggle('hidden');
-            toggle.classList.toggle('active');
+            const isOpen = sidebar?.classList.contains('is-open');
+            setTOCState(!isOpen);
         }}
 
         // Back to top
@@ -236,6 +267,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
             generateTOC();
             highlightActiveTOC();
             handleBackToTop();
+            setTOCState(false);
 
             let scrollTimeout;
             window.addEventListener('scroll', () => {{
@@ -253,14 +285,16 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
                 window.scrollTo({{ top: 0, behavior: 'smooth' }});
             }});
 
+            const overlay = document.getElementById('tocOverlay');
+            if (overlay) overlay.addEventListener('click', () => setTOCState(false));
+
             window.addEventListener('resize', () => {{
-                const sidebar = document.getElementById('tocSidebar');
-                const toggle = document.getElementById('tocMobileToggle');
-                if (window.innerWidth > 900) {{
-                    sidebar.classList.remove('hidden');
-                    toggle.classList.remove('active');
-                }} else {{
-                    sidebar.classList.add('hidden');
+                setTOCState(false);
+            }});
+
+            document.getElementById('tocList').addEventListener('click', (event) => {{
+                if (event.target.classList.contains('toc-link') && window.matchMedia('(max-width: 1024px)').matches) {{
+                    setTOCState(false);
                 }}
             }});
         }});
