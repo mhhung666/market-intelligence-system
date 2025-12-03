@@ -99,22 +99,28 @@ make analyze-all
 ### 報告命名規則
 
 **時間標記自動判斷**:
-- 上午 (6:00-13:59): `market-analysis-2025-12-03-morning.md`
-- 下午/晚上 (14:00-5:59): `market-analysis-2025-12-03-evening.md`
+- 使用執行時間 (HHMM 格式)
+- 範例: `market-analysis-2025-12-03-0800.md`、`market-analysis-2025-12-03-1430.md`、`market-analysis-2025-12-03-2000.md`
 
 **手動指定時間標記**:
 ```bash
-TIME_SUFFIX=morning make analyze-daily
-TIME_SUFFIX=evening make analyze-daily
+TIME_SUFFIX=0800 make analyze-daily
+TIME_SUFFIX=1430 make analyze-daily
+TIME_SUFFIX=2000 make analyze-daily
 ```
 
-**設計目的**: 支援每日多次分析 (如上午美股收盤後 + 晚上亞洲收盤後)
+**設計目的**: 支援每日多次分析 (無限制時段數量)，自動按時間排序
+
+**排序規則**:
+- 檔名格式: `market-analysis-{YYYY-MM-DD}-{HHMM}.md`
+- 使用 `sort -r` 按字母順序反向排序，自然選出最新報告
+- 範例: `2025-12-03-2000` > `2025-12-03-1430` > `2025-12-03-0800` > `2025-12-02-2000`
 
 ### 報告管理
 
 - 報告位置：`reports/markdown/`
 - 歸檔舊報告：`make clean-old-reports` → 移動到 `reports/archive/`
-- GitHub Pages 更新：`make update-pages` → 自動選取最新報告 (同日期優先選 evening)
+- GitHub Pages 更新：`make update-pages` → 自動選取最新報告 (按日期+時間排序)
 
 ---
 

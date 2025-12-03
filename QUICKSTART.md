@@ -186,35 +186,38 @@ crontab -e
 0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
 ```
 
-**多次每日執行 (上午 + 下午)**
+**多次每日執行 (靈活時段)**
 
-系統會自動根據執行時間生成不同的報告檔名:
-- **上午 (6:00-13:59)**: `market-analysis-2025-12-03-morning.md`
-- **下午/晚上 (14:00-5:59)**: `market-analysis-2025-12-03-evening.md`
+系統會自動使用執行時間作為報告檔名後綴 (格式: HHMM):
+- **08:00 執行**: `market-analysis-2025-12-03-0800.md`
+- **14:30 執行**: `market-analysis-2025-12-03-1430.md`
+- **20:00 執行**: `market-analysis-2025-12-03-2000.md`
 
 ```bash
 # 編輯 crontab
 crontab -e
 
-# 添加以下內容 (調整路徑)
-# 每天早上 8:00 執行 (美國收盤後)
-0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-morning.log 2>&1
+# 添加多個時段執行 (範例: 每天 3 次)
+# 早上 8:00 (美國收盤後)
+0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-0800.log 2>&1
 
-# 每天晚上 20:00 執行 (亞洲收盤後)
-0 20 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-evening.log 2>&1
+# 下午 14:30 (歐洲盤中)
+30 14 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-1430.log 2>&1
+
+# 晚上 20:00 (亞洲收盤後)
+0 20 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-2000.log 2>&1
 ```
 
 **手動指定時間標記** (可選)
 
 ```bash
-# 強制使用 morning 標記
-TIME_SUFFIX=morning make daily
+# 手動指定時間標記
+TIME_SUFFIX=0800 make daily
+TIME_SUFFIX=1430 make daily
+TIME_SUFFIX=2000 make daily
 
-# 強制使用 evening 標記
-TIME_SUFFIX=evening make daily
-
-# 或在 crontab 中設定
-0 8 * * * cd /path/to/market-intelligence-system && TIME_SUFFIX=morning make daily >> /tmp/mis.log 2>&1
+# 或在 crontab 中手動設定
+0 8 * * * cd /path/to/market-intelligence-system && TIME_SUFFIX=0800 make daily >> /tmp/mis.log 2>&1
 ```
 
 ### Git 自動推送設定

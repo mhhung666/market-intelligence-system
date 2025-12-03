@@ -25,20 +25,13 @@ NC='\033[0m' # No Color
 
 # 日期和時間
 TODAY=$(date +"%Y-%m-%d")
-TIME_SUFFIX=$(date +"%H%M")  # 例如: 0800 或 2000
 YEAR=$(date +"%Y")
 
 # 支援時間後綴 (可選)
-# 用法: TIME_SUFFIX=morning ./run_daily_analysis_claude_cli.sh
-# 或: TIME_SUFFIX=evening ./run_daily_analysis_claude_cli.sh
+# 用法: TIME_SUFFIX=0800 ./run_daily_analysis_claude_cli.sh
+# 未設定時使用當前時間 (格式: HHMM, 例如 0800, 1430, 2000)
 if [ -z "$TIME_SUFFIX" ]; then
-    # 如果未設定，根據當前時間自動判斷
-    HOUR=$(date +"%H")
-    if [ "$HOUR" -ge 6 ] && [ "$HOUR" -lt 14 ]; then
-        TIME_SUFFIX="morning"
-    else
-        TIME_SUFFIX="evening"
-    fi
+    TIME_SUFFIX=$(date +"%H%M")
 fi
 
 # 路徑
