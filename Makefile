@@ -26,7 +26,7 @@ help:
 	@echo "  make analyze-ollama - Run Ollama full analysis (same as Claude)"
 	@echo "  make analyze-all    - Complete analysis (Ollama + Claude)"
 	@echo "  make daily          - Complete daily workflow (fetch + analyze)"
-	@echo "  make clean-old-reports - Clean old markdown reports, keep only latest"
+	@echo "  make clean-old-reports - Archive old reports to reports/archive/, keep only latest"
 	@echo ""
 	@echo "GitHub Pages targets:"
 	@echo "  make update-pages   - Update GitHub Pages HTML from latest reports"
@@ -90,19 +90,22 @@ analyze-all: analyze-ollama analyze-daily
 daily: fetch-all analyze-daily
 	@echo "✅ Daily workflow completed (fetch + analyze)!"
 
-# Clean old markdown reports, keep only the latest
+# Archive old markdown reports, keep only the latest
 clean-old-reports:
-	@echo "🧹 Cleaning old markdown reports..."
+	@echo "📦 Archiving old markdown reports..."
+	@mkdir -p reports/archive
 	@latest_market=$$(ls reports/markdown/market-analysis-*.md 2>/dev/null | sort -r | head -1); \
 	latest_holdings=$$(ls reports/markdown/holdings-analysis-*.md 2>/dev/null | sort -r | head -1); \
 	if [ -n "$$latest_market" ]; then \
-		ls reports/markdown/market-analysis-*.md 2>/dev/null | grep -v "$$latest_market" | xargs rm -f 2>/dev/null || true; \
-		echo "  ✅ Kept: $$latest_market"; \
+		ls reports/markdown/market-analysis-*.md 2>/dev/null | grep -v "$$latest_market" | xargs -I {} mv {} reports/archive/ 2>/dev/null || true; \
+		echo "  ✅ Kept in markdown: $$latest_market"; \
 	fi; \
 	if [ -n "$$latest_holdings" ]; then \
-		ls reports/markdown/holdings-analysis-*.md 2>/dev/null | grep -v "$$latest_holdings" | xargs rm -f 2>/dev/null || true; \
-		echo "  ✅ Kept: $$latest_holdings"; \
-	fi
+		ls reports/markdown/holdings-analysis-*.md 2>/dev/null | grep -v "$$latest_holdings" | xargs -I {} mv {} reports/archive/ 2>/dev/null || true; \
+		echo "  ✅ Kept in markdown: $$latest_holdings"; \
+	fi; \
+	@archived_count=$$(ls reports/archive/*.md 2>/dev/null | wc -l); \
+	echo "  📦 Archived reports: $$archived_count"
 
 # GitHub Pages targets
 update-pages: install
