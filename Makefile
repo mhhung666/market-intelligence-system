@@ -26,6 +26,7 @@ help:
 	@echo "  make analyze-ollama - Run Ollama full analysis (same as Claude)"
 	@echo "  make analyze-all    - Complete analysis (Ollama + Claude)"
 	@echo "  make daily          - Complete daily workflow (fetch + analyze)"
+	@echo "  make clean-old-reports - Clean old markdown reports, keep only latest"
 	@echo ""
 	@echo "GitHub Pages targets:"
 	@echo "  make update-pages   - Update GitHub Pages HTML from latest reports"
@@ -78,10 +79,12 @@ fetch-all: install
 analyze-daily:
 	@echo "Starting daily market analysis (Claude CLI)..."
 	./src/scripts/analysis/run_daily_analysis_claude_cli.sh
+	@$(MAKE) clean-old-reports
 
 analyze-ollama:
 	@echo "Starting Ollama news analysis..."
 	./src/scripts/analysis/run_daily_analysis_ollama_cli.sh
+	@$(MAKE) clean-old-reports
 
 analyze-all: analyze-ollama analyze-daily
 	@echo "✅ Complete analysis workflow (Ollama + Claude)!"
@@ -89,11 +92,25 @@ analyze-all: analyze-ollama analyze-daily
 daily: fetch-all analyze-daily
 	@echo "✅ Daily workflow completed (fetch + analyze)!"
 
+# Clean old markdown reports, keep only the latest
+clean-old-reports:
+	@echo "🧹 Cleaning old markdown reports..."
+	@latest_market=$$(ls reports/markdown/market-analysis-*.md 2>/dev/null | sort -r | head -1); \
+	latest_holdings=$$(ls reports/markdown/holdings-analysis-*.md 2>/dev/null | sort -r | head -1); \
+	if [ -n "$$latest_market" ]; then \
+		ls reports/markdown/market-analysis-*.md 2>/dev/null | grep -v "$$latest_market" | xargs rm -f 2>/dev/null || true; \
+		echo "  ✅ Kept: $$latest_market"; \
+	fi; \
+	if [ -n "$$latest_holdings" ]; then \
+		ls reports/markdown/holdings-analysis-*.md 2>/dev/null | grep -v "$$latest_holdings" | xargs rm -f 2>/dev/null || true; \
+		echo "  ✅ Kept: $$latest_holdings"; \
+	fi
+
 # GitHub Pages targets
 update-pages: install
 	@echo "Updating GitHub Pages HTML from latest reports (local converter)..."
-	@latest_market=$$(ls -t reports/markdown/market-analysis-*.md 2>/dev/null | head -1); \
-	latest_holdings=$$(ls -t reports/markdown/holdings-analysis-*.md 2>/dev/null | head -1); \
+	@latest_market=$$(ls reports/markdown/market-analysis-*.md 2>/dev/null | sort -r | head -1); \
+	latest_holdings=$$(ls reports/markdown/holdings-analysis-*.md 2>/dev/null | sort -r | head -1); \
 	if [ -z "$$latest_market" ] && [ -z "$$latest_holdings" ]; then \
 		echo "No markdown reports found in reports/markdown/"; exit 1; \
 	fi; \
@@ -152,4 +169,4 @@ analyze-daily-python: install
 	@echo "Starting daily market analysis (Python SDK)..."
 	$(PYTHON_BIN) src/legacy/run_daily_analysis.py
 
-.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily update-pages preview-pages commit commit-auto push deploy
+.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily clean-old-reports update-pages preview-pages commit commit-auto push deploy
