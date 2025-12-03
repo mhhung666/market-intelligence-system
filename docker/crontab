@@ -1,0 +1,13 @@
+# Market Intelligence System - Cron Schedule
+# Format: minute hour day month weekday command
+
+# Run daily analysis at 8:00 AM (after Asian markets close)
+0 8 * * * cd /app && make daily >> /app/logs/cron.log 2>&1
+
+# Run daily analysis at 9:00 PM (after US markets close)
+0 21 * * * cd /app && make daily >> /app/logs/cron.log 2>&1
+
+# Clean old reports weekly (every Sunday at 1:00 AM)
+0 1 * * 0 cd /app && make clean-old-reports >> /app/logs/cron.log 2>&1
+
+# Empty line required at end of crontab file

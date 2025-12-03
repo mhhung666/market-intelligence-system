@@ -1,0 +1,37 @@
+Docker 檔案說明
+=================
+
+核心檔案 (專案根目錄):
+├── Dockerfile              # Docker 映像檔 (Python + Node.js + Claude CLI)
+├── docker-compose.yml      # 容器配置 (主服務 + cron 服務)
+├── .env.docker            # 環境變數範本
+└── .env                   # 實際環境變數 (你要建立)
+
+docker/ 目錄:
+├── README.md              # 📖 唯一需要看的文檔
+├── setup-token.sh         # 🔐 Token 設定輔助工具
+├── test-docker.sh         # 🧪 測試腳本
+├── entrypoint.sh          # 🔧 容器啟動腳本 (自動執行)
+└── crontab                # ⏰ 定時任務配置
+
+快速開始 (3 步驟):
+===================
+
+1. 設定 Token:
+   ./docker/setup-token.sh
+   cp .env.docker .env
+   nano .env  # 填入 CLAUDE_TOKEN
+
+2. 建立:
+   make docker-build
+
+3. 執行:
+   make docker-daily
+
+完成！報告在 reports/markdown/
+
+查看詳細說明:
+cat docker/README.md
+
+或執行:
+make help

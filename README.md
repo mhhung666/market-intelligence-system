@@ -59,43 +59,67 @@ market-intelligence-system/
 
 ## 🚀 快速開始
 
-> **5 分鐘快速上手** - 詳細請參考 [QUICKSTART.md](QUICKSTART.md)
+### 方式 1: Docker 部署 (推薦) 🐳
 
-### 1. 安裝依賴
+**3 步驟,5 分鐘上手:**
 
 ```bash
-# Python 依賴 (爬蟲)
+# 1️⃣ 設定 Claude Token
+./docker/setup-token.sh        # 查看你的 token
+cp .env.docker .env
+nano .env                      # 填入 CLAUDE_TOKEN
+
+# 2️⃣ 建立 & 執行
+make docker-build
+make docker-daily
+
+# 3️⃣ 查看報告
+ls -lh reports/markdown/
+```
+
+**自動化執行 (選一種):**
+
+```bash
+# A) Docker Cron (每天 8:00 和 21:00 自動執行)
+make docker-cron-up
+
+# B) 宿主機 Cron (推薦,不佔資源)
+crontab -e
+# 加入: 0 8 * * * cd /path && make docker-daily >> logs/cron.log 2>&1
+```
+
+詳細說明: [docker/README.md](docker/README.md)
+
+---
+
+### 方式 2: 本機執行
+
+```bash
+# 1. 安裝依賴
 make install
 
-# Claude CLI (分析引擎)
+# 2. 安裝 Claude CLI
 npm install -g @anthropic-ai/claude-cli
-claude login  # 登入你的 Claude 帳號
+claude login
 
-# Ollama (可選,用於成本優化)
+# 3. 執行分析
+make daily
+
+# 4. 查看報告
+cat reports/markdown/market-analysis-$(date +%Y-%m-%d).md
+```
+
+**可選: 安裝 Ollama 降低成本 (80-90%)**
+```bash
 # macOS: brew install ollama
 # Linux: curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3.1:8b
+make analyze-all  # 使用雙引擎分析
 ```
 
-### 2. 執行完整分析
+詳細請參考 [QUICKSTART.md](QUICKSTART.md)
 
-```bash
-# 一鍵執行: 爬取數據 + Claude 分析
-make daily
-
-# 或使用 Ollama 預處理 (降低成本)
-make fetch-all && make analyze-all
-```
-
-### 3. 查看結果
-
-```bash
-# 查看市場分析報告 (全球市場趨勢)
-cat reports/markdown/market-analysis-$(date +%Y-%m-%d).md
-
-# 查看持倉分析報告 (投資組合表現)
-cat reports/markdown/holdings-analysis-$(date +%Y-%m-%d).md
-```
+---
 
 ✅ **完成！** 你已經獲得兩份專業的分析報告：市場分析 + 持倉分析。
 
@@ -254,9 +278,32 @@ ollama serve
 
 詳細請參考 [src/scripts/README.md](src/scripts/README.md)
 
-## Docker / 部署
+## 🐳 Docker 進階說明
 
-Docker 設定尚未隨倉庫提供，建議先使用 Makefile 在本機驗證；若需要容器化可依需求新增 Dockerfile/compose 配置。
+Docker 部署方式已整合到上方「快速開始 → 方式 1: Docker 部署」。
+
+**核心檔案:**
+- [Dockerfile](Dockerfile) - 映像檔定義 (Python + Node.js + Claude CLI)
+- [docker-compose.yml](docker-compose.yml) - 容器編排配置
+- [docker/README.md](docker/README.md) - 完整使用文檔
+- [docker/setup-token.sh](docker/setup-token.sh) - Token 設定輔助工具
+- [docker/test-docker.sh](docker/test-docker.sh) - 自動化測試腳本
+
+**常用命令:**
+```bash
+make docker-build           # 建立 image
+make docker-daily           # 單次執行
+make docker-up              # 啟動容器
+make docker-shell           # 進入容器
+make docker-cron-up         # 啟動定時任務
+make docker-logs            # 查看日誌
+make help                   # 查看所有命令
+```
+
+**測試設定:**
+```bash
+./docker/test-docker.sh     # 自動檢查所有配置
+```
 
 ## 工作流程
 

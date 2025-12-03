@@ -1,0 +1,4 @@
+# Don't include these in docker context
+README.md
+QUICKSTART.md
+test-docker.sh

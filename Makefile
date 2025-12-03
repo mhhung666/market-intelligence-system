@@ -38,6 +38,14 @@ help:
 	@echo "  make push           - Push to GitHub (triggers Pages deployment)"
 	@echo "  make deploy         - Full deploy (update-pages + commit-auto + push)"
 	@echo ""
+	@echo "Docker targets:"
+	@echo "  make docker-build   - Build Docker image"
+	@echo "  make docker-up      - Start Docker container"
+	@echo "  make docker-down    - Stop Docker container"
+	@echo "  make docker-run     - Run command in Docker (e.g., make docker-run CMD=daily)"
+	@echo "  make docker-logs    - View Docker container logs"
+	@echo "  make docker-shell   - Open bash shell in container"
+	@echo ""
 	@echo "Legacy Python SDK targets:"
 	@echo "  make analyze-daily-python - Use Python SDK (requires CLAUDE_API_KEY)"
 
@@ -170,4 +178,47 @@ analyze-daily-python: install
 	@echo "Starting daily market analysis (Python SDK)..."
 	$(PYTHON_BIN) src/legacy/run_daily_analysis.py
 
-.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily clean-old-reports update-pages preview-pages commit commit-auto push deploy
+# Docker targets
+docker-build:
+	@echo "Building Docker image..."
+	docker-compose build
+	@echo "✅ Docker image built successfully!"
+
+docker-up:
+	@echo "Starting Docker containers..."
+	docker-compose up -d
+	@echo "✅ Docker containers started!"
+
+docker-down:
+	@echo "Stopping Docker containers..."
+	docker-compose down
+	@echo "✅ Docker containers stopped!"
+
+docker-run:
+	@if [ -z "$(CMD)" ]; then \
+		echo "Usage: make docker-run CMD=<command>"; \
+		echo "Example: make docker-run CMD=daily"; \
+		exit 1; \
+	fi
+	docker-compose exec mis make $(CMD)
+
+docker-logs:
+	docker-compose logs -f
+
+docker-shell:
+	docker-compose exec mis bash
+
+docker-daily:
+	@echo "Running daily analysis in Docker..."
+	docker-compose run --rm mis make daily
+
+docker-cron-up:
+	@echo "Starting Docker with cron service..."
+	docker-compose --profile cron up -d
+	@echo "✅ Cron service started!"
+
+docker-cron-logs:
+	@echo "Viewing cron logs..."
+	docker-compose exec mis-cron tail -f /app/logs/cron.log
+
+.PHONY: help venv install test clean clean-venv fetch-global fetch-holdings fetch-news fetch-all analyze-daily analyze-ollama analyze-all analyze-daily-python daily clean-old-reports update-pages preview-pages commit commit-auto push deploy docker-build docker-up docker-down docker-run docker-logs docker-shell docker-daily docker-cron-up docker-cron-logs

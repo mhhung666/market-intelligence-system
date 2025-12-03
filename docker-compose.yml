@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mis:
+    build: .
+    image: market-intelligence-system:latest
+    container_name: mis
+    environment:
+      # Claude API Token (required)
+      - CLAUDE_TOKEN=${CLAUDE_TOKEN}
+      # Optional: Timezone
+      - TZ=${TZ:-Asia/Taipei}
+    volumes:
+      # Mount output and reports directories for persistence
+      - ./output:/app/output
+      - ./reports:/app/reports
+      - ./config:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
+    # Example: Run daily analysis
+    # command: make daily
+    # Or keep container running for manual commands
+    command: tail -f /dev/null
+
+  # Optional: Cron service for scheduled tasks
+  mis-cron:
+    build: .
+    image: market-intelligence-system:latest
+    container_name: mis-cron
+    environment:
+      - CLAUDE_TOKEN=${CLAUDE_TOKEN}
+      - TZ=${TZ:-Asia/Taipei}
+    volumes:
+      - ./output:/app/output
+      - ./reports:/app/reports
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./docker/crontab:/etc/cron.d/mis-cron
+    restart: unless-stopped
+    command: bash -c "cron && tail -f /var/log/cron.log"
+    profiles:
+      - cron
