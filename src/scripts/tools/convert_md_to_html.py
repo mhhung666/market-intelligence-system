@@ -132,6 +132,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title} | Market Intelligence System</title>
     <meta name="description" content="Markdown 報告自動轉換的 {current_page}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="page-{page_type}">
@@ -144,7 +145,10 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
                 <a href="holdings.html"{active_class("holdings")}>Holdings Analysis</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">🌙 夜間模式</button>
+                <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
+                    <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
+                    <span id="themeLabel">夜間模式</span>
+                </button>
             </div>
         </nav>
 
@@ -189,9 +193,15 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
             localStorage.setItem('mis-theme', theme);
 
             const toggle = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
             if (toggle) {{
-                const label = theme === 'light' ? '🌙 夜間模式' : '🌞 白天模式';
-                toggle.textContent = label;
+                if (icon) {{
+                    icon.className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                }}
+                if (label) {{
+                    label.textContent = theme === 'light' ? '夜間模式' : '白天模式';
+                }}
                 toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '夜間' : '日間'}}模式`);
             }}
         }}
