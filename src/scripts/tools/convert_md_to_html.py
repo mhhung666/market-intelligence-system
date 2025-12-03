@@ -135,7 +135,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="page-{page_type}">
+<body class="page-{page_type} theme-dark">
     <div class="page-shell">
         <nav class="top-nav">
             <span class="nav-brand">📊 Market Intelligence System</span>

@@ -118,6 +118,9 @@ body.theme-light .top-nav {
 }
 
 .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 10px 14px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
@@ -745,6 +748,7 @@ html {
         flex-direction: column;
         align-items: flex-start;
         position: static;
+        gap: 12px;
     }
 
     .report-hero {
@@ -764,5 +768,58 @@ html {
         bottom: 24px;
         width: 48px;
         height: 48px;
+    }
+}
+
+@media (max-width: 640px) {
+    header {
+        padding: 24px 18px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .nav-links {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    header .nav-actions {
+        justify-content: flex-end;
+    }
+
+    .theme-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-hero {
+        margin: 18px 0;
+        padding: 22px 18px;
+    }
+
+    .report-hero h1 {
+        font-size: 1.7rem;
+    }
+
+    .content {
+        padding: 20px 18px;
     }
 }
