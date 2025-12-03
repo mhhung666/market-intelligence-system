@@ -80,15 +80,15 @@ make fetch-all       # 執行所有爬蟲
 **Claude CLI 分析** (推薦)
 ```bash
 make analyze-daily
-# → market-analysis-{date}.md
-# → holdings-analysis-{date}.md
+# → market-analysis-{date}-{time}.md
+# → holdings-analysis-{date}-{time}.md
 ```
 
 **Ollama 分析** (免費)
 ```bash
 make analyze-ollama
-# → market-analysis-ollama-{date}.md
-# → holdings-analysis-ollama-{date}.md
+# → market-analysis-ollama-{date}-{time}.md
+# → holdings-analysis-ollama-{date}-{time}.md
 ```
 
 **完整分析** (Ollama + Claude)
@@ -96,10 +96,25 @@ make analyze-ollama
 make analyze-all
 ```
 
+### 報告命名規則
+
+**時間標記自動判斷**:
+- 上午 (6:00-13:59): `market-analysis-2025-12-03-morning.md`
+- 下午/晚上 (14:00-5:59): `market-analysis-2025-12-03-evening.md`
+
+**手動指定時間標記**:
+```bash
+TIME_SUFFIX=morning make analyze-daily
+TIME_SUFFIX=evening make analyze-daily
+```
+
+**設計目的**: 支援每日多次分析 (如上午美股收盤後 + 晚上亞洲收盤後)
+
 ### 報告管理
 
 - 報告位置：`reports/markdown/`
 - 歸檔舊報告：`make clean-old-reports` → 移動到 `reports/archive/`
+- GitHub Pages 更新：`make update-pages` → 自動選取最新報告 (同日期優先選 evening)
 
 ---
 

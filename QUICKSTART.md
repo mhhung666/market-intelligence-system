@@ -175,6 +175,8 @@ Ollama 會生成：
 
 ### 快速設定
 
+**單次每日執行**
+
 ```bash
 # 編輯 crontab
 crontab -e
@@ -182,9 +184,37 @@ crontab -e
 # 添加以下內容 (調整路徑)
 # 每天早上 8:00 執行 (美國收盤後)
 0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
+```
+
+**多次每日執行 (上午 + 下午)**
+
+系統會自動根據執行時間生成不同的報告檔名:
+- **上午 (6:00-13:59)**: `market-analysis-2025-12-03-morning.md`
+- **下午/晚上 (14:00-5:59)**: `market-analysis-2025-12-03-evening.md`
+
+```bash
+# 編輯 crontab
+crontab -e
+
+# 添加以下內容 (調整路徑)
+# 每天早上 8:00 執行 (美國收盤後)
+0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-morning.log 2>&1
 
 # 每天晚上 20:00 執行 (亞洲收盤後)
-0 20 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
+0 20 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis-evening.log 2>&1
+```
+
+**手動指定時間標記** (可選)
+
+```bash
+# 強制使用 morning 標記
+TIME_SUFFIX=morning make daily
+
+# 強制使用 evening 標記
+TIME_SUFFIX=evening make daily
+
+# 或在 crontab 中設定
+0 8 * * * cd /path/to/market-intelligence-system && TIME_SUFFIX=morning make daily >> /tmp/mis.log 2>&1
 ```
 
 ### Git 自動推送設定

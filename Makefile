@@ -110,8 +110,8 @@ clean-old-reports:
 # GitHub Pages targets
 update-pages: install
 	@echo "Updating GitHub Pages HTML from latest reports (local converter)..."
-	@latest_market=$$(ls reports/markdown/market-analysis-*.md 2>/dev/null | sort -r | head -1); \
-	latest_holdings=$$(ls reports/markdown/holdings-analysis-*.md 2>/dev/null | sort -r | head -1); \
+	@latest_market=$$(ls reports/markdown/market-analysis-*.md 2>/dev/null | sed 's/-morning\.md$$/-0-morning.md/' | sed 's/-evening\.md$$/-1-evening.md/' | sort -r | head -1 | sed 's/-0-morning\.md$$/-morning.md/' | sed 's/-1-evening\.md$$/-evening.md/'); \
+	latest_holdings=$$(ls reports/markdown/holdings-analysis-*.md 2>/dev/null | sed 's/-morning\.md$$/-0-morning.md/' | sed 's/-evening\.md$$/-1-evening.md/' | sort -r | head -1 | sed 's/-0-morning\.md$$/-morning.md/' | sed 's/-1-evening\.md$$/-evening.md/'); \
 	if [ -z "$$latest_market" ] && [ -z "$$latest_holdings" ]; then \
 		echo "No markdown reports found in reports/markdown/"; exit 1; \
 	fi; \

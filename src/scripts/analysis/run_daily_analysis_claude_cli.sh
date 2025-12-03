@@ -23,9 +23,23 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# 日期
+# 日期和時間
 TODAY=$(date +"%Y-%m-%d")
+TIME_SUFFIX=$(date +"%H%M")  # 例如: 0800 或 2000
 YEAR=$(date +"%Y")
+
+# 支援時間後綴 (可選)
+# 用法: TIME_SUFFIX=morning ./run_daily_analysis_claude_cli.sh
+# 或: TIME_SUFFIX=evening ./run_daily_analysis_claude_cli.sh
+if [ -z "$TIME_SUFFIX" ]; then
+    # 如果未設定，根據當前時間自動判斷
+    HOUR=$(date +"%H")
+    if [ "$HOUR" -ge 6 ] && [ "$HOUR" -lt 14 ]; then
+        TIME_SUFFIX="morning"
+    else
+        TIME_SUFFIX="evening"
+    fi
+fi
 
 # 路徑
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
@@ -40,10 +54,10 @@ GLOBAL_INDICES="${DAILY_DIR}/global-indices-${TODAY}.md"
 PRICES="${DAILY_DIR}/holdings-prices-${TODAY}.md"
 HOLDINGS_CONFIG="${CONFIG_DIR}/holdings.yaml"
 PORTFOLIO_HOLDINGS="${PROJECT_ROOT}/../financial-analysis-system/portfolio/${YEAR}/holdings.md"
-MARKET_ANALYSIS_OUTPUT="${REPORTS_DIR}/market-analysis-${TODAY}.md"
-HOLDINGS_ANALYSIS_OUTPUT="${REPORTS_DIR}/holdings-analysis-${TODAY}.md"
-MARKET_PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}.txt"
-HOLDINGS_PROMPT_FILE="/tmp/holdings-analysis-prompt-${TODAY}.txt"
+MARKET_ANALYSIS_OUTPUT="${REPORTS_DIR}/market-analysis-${TODAY}-${TIME_SUFFIX}.md"
+HOLDINGS_ANALYSIS_OUTPUT="${REPORTS_DIR}/holdings-analysis-${TODAY}-${TIME_SUFFIX}.md"
+MARKET_PROMPT_FILE="/tmp/market-analysis-prompt-${TODAY}-${TIME_SUFFIX}.txt"
+HOLDINGS_PROMPT_FILE="/tmp/holdings-analysis-prompt-${TODAY}-${TIME_SUFFIX}.txt"
 
 ###############################################################################
 # 函數定義

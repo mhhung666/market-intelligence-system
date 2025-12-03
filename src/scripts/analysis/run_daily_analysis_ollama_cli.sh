@@ -30,9 +30,23 @@ NC='\033[0m' # No Color
 OLLAMA_MODEL="${OLLAMA_MODEL:-deepseek-r1:70b}"  # 預設模型，可透過環境變數更改
 TEMPERATURE="${TEMPERATURE:-0.3}"             # 較低溫度，更精確
 
-# 日期
+# 日期和時間
 TODAY=$(date +"%Y-%m-%d")
+TIME_SUFFIX=$(date +"%H%M")  # 例如: 0800 或 2000
 YEAR=$(date +"%Y")
+
+# 支援時間後綴 (可選)
+# 用法: TIME_SUFFIX=morning ./run_daily_analysis_ollama_cli.sh
+# 或: TIME_SUFFIX=evening ./run_daily_analysis_ollama_cli.sh
+if [ -z "$TIME_SUFFIX" ]; then
+    # 如果未設定，根據當前時間自動判斷
+    HOUR=$(date +"%H")
+    if [ "$HOUR" -ge 6 ] && [ "$HOUR" -lt 14 ]; then
+        TIME_SUFFIX="morning"
+    else
+        TIME_SUFFIX="evening"
+    fi
+fi
 
 # 路徑
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
@@ -47,10 +61,10 @@ GLOBAL_INDICES="${DAILY_DIR}/global-indices-${TODAY}.md"
 PRICES="${DAILY_DIR}/holdings-prices-${TODAY}.md"
 HOLDINGS_CONFIG="${CONFIG_DIR}/holdings.yaml"
 PORTFOLIO_HOLDINGS="${PROJECT_ROOT}/../financial-analysis-system/portfolio/${YEAR}/holdings.md"
-MARKET_ANALYSIS_OUTPUT="${REPORTS_DIR}/market-analysis-${TODAY}.md"
-HOLDINGS_ANALYSIS_OUTPUT="${REPORTS_DIR}/holdings-analysis-${TODAY}.md"
-MARKET_PROMPT_FILE="/tmp/ollama-market-analysis-prompt-${TODAY}.txt"
-HOLDINGS_PROMPT_FILE="/tmp/ollama-holdings-analysis-prompt-${TODAY}.txt"
+MARKET_ANALYSIS_OUTPUT="${REPORTS_DIR}/market-analysis-ollama-${TODAY}-${TIME_SUFFIX}.md"
+HOLDINGS_ANALYSIS_OUTPUT="${REPORTS_DIR}/holdings-analysis-ollama-${TODAY}-${TIME_SUFFIX}.md"
+MARKET_PROMPT_FILE="/tmp/ollama-market-analysis-prompt-${TODAY}-${TIME_SUFFIX}.txt"
+HOLDINGS_PROMPT_FILE="/tmp/ollama-holdings-analysis-prompt-${TODAY}-${TIME_SUFFIX}.txt"
 
 ###############################################################################
 # 函數定義
