@@ -9,13 +9,9 @@ RUN apt-get update && apt-get install -y \
     cron \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js (for Claude CLI)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Claude CLI globally
-RUN npm install -g @anthropic-ai/claude-cli
+# Install Claude CLI and add to PATH
+RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH="/root/.local/bin:${PATH}"
 
 # Set working directory
 WORKDIR /app
