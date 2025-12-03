@@ -1,22 +1,22 @@
 # 投資組合持股配置
-# 最後更新：2025-12-02
+# 最後更新：2025-12-04
 #
 # 可自訂追蹤持股，新增或移除股票無需修改程式碼
 #
 # fetch_news: true/false - 控制該股票是否爬取新聞
 # enabled: true/false - 控制該股票是否啟用（用於暫停某些股票而不刪除配置）
 
-# 投資組合概況 (基於 2025-11-29 數據)
+# 投資組合概況 (基於 2025-12-04 數據)
 portfolio_summary:
-  total_assets: $257,723.52
-  stock_value: $175,200.30
-  cash_balance: $82,785.38
-  unrealized_pnl: -$10,903
-  total_return: -5.8%
-  cash_percentage: 32.1%
-  stock_percentage: 68.0%
-  buying_power: $778,939.48
-  last_updated: "2025-11-29"
+  net_liquidation: $262,659.00
+  stock_value: $181,171.04
+  cash_balance: $83,342.89
+  equity_with_loan: $263,416.98
+  buying_power: $756,760.52
+  available_funds: $189,190.13
+  maintenance_margin: $70,461.29
+  cushion: 0.734624
+  last_updated: "2025-12-04"
 
 holdings:
   # 核心持倉
@@ -209,6 +209,11 @@ holdings:
           strike: $37.50
           expiry: "2025-12-19"
           status: "價外安全"
+        - type: "Sell Call"
+          quantity: -1
+          strike: $47.50
+          expiry: "2025-12-19"
+          status: "價外安全"
 
     Oscar Health (OSCR):
       symbol: "OSCR"
@@ -253,3 +258,34 @@ holdings:
           strike: $32.00
           expiry: "2025-12-05"
           status: "接近價內"
+
+    Alphabet (GOOG):
+      symbol: "GOOG"
+      options:
+        - type: "Sell Put"
+          quantity: -1
+          strike: $315.00
+          expiry: "2025-12-05"
+          status: "接近價內"
+
+    Boeing (BA):
+      symbol: "BA"
+      fetch_news: false
+      enabled: false
+      options:
+        - type: "Sell Put"
+          quantity: -1
+          strike: $200.00
+          expiry: "2025-12-05"
+          status: "價外安全"
+
+    QQQ ETF:
+      symbol: "QQQ"
+      fetch_news: false
+      enabled: false
+      options:
+        - type: "Sell Put"
+          quantity: -1
+          strike: $615.00
+          expiry: "2025-12-04"
+          status: "即將到期"
