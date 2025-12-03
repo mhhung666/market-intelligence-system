@@ -120,13 +120,14 @@ less reports/markdown/market-analysis-2025-12-01.md
 
 ---
 
-## 🆕 進階功能: Ollama 預處理 (可選)
+## 🆕 進階功能: Ollama 本地分析 (可選)
 
 ### 為什麼使用 Ollama?
 
-- **降低成本**: 先用 Ollama 篩選新聞,減少 Claude token 使用
-- **本機推論**: 完全免費,無 API 成本
-- **情緒分析**: 額外獲得市場情緒分析報告
+✅ **完全免費** - 無 API 成本，本地推論
+✅ **數據隱私** - 敏感投資資料不上傳
+✅ **完整分析** - 可生成與 Claude 同樣的雙報告
+✅ **無限使用** - 不受 API 限制
 
 ### 安裝 Ollama
 
@@ -137,60 +138,132 @@ brew install ollama
 # Linux
 curl -fsSL https://ollama.com/install.sh | sh
 
-# 下載模型 (推薦 llama3.1:8b)
-ollama pull llama3.1:8b
+# 下載推薦模型
+ollama pull gpt-oss:20b      # 推薦 (13GB, 需16GB RAM)
+# 或
+ollama pull qwen2.5:14b      # 較輕量 (9GB, 需12GB RAM)
 ```
 
-### 使用 Ollama + Claude 完整流程
+### 使用方式
 
 ```bash
-# 1. 爬取數據
-make fetch-all
+# 方案 1: 只使用 Ollama (完全免費)
+make fetch-all && make analyze-ollama
 
-# 2. Ollama 預處理 (篩選新聞 + 情緒分析)
-make analyze-ollama
+# 方案 2: Ollama + Claude (對比分析)
+make fetch-all && make analyze-all
 
-# 3. Claude 深度分析
-make analyze-daily
-
-# 或使用組合指令
-make analyze-all  # Ollama + Claude
+# 方案 3: 只使用 Claude (最高質量)
+make daily
 ```
 
-### 查看 Ollama 分析結果
+### 輸出檔案
 
-```bash
-# 篩選後的重要新聞
-cat reports/markdown/filtered-news-2025-12-01.md
+Ollama 會生成：
+- `reports/markdown/market-analysis-ollama-{date}.md` - 市場分析
+- `reports/markdown/holdings-analysis-ollama-{date}.md` - 持倉分析
 
-# 市場情緒分析
-cat reports/markdown/sentiment-analysis-2025-12-01.md
-```
+### 推薦使用策略
+
+- **日常分析**: Ollama (免費)
+- **重要決策**: Claude (最高質量)
+- **對比驗證**: 同時使用兩者
 
 ---
 
 ## 🤖 設定自動化 (Cron)
 
-### 每日自動執行
+### 快速設定
 
 ```bash
 # 編輯 crontab
 crontab -e
 
 # 添加以下內容 (調整路徑)
-# 每天早上 8:00 執行
+# 每天早上 8:00 執行 (美國收盤後)
 0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
+
+# 每天晚上 20:00 執行 (亞洲收盤後)
+0 20 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
 ```
 
-### 檢查執行狀況
+### Git 自動推送設定
+
+**方法 1: SSH Key (推薦)**
 
 ```bash
-# 查看 cron 日誌
+# 1. 生成 SSH key
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# 2. 複製公鑰並添加到 GitHub
+cat ~/.ssh/id_ed25519.pub
+
+# 3. 設定 Git 使用 SSH
+git remote set-url origin git@github.com:USER/REPO.git
+```
+
+**方法 2: GitHub CLI**
+
+```bash
+brew install gh
+gh auth login
+gh auth setup-git
+```
+
+### 監控和測試
+
+```bash
+# 手動測試執行
+make daily
+
+# 查看執行日誌
 tail -f /tmp/mis.log
 
 # 查看生成的報告
 ls -lt reports/markdown/ | head -5
+
+# 檢查 Git 提交
+git log --oneline -5
 ```
+
+### 時間格式說明
+
+```bash
+# 格式: 分 時 日 月 星期
+0 8 * * *      # 每天 08:00
+30 20 * * *    # 每天 20:30
+0 8,20 * * *   # 每天 08:00 和 20:00
+0 8 * * 1-5    # 週一到週五 08:00
+```
+
+---
+
+## 📄 GitHub Pages 發布
+
+### 本地預覽
+
+```bash
+# 生成 HTML
+make update-pages
+
+# 本地預覽
+make preview-pages  # 訪問 http://localhost:8000
+```
+
+### 一鍵部署
+
+```bash
+# 更新 HTML + commit + push (一次完成!)
+make deploy
+```
+
+### GitHub Pages 設定
+
+1. 前往 GitHub repository → **Settings** → **Pages**
+2. Source: Branch `main`, Folder `/docs`
+3. Save 後 1-2 分鐘即可訪問
+
+**網站 URL**: `https://USERNAME.github.io/REPO/`
 
 ---
 
@@ -209,22 +282,30 @@ make fetch-all       # 爬取所有數據
 
 ```bash
 make analyze-daily   # Claude CLI 分析
-make analyze-ollama  # Ollama 預處理
+make analyze-ollama  # Ollama 本地分析
 make analyze-all     # 完整分析流程
 ```
 
-### 完整工作流程
+### 報告管理
 
 ```bash
-make daily           # 爬取 + Claude 分析
+make clean-old-reports  # 歸檔舊報告到 reports/archive/
+```
+
+### GitHub Pages
+
+```bash
+make update-pages    # 生成 HTML
+make preview-pages   # 本地預覽
+make deploy          # 完整部署流程
 ```
 
 ### 其他
 
 ```bash
+make daily           # 爬取 + Claude 分析 (完整工作流程)
 make help            # 顯示所有可用命令
 make clean           # 清理 Python cache
-make test            # 執行測試 (如有)
 ```
 
 ---
