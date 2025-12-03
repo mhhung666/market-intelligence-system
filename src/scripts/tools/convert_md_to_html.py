@@ -70,6 +70,12 @@ def extract_title_and_date(content: str, source_path: Path) -> Tuple[str, str]:
     return title, date
 
 
+def strip_leading_emoji(text: str) -> str:
+    """移除開頭的 emoji/符號, 保留後續文字。"""
+    cleaned = re.sub(r"^[\u2600-\u27BF\U0001F000-\U0001FAFF\U0001FB00-\U0001FFFF]+\s*", "", text)
+    return cleaned or text
+
+
 def localized_now() -> datetime:
     """Return current time with a stable tz (default Asia/Taipei, overridable via env)."""
     tz_name = os.environ.get("MIS_REPORT_TZ") or os.environ.get("TZ") or "Asia/Taipei"
@@ -93,6 +99,10 @@ def post_process_html(html: str) -> str:
         return f'<span class="{css_class}">{value}</span>'
 
     html = re.sub(r"(?<![\w\-])([+-]\d+(?:\.\d+)?%)", wrap_percentages, html)
+    # 移除 Markdown 內容中可能重複的頁面摘要區塊 (生成時間/引擎/類型)
+    html = re.sub(r"<blockquote>.*?報告生成時間.*?</blockquote>", "", html, flags=re.DOTALL)
+    # 移除開頭第一個 H1 (通常已在頁首呈現) 與緊接的分隔線, 避免重複
+    html = re.sub(r"^<h1[^>]*>.*?</h1>\s*(?:<hr>\s*)?", "", html, flags=re.DOTALL)
     return html
 
 
@@ -117,6 +127,7 @@ def markdown_to_html(md_content: str) -> str:
 
 def create_html_page(title: str, date: str, content_html: str, page_type: str) -> str:
     """建立完整頁面 HTML。"""
+    display_title = strip_leading_emoji(title)
     page_names = {"market": "Market Analysis", "holdings": "Holdings Analysis", "home": "Home"}
     current_page = page_names.get(page_type, "Analysis")
     generated_at_dt = localized_now()
@@ -130,8 +141,9 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title} | Market Intelligence System</title>
+    <title>{display_title} | Market Intelligence System</title>
     <meta name="description" content="Markdown 報告自動轉換的 {current_page}">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -147,7 +159,6 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
             <div class="nav-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
                     <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
-                    <span id="themeLabel">夜間模式</span>
                 </button>
             </div>
         </nav>
@@ -155,8 +166,8 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
         <header class="report-hero">
             <div>
                 <p class="eyebrow">{current_page}</p>
-                <h1>{title}</h1>
-                <p class="hero-note">自動轉換 Markdown → HTML, 完整保留表格、程式碼、emoji 與列表格式。</p>
+                <h1>{display_title}</h1>
+                <p class="hero-note">MIS · Market Intelligence System — 智能報告與市場分析一站完成。</p>
                 <div class="hero-meta">
                     <span class="pill">報告日期 {date}</span>
                     <span class="pill pill-ghost">生成時間 {generated_at}</span>
@@ -174,7 +185,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
         <button class="back-to-top" id="backToTop" aria-label="回到頂部">↑</button>
 
         <footer>
-            <p>Powered by Market Intelligence System · Markdown Pipeline</p>
+            <p>Powered by Market Intelligence System | MH Hung | © 2025</p>
         </footer>
     </div>
 
@@ -194,13 +205,10 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
 
             const toggle = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
-            const label = document.getElementById('themeLabel');
             if (toggle) {{
                 if (icon) {{
-                    icon.className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-                }}
-                if (label) {{
-                    label.textContent = theme === 'light' ? '夜間模式' : '白天模式';
+                    icon.classList.remove('fa-solid', 'fa-regular');
+                    icon.classList.add(theme === 'light' ? 'fa-regular' : 'fa-solid', 'fa-moon');
                 }}
                 toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '夜間' : '日間'}}模式`);
             }}

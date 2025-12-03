@@ -4,19 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Intelligence System</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="theme-dark">
     <div class="container">
         <header>
-            <h1>📊 Market Intelligence System</h1>
-            <p class="subtitle">智能市場分析系統 v2.0</p>
-            <p class="update-time">最後更新: 2025-12-03</p>
+            <h1>Market Intelligence System</h1>
             <div class="nav-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
                     <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
-                    <span id="themeLabel">夜間模式</span>
                 </button>
             </div>
         </header>
@@ -73,7 +71,7 @@
         </main>
 
         <footer>
-            <p>Powered by Market Intelligence System | Claude Sonnet 4.5 | Yahoo Finance</p>
+            <p>Powered by Market Intelligence System | MH Hung | © 2025</p>
         </footer>
     </div>
     <script>
@@ -91,13 +89,10 @@
 
             const toggle = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
-            const label = document.getElementById('themeLabel');
             if (toggle) {
                 if (icon) {
-                    icon.className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-                }
-                if (label) {
-                    label.textContent = theme === 'light' ? '夜間模式' : '白天模式';
+                    icon.classList.remove('fa-solid', 'fa-regular');
+                    icon.classList.add(theme === 'light' ? 'fa-regular' : 'fa-solid', 'fa-moon');
                 }
                 toggle.setAttribute('aria-label', `切換為${theme === 'light' ? '夜間' : '日間'}模式`);
             }

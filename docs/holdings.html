@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💼 投資組合分析 - 2025-12-03 | Market Intelligence System</title>
+    <title>投資組合分析 - 2025-12-03 | Market Intelligence System</title>
     <meta name="description" content="Markdown 報告自動轉換的 Holdings Analysis">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="page-holdings">
+<body class="page-holdings theme-dark">
     <div class="page-shell">
         <nav class="top-nav">
             <span class="nav-brand">📊 Market Intelligence System</span>
@@ -20,7 +21,6 @@
             <div class="nav-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
                     <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
-                    <span id="themeLabel">夜間模式</span>
                 </button>
             </div>
         </nav>
@@ -28,11 +28,11 @@
         <header class="report-hero">
             <div>
                 <p class="eyebrow">Holdings Analysis</p>
-                <h1>💼 投資組合分析 - 2025-12-03</h1>
-                <p class="hero-note">自動轉換 Markdown → HTML, 完整保留表格、程式碼、emoji 與列表格式。</p>
+                <h1>投資組合分析 - 2025-12-03</h1>
+                <p class="hero-note">MIS · Market Intelligence System — 智能報告與市場分析一站完成。</p>
                 <div class="hero-meta">
                     <span class="pill">報告日期 2025-12-03</span>
-                    <span class="pill pill-ghost">生成時間 2025-12-03 13:39 CST+0800</span>
+                    <span class="pill pill-ghost">生成時間 2025-12-03 14:27 CST+0800</span>
                     <span class="pill pill-outline">Holdings Analysis</span>
                 </div>
             </div>
@@ -40,13 +40,6 @@
 
         <main class="page-layout no-toc">
             <section class="content" id="mainContent">
-<h1 id="投資組合分析---2025-12-03">💼 投資組合分析 - 2025-12-03</h1>
-<blockquote>
-<p><strong>報告生成時間</strong>: 2025-12-03 09:27 UTC
-<strong>分析引擎</strong>: Market Intelligence System v2.0
-<strong>報告類型</strong>: 持倉分析</p>
-</blockquote>
-<hr>
 <h2 id="執行摘要">📊 執行摘要</h2>
 <h3 id="組合概況">組合概況</h3>
 <div class="table-wrapper"><table>
@@ -1354,7 +1347,7 @@
         <button class="back-to-top" id="backToTop" aria-label="回到頂部">↑</button>
 
         <footer>
-            <p>Powered by Market Intelligence System · Markdown Pipeline</p>
+            <p>Powered by Market Intelligence System | MH Hung | © 2025</p>
         </footer>
     </div>
 
@@ -1374,13 +1367,10 @@
 
             const toggle = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
-            const label = document.getElementById('themeLabel');
             if (toggle) {
                 if (icon) {
-                    icon.className = theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-                }
-                if (label) {
-                    label.textContent = theme === 'light' ? '夜間模式' : '白天模式';
+                    icon.classList.remove('fa-solid', 'fa-regular');
+                    icon.classList.add(theme === 'light' ? 'fa-regular' : 'fa-solid', 'fa-moon');
                 }
                 toggle.setAttribute('aria-label', `切換為${theme === 'light' ? '夜間' : '日間'}模式`);
             }

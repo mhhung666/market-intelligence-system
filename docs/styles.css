@@ -120,9 +120,12 @@ body.theme-light .top-nav {
 .theme-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    gap: 0;
+    padding: 0;
+    border-radius: 50%;
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.05);
     color: var(--text);
@@ -162,21 +165,37 @@ body.theme-light .theme-toggle {
 
 header:not(.report-hero) {
     text-align: center;
-    padding: 32px 24px;
+    padding: 14px 20px;
     background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(56, 189, 248, 0.06));
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 72px;
 }
 
 header:not(.report-hero) h1 {
-    font-size: 2.4rem;
-    margin-bottom: 10px;
+    font-size: 1.9rem;
+    margin: 0;
 }
 
 .subtitle,
 .update-time {
     color: var(--muted);
+}
+
+header .nav-actions {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+}
+
+.theme-toggle i {
+    font-size: 18px;
 }
 
 .report-hero {
