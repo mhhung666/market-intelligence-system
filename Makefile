@@ -79,12 +79,10 @@ fetch-all: install
 analyze-daily:
 	@echo "Starting daily market analysis (Claude CLI)..."
 	./src/scripts/analysis/run_daily_analysis_claude_cli.sh
-	@$(MAKE) clean-old-reports
 
 analyze-ollama:
 	@echo "Starting Ollama news analysis..."
 	./src/scripts/analysis/run_daily_analysis_ollama_cli.sh
-	@$(MAKE) clean-old-reports
 
 analyze-all: analyze-ollama analyze-daily
 	@echo "✅ Complete analysis workflow (Ollama + Claude)!"
