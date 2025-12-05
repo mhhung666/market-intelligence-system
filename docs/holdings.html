@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>投資組合分析 - 2025-12-05 | Market Intelligence System</title>
     <meta name="description" content="Markdown 報告自動轉換的 Holdings Analysis">
-    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,6 +16,7 @@
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="market.html" class="nav-link">Market Analysis</a>
                 <a href="holdings.html" class="nav-link active">Holdings Analysis</a>
+                <a href="stocks/index.html" class="nav-link">Stocks</a>
             </div>
             <div class="nav-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
@@ -32,7 +32,7 @@
                 <p class="hero-note">MIS · Market Intelligence System — 智能報告與市場分析一站完成。</p>
                 <div class="hero-meta">
                     <span class="pill">報告日期 2025-12-05</span>
-                    <span class="pill pill-ghost">生成時間 2025-12-05 09:18 CST+0800</span>
+                    <span class="pill pill-ghost">生成時間 2025-12-05 14:35 CST+0800</span>
                     <span class="pill pill-outline">Holdings Analysis</span>
                 </div>
             </div>
@@ -40,1096 +40,516 @@
 
         <main class="page-layout no-toc">
             <section class="content" id="mainContent">
-<h2 id="執行摘要">📊 執行摘要</h2>
-<h3 id="組合概況">組合概況</h3>
+<h2 id="組合概況">📊 組合概況</h2>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
 <th>項目</th>
 <th>數值</th>
-<th>狀態評估</th>
+<th>狀態</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>總資產淨值</td>
-<td>$262,659.00</td>
-<td>🟢 穩健成長</td>
-</tr>
-<tr>
-<td>股票市值</td>
-<td>$181,171.04 (68.9%)</td>
-<td>🟢 配置合理</td>
-</tr>
-<tr>
-<td>現金餘額</td>
-<td>$83,342.89 (31.1%)</td>
-<td>🟢 充裕彈性</td>
-</tr>
-<tr>
-<td>未實現損益</td>
-<td>-$7,592 (<span class="status-negative">-4.0%</span>)</td>
+<td>$257,723.52</td>
 <td>🟢 持續改善</td>
 </tr>
 <tr>
-<td>購買力</td>
-<td>$756,760.52</td>
-<td>🟢 槓桿充足</td>
+<td>股票市值</td>
+<td>$181,171.04 (68.0%)</td>
+<td>🟡 倉位適中</td>
+</tr>
+<tr>
+<td>現金餘額</td>
+<td>$83,342.89 (32.0%)</td>
+<td>🟢 充裕</td>
+</tr>
+<tr>
+<td>未實現損益</td>
+<td>-$7,591.96 (<span class="status-negative">-4.0%</span>)</td>
+<td>🟢 持續收斂</td>
+</tr>
+<tr>
+<td>今日變化</td>
+<td><span class="status-negative">-0.51%</span></td>
+<td>🔴 小幅回調</td>
 </tr>
 </tbody>
 </table></div>
-<h3 id="今日關鍵變化">今日關鍵變化</h3>
-<ul>
-<li><strong>最大漲幅</strong>: ALK <span class="status-positive">+4.30%</span> ($47.32) - 航空股強勢反彈</li>
-<li><strong>最大跌幅</strong>: INTC <span class="status-negative">-7.45%</span> ($40.50) - 晶片股回調,但倉位影響可控</li>
-<li><strong>組合變化</strong>: <span class="status-positive">+0.6%</span> (vs 2025-11-29: $257,723.52)</li>
-<li><strong>關鍵風險</strong>: </li>
-<li>⚠️ <strong>12/05 到期選擇權</strong> - 3檔接近價內,需密切監控</li>
-<li>⚠️ <strong>INTC 單日暴跌</strong> - 需評估產業趨勢</li>
-<li>⚠️ <strong>GOOGL 倉位嚴重不足</strong> - 3.7% vs 建議 15-25%</li>
-</ul>
+<p><strong>關鍵提示</strong>: 投資組合今日因INTC重挫-7.45%拖累整體表現，但TSLA、UPST、ALK強勁上漲提供部分緩衝。未實現損益持續改善，較上週五再減少$3,311（從-$10,903降至-$7,592），整體報酬率回升至-4.0%。</p>
 <hr>
-<h2 id="資產配置分析">💰 資產配置分析</h2>
-<h3 id="當前配置">當前配置</h3>
+<h2 id="選擇權部位">🎯 選擇權部位</h2>
+<h3 id="緊急到期-1205---今日">⚠️ 緊急到期 (12/05 - 今日)</h3>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
-<th>資產類別</th>
-<th>金額</th>
-<th>佔比</th>
-<th>建議範圍</th>
-<th>評估</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>現金</td>
-<td>$83,342.89</td>
-<td>31.1%</td>
-<td>10-30%</td>
-<td>🟡 略高</td>
-</tr>
-<tr>
-<td>股票</td>
-<td>$181,171.04</td>
-<td>68.9%</td>
-<td>70-90%</td>
-<td>🟡 略低</td>
-</tr>
-</tbody>
-</table></div>
-<p><strong>配置評估</strong>:</p>
-<p>✅ <strong>優勢</strong>:
-- 現金充裕 ($83,342),提供優異防禦能力
-- 購買力 $756,760 (4倍槓桿),足夠應對機會
-- 未實現損益已從 -$38,023 (11/16) 改善至 -$7,592,<strong>進步 80%</strong></p>
-<p>⚠️ <strong>問題</strong>:
-- <strong>現金比例偏高</strong> (31.1% vs 建議上限 30%) - 在市場表現良好時機會成本高
-- <strong>GOOGL 配置失衡</strong> - 5星評級核心標的僅佔 3.7%,嚴重低於建議 15-25%
-- <strong>倉位集中風險</strong> - U (16.8%) + INTC (12.6%) = 29.4%,兩檔股票佔近1/3</p>
-<p><strong>調整建議</strong>:</p>
-<p>🎯 <strong>立即執行</strong> (本週):
-1. <strong>GOOGL 大幅加碼</strong>: 從 3.7% → 10-12% 
-   - 買入 80-100股 @ $315-320
-   - 資金需求: ~$25,000-31,000
-   - 理由: ⭐⭐⭐⭐⭐評級,AI全棧領導者,當前 $317.62 處於優質買點</p>
-<ol start="2">
-<li><strong>UPS 加碼</strong>: 從 3.7% → 6-7%
-   - 買入 40-50股 @ $94-96
-   - 資金需求: ~$3,800-4,800
-   - 理由: ⭐⭐⭐⭐☆評級,7.59%高股息,轉型成功</li>
-</ol>
-<p><strong>預期配置</strong> (執行後):
-- 現金: $54,000-48,000 (20-18%)
-- 股票: $210,000-216,000 (80-82%) ✅ 達標
-- GOOGL: 10-12% ✅ 階段性目標
-- 核心持倉更均衡</p>
-<hr>
-<h2 id="選擇權部位分析">🎯 選擇權部位分析</h2>
-<h3 id="1205-到期選擇權明天到期">12/05 到期選擇權（<strong>明天到期</strong>）⚠️⚠️⚠️</h3>
-<div class="table-wrapper"><table>
-<thead>
-<tr>
+<th>到期日</th>
 <th>標的</th>
 <th>類型</th>
 <th>數量</th>
 <th>行權價</th>
 <th>當前價</th>
 <th>狀態</th>
-<th>風險評估</th>
+<th>處理建議</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>12/05</td>
 <td>DKNG</td>
 <td>Sell Put</td>
 <td>-1</td>
 <td>$31.00</td>
 <td>$35.19</td>
 <td>🟢 價外安全</td>
-<td>✅ 低 - 獲利收場</td>
+<td>將自然到期，收取全額權利金</td>
 </tr>
 <tr>
+<td>12/05</td>
 <td>DKNG</td>
 <td>Sell Put</td>
 <td>-1</td>
 <td>$32.00</td>
 <td>$35.19</td>
 <td>🟢 價外安全</td>
-<td>✅ 低 - 獲利收場</td>
+<td>將自然到期，收取全額權利金</td>
 </tr>
 <tr>
+<td>12/05</td>
 <td>GOOG</td>
 <td>Sell Put</td>
 <td>-1</td>
 <td>$315.00</td>
 <td>$318.39</td>
-<td>🟡 <strong>價外但接近</strong></td>
-<td>⚠️ 中 - 需監控</td>
-</tr>
-<tr>
-<td>U</td>
-<td>Sell Call</td>
-<td>-2</td>
-<td>$45.00</td>
-<td>$44.15</td>
 <td>🟢 價外安全</td>
-<td>✅ 低 - 安全收場</td>
+<td>將自然到期，收取全額權利金</td>
 </tr>
 <tr>
-<td>UPST</td>
-<td>Sell Call</td>
-<td>-1</td>
-<td>$48.00</td>
-<td>$47.13</td>
-<td>🟢 價外安全</td>
-<td>✅ 低 - 安全收場</td>
-</tr>
-<tr>
-<td>UPST</td>
-<td>Sell Call</td>
-<td>-2</td>
-<td>$50.00</td>
-<td>$47.13</td>
-<td>🟢 價外安全</td>
-<td>✅ 低 - 安全收場</td>
-</tr>
-<tr>
+<td>12/05</td>
 <td>MBLY</td>
 <td>Sell Call</td>
 <td>-2</td>
 <td>$12.00</td>
 <td>$11.83</td>
 <td>🟢 價外安全</td>
-<td>✅ 低 - 安全收場</td>
+<td>將自然到期，保留股票</td>
 </tr>
 <tr>
-<td>BA</td>
-<td>Sell Put</td>
+<td>12/05</td>
+<td>U</td>
+<td>Sell Call</td>
+<td>-2</td>
+<td>$45.00</td>
+<td>$44.15</td>
+<td>🟢 價外安全</td>
+<td>將自然到期，保留股票</td>
+</tr>
+<tr>
+<td>12/05</td>
+<td>UPST</td>
+<td>Sell Call</td>
 <td>-1</td>
-<td>$200.00</td>
-<td>N/A</td>
-<td>🟢 價外</td>
-<td>✅ 低 - 需確認</td>
+<td>$48.00</td>
+<td>$47.13</td>
+<td>🟢 價外安全</td>
+<td>將自然到期，保留股票</td>
+</tr>
+<tr>
+<td>12/05</td>
+<td>UPST</td>
+<td>Sell Call</td>
+<td>-2</td>
+<td>$50.00</td>
+<td>$47.13</td>
+<td>🟢 價外安全</td>
+<td>將自然到期，保留股票</td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>處理建議</strong>:</p>
-<p>✅ <strong>DKNG (2張 Put)</strong> - <strong>讓到期</strong>
-- 當前 $35.19 vs 行權價 $31/$32,安全邊際 +$3-4
-- 預期收益: 權利金全收
-- 操作: 無需行動</p>
-<p>🟡 <strong>GOOG (1張 Put $315)</strong> - <strong>密切監控</strong>
-- 當前 $318.39 vs 行權價 $315,僅 +$3.39 緩衝 (1.1%)
-- 若明日收盤 &lt; $315 → 被執行接 100股
-- <strong>建議</strong>: 
-  - 若願意以 $315 接股 → 讓執行 (成本優於當前市價 $318)
-  - 若不願接股 → 今日收盤前回補 Put (成本可能較高)
-- <strong>評估</strong>: 建議<strong>讓執行</strong> - $315 是優質成本價,GOOGL 為 5星評級</p>
-<p>✅ <strong>U / UPST / MBLY (Covered Calls)</strong> - <strong>讓到期</strong>
-- 全數價外,權利金安全入袋
-- 操作: 無需行動</p>
-<h3 id="1219-到期選擇權17天後">12/19 到期選擇權（17天後）</h3>
+<h3 id="近期到期-1219">📅 近期到期 (12/19)</h3>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
+<th>到期日</th>
 <th>標的</th>
 <th>類型</th>
 <th>數量</th>
 <th>行權價</th>
 <th>當前價</th>
 <th>狀態</th>
-<th>風險評估</th>
+<th>處理建議</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>12/19</td>
 <td>ALK</td>
 <td>Sell Put</td>
 <td>-2</td>
 <td>$37.50</td>
 <td>$47.32</td>
 <td>🟢 價外安全</td>
-<td>✅ 低</td>
+<td>維持觀察，股價表現強勁</td>
 </tr>
 <tr>
+<td>12/19</td>
 <td>ALK</td>
 <td>Sell Call</td>
 <td>-1</td>
 <td>$47.50</td>
 <td>$47.32</td>
-<td>🟡 <strong>接近價內</strong></td>
-<td>⚠️ 中</td>
+<td>🟡 接近價內</td>
+<td>密切監控，可能被執行</td>
 </tr>
 <tr>
+<td>12/19</td>
 <td>UPS</td>
 <td>Sell Put</td>
 <td>-1</td>
 <td>$90.00</td>
 <td>$94.76</td>
 <td>🟢 價外安全</td>
-<td>✅ 低</td>
+<td>安全，可收取權利金</td>
 </tr>
 <tr>
+<td>12/19</td>
 <td>UPS</td>
 <td>Sell Call</td>
 <td>-1</td>
 <td>$105.00</td>
 <td>$94.76</td>
 <td>🟢 價外安全</td>
-<td>✅ 低</td>
+<td>保留股票，安全距離</td>
 </tr>
 <tr>
+<td>12/19</td>
 <td>OSCR</td>
 <td>Sell Call</td>
 <td>-2</td>
 <td>$18.00</td>
 <td>$17.18</td>
 <td>🟢 價外安全</td>
-<td>✅ 低</td>
+<td>保留股票</td>
 </tr>
 <tr>
+<td>12/19</td>
 <td>OPCH</td>
 <td>Sell Call</td>
 <td>-1</td>
 <td>$30.00</td>
 <td>$29.90</td>
-<td>🟡 <strong>接近價內</strong></td>
-<td>⚠️ 中</td>
+<td>🟡 接近價內</td>
+<td>可能被執行，<span class="status-positive">+11.0%</span>獲利了結</td>
 </tr>
 <tr>
+<td>12/19</td>
 <td>AMRZ</td>
 <td>Sell Call</td>
 <td>-2</td>
 <td>$55.00</td>
 <td>$52.74</td>
 <td>🟢 價外安全</td>
-<td>✅ 低</td>
+<td>保留核心倉位</td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>處理建議</strong>:</p>
-<p>🟡 <strong>ALK Call $47.50</strong> - <strong>提前處理或準備執行</strong>
-- 當前 $47.32,僅差 $0.18 (0.4%)
-- ALK 今日強漲 <span class="status-positive">+4.30%</span>,動能強勁
-- <strong>建議</strong>: 
-  - 若看多 ALK → 今日回補 Call,保留股票繼續持有
-  - 若願意獲利了結 → 讓執行,獲利 = ($47.50 - $40.00) × 100 = <strong>+$750 (<span class="status-positive">+18.8%</span>)</strong>
-- <strong>評估</strong>: 建議<strong>讓執行</strong> - 已達合理獲利目標,可釋放資金加碼 GOOGL</p>
-<p>🟡 <strong>OPCH Call $30.00</strong> - <strong>準備被執行</strong>
-- 當前 $29.90,幾乎價內
-- 持股成本 $28.01,獲利空間 = ($30.00 - $28.01) × 100 = <strong>+$199 (<span class="status-positive">+7.1%</span>)</strong>
-- <strong>建議</strong>: 讓執行,獲利了結</p>
-<p>✅ <strong>其他部位</strong> - 暫無需行動</p>
-<h3 id="選擇權策略評估">選擇權策略評估</h3>
-<p><strong>當前策略效果</strong>:</p>
-<p>✅ <strong>Covered Call 策略</strong> - <strong>表現良好</strong>
-- 12/05 到期 5 檔 Calls 全數安全收場,權利金全收
-- 12/19 可能被執行 2 檔 (ALK, OPCH),但都獲利出場
-- 有效降低持倉成本,提升現金流</p>
-<p>✅ <strong>Cash Secured Put 策略</strong> - <strong>表現優異</strong>
-- DKNG 2張 Puts 安全收場,權利金全收
-- GOOG Put 可能被執行,但 $315 是優質成本</p>
-<p>⚠️ <strong>風險與改進</strong>:
-- ALK 漲勢強勁,Call 行權價設置偏低,限制上漲收益
-- 建議未來 Call 行權價設置在成本價 +20-25% 以上</p>
-<p><strong>12月新機會</strong>:</p>
-<p>🎯 <strong>建議新增選擇權部位</strong> (12/20 到期):
-1. <strong>GOOGL Covered Call</strong>: 若接股,賣出 $340 Call (成本 $315 + 7.9%)
-2. <strong>UPS Covered Call</strong>: 增持後,賣出 $100 Call (成本 $94 + 6.4%)
-3. <strong>TSLA Put</strong>: 賣出 $440 Put,看多策略建倉</p>
+<p><strong>重點關注</strong>:
+- ✅ <strong>今日到期選擇權全數價外安全</strong> - 7個合約將順利到期，收取全額權利金，無被指派風險
+- 🟡 <strong>12/19 ALK Call $47.50</strong> - 當前價$47.32，距離行權價僅$0.18，需密切監控。若被執行將獲利+18.3%
+- 🟡 <strong>12/19 OPCH Call $30.00</strong> - 當前價$29.90，接近價內，若被執行將實現+11.0%獲利</p>
 <hr>
-<h2 id="持倉表現分析">📈 持倉表現分析</h2>
-<h3 id="今日漲跌分佈">今日漲跌分佈</h3>
+<h2 id="持股狀況">📈 持股狀況</h2>
+<h3 id="今日表現排名">📊 今日表現排名</h3>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
-<th>分類</th>
-<th>數量</th>
-<th>平均漲跌</th>
-<th>對組合影響</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>強勢上漲 (&gt;<span class="status-positive">+2%</span>)</td>
-<td>3 檔</td>
-<td><span class="status-positive">+3.36%</span></td>
-<td>+$1,850</td>
-</tr>
-<tr>
-<td>穩健上漲 (<span class="status-positive">+0%</span>~<span class="status-positive">+2%</span>)</td>
-<td>5 檔</td>
-<td><span class="status-positive">+0.39%</span></td>
-<td>+$420</td>
-</tr>
-<tr>
-<td>輕微下跌 (0%~<span class="status-negative">-2%</span>)</td>
-<td>4 檔</td>
-<td><span class="status-negative">-0.91%</span></td>
-<td>-$980</td>
-</tr>
-<tr>
-<td>重大虧損 (&lt;<span class="status-negative">-2%</span>)</td>
-<td>2 檔</td>
-<td><span class="status-negative">-5.08%</span></td>
-<td>-$2,730</td>
-</tr>
-</tbody>
-</table></div>
-<p><strong>關鍵觀察</strong>:
-- 🟢 上漲股佔 57%,反映市場健康
-- 🔴 INTC 單日 <span class="status-negative">-7.45%</span> 拖累組合,但因倉位 12.6% 影響可控
-- 🟢 TSLA, ALK, UPST 強勢領漲</p>
-<h3 id="重點持股深度分析">重點持股深度分析</h3>
-<h4 id="intc---intel-corporation">📊 INTC - Intel Corporation ⚠️</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 800 股
-- 成本價: $45.82
-- 當前價: $40.50
-- 市值: $32,400
-- 倉位佔比: 12.6%
-- 損益: -$4,256 (<span class="status-negative">-11.6%</span>)</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $40.50
-- 變化: <span class="status-negative">-7.45%</span> (-$3.26)
-- 區間: $40.14 - $43.28
-- 成交量: 103.5M (異常放大)</p>
-<p><strong>選擇權約束</strong>: 無</p>
-<p><strong>暴跌原因分析</strong>:
-需調查今日是否有:
-- 財報不佳
-- 產業負面新聞 (AI晶片競爭、製程落後)
-- 大盤科技股回調</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟡 <strong>觀望持有,不加碼</strong>
-- <strong>理由</strong>: 
-  - 倉位已達 12.6%,接近上限 15%
-  - 今日暴跌 <span class="status-negative">-7.45%</span>,需確認是個股問題還是產業問題
-  - 成本 $45.82 vs 當前 $40.50,虧損 <span class="status-negative">-11.6%</span>
-  - Intel 轉型進度緩慢,AI 晶片落後 NVIDIA/AMD
-- <strong>具體操作</strong>: 
-  - ❌ 不建議加碼攤平 (避免追加虧損股)
-  - 🔍 待調查暴跌原因
-  - 📊 若跌破 $38 → 評估減碼至 8-10%
-  - 📊 若反彈至 $43+ → 減碼至 10%,釋放資金
-- <strong>風險提示</strong>: 
-  - 製程技術持續落後風險
-  - AI 伺服器晶片市佔率流失
-  - 倉位過重 (12.6%)</p>
-<hr>
-<h4 id="tsla---tesla-inc">📊 TSLA - Tesla Inc. 🟢</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 20 股
-- 成本價: $298.88
-- 當前價: $454.53
-- 市值: $9,091
-- 倉位佔比: 3.5%
-- 損益: +$3,113 (<span class="status-positive">+52.1%</span>) 🌟</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $454.53
-- 變化: <span class="status-positive">+1.74%</span> (+$7.79)
-- 區間: $445.39 - $454.63
-- 成交量: 70.9M (活躍)</p>
-<p><strong>選擇權約束</strong>: 無</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟢 <strong>小幅加碼或賣出 Put 建倉</strong>
-- <strong>理由</strong>: 
-  - 獲利優異 <span class="status-positive">+52.1%</span>,動能強勁
-  - 倉位僅 3.5%,有加碼空間至 5-8%
-  - 電動車產業趨勢良好
-  - 2025 Q4 交付數據即將公布
-- <strong>具體操作</strong>: 
-  - 買入 10-15股 @ $445-455 (加碼至 5%)
-  - 或賣出 Put $440 (12/20) × 1-2張,看多建倉
-  - 資金需求: $4,450-6,800
-- <strong>風險提示</strong>: 
-  - 估值偏高 (P/E &gt; 100)
-  - Musk 政治風險
-  - 競爭加劇 (中國比亞迪、理想)</p>
-<hr>
-<h4 id="alk---alaska-air-group">📊 ALK - Alaska Air Group 🟢</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 100 股
-- 成本價: $40.00
-- 當前價: $47.32
-- 市值: $4,732
-- 倉位佔比: 1.8%
-- 損益: +$732 (<span class="status-positive">+18.3%</span>) 🌟</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $47.32
-- 變化: <span class="status-positive">+4.30%</span> (+$1.95)
-- 區間: $44.99 - $48.25
-- 成交量: 7.2M (活躍)</p>
-<p><strong>選擇權約束</strong>: 
-- Sell Call -1 @ $47.50 (12/19) - <strong>幾乎價內</strong>
-- Sell Put -2 @ $37.50 (12/19) - 價外安全</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟡 <strong>讓 Call 執行獲利了結,或回補 Call 繼續持有</strong>
-- <strong>理由</strong>: 
-  - 當前 $47.32 vs Call $47.50,僅差 $0.18
-  - 持有 17 天獲利 <span class="status-positive">+18.3%</span>,表現優異
-  - 航空股受油價、經濟影響波動大
-  - Put -2 @ $37.50 安全,無需擔心
-- <strong>具體操作</strong>: 
-  - <strong>方案A</strong> (建議): 讓 Call 執行,獲利 +$750 (<span class="status-positive">+18.8%</span>)
-  - <strong>方案B</strong>: 今日回補 Call,保留股票,但需支付回補成本
-  - 釋放資金 $4,750 可用於 GOOGL 加碼
-- <strong>風險提示</strong>: 
-  - 航空業景氣循環風險
-  - 油價波動風險</p>
-<hr>
-<h4 id="googl---alphabet-inc-最優先加碼">📊 GOOGL - Alphabet Inc. ⭐⭐⭐⭐⭐ <strong>最優先加碼</strong></h4>
-<p><strong>基本資訊</strong>:
-- 持股: 30 股
-- 成本價: $87.87
-- 當前價: $317.62
-- 市值: $9,529
-- 倉位佔比: 3.7%
-- 損益: +$6,893 (<span class="status-positive">+261.5%</span>) 🌟🌟🌟</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $317.62
-- 變化: <span class="status-negative">-0.63%</span> (-$2.01)
-- 區間: $314.71 - $322.36
-- 成交量: 31.1M (正常)</p>
-<p><strong>選擇權約束</strong>: 
-- GOOG Sell Put -1 @ $315 (12/05) - <strong>接近價內,可能被執行</strong></p>
-<p><strong>完整分析</strong> (基於 2025Q3 機構級報告):</p>
-<p>🌟 <strong>核心投資亮點</strong>:
-1. <strong>史上首次破 $100B 季度營收</strong> (<span class="status-positive">+16%</span> YoY)
-2. <strong>AI 全棧領導者</strong>: Gemini 650M 月活,Cloud AI 營收 <span class="status-positive">+200%</span>
-3. <strong>Cloud 黃金時代</strong>: <span class="status-positive">+34%</span> YoY,利潤率 23.7% (+6.6pp)
-4. <strong>估值被低估</strong>: P/E 21x (科技巨頭最低)
-5. <strong>財務極健康</strong>: 淨現金 $77B,FCF $48.7B (9M)</p>
-<p>📊 <strong>估值與目標價</strong>:
-- 當前價: $317.62
-- 12個月目標價: $350 (<span class="status-positive">+10.2%</span>)
-- 24個月目標價: $420 (<span class="status-positive">+32.2%</span>)
-- 風險回報比: 3:1 至 5:1</p>
-<p>⚠️ <strong>倉位嚴重不足問題</strong>:
-- 當前倉位: 3.7% 
-- 建議倉位: <strong>15-25%</strong> (核心持倉)
-- <strong>缺口</strong>: <span class="status-negative">-11.3%</span> 至 <span class="status-negative">-21.3%</span>
-- <strong>資金需求</strong>: $29,000-$55,000</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟢🟢🟢 <strong>立即大幅加碼 (最高優先級)</strong>
-- <strong>理由</strong>: 
-  - ⭐⭐⭐⭐⭐ 5星評級,唯一核心持倉標的
-  - 獲利 <span class="status-positive">+261.5%</span>,驗證投資論點正確
-  - 當前 $317 處於優質買點 (vs 目標 $350-420)
-  - GOOG Put $315 可能執行,自動增加 100股
-  - 倉位嚴重不足,配置失衡
-- <strong>具體操作</strong>: 
-  - <strong>階段一</strong> (本週): 買入 80-100股 @ $315-320
-    - 資金: $25,200-$32,000
-    - 目標倉位: 10-12%
-  - <strong>階段二</strong> (12月): 持續加碼至 150-200股
-    - 目標倉位: 15-20%
-  - <strong>階段三</strong> (Q1 2026): 加碼至 400-600股
-    - 目標倉位: 20-25% (核心持倉)
-  - 若 GOOG Put 執行: 以 $315 接 100股 (優質成本)
-- <strong>預期回報</strong>: 
-  - 12個月: +10-27%
-  - 24個月: +32-52%
-  - 加上股息: 總回報更高
-- <strong>風險提示</strong>: 
-  - CapEx 2026年將&rdquo;顯著增加&rdquo;
-  - 反壟斷監管風險
-  - AI 競爭加劇</p>
-<hr>
-<h4 id="u---unity-software">📊 U - Unity Software ⚠️</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 1,020 股
-- 成本價: $50.39
-- 當前價: $44.15
-- 市值: $45,033
-- 倉位佔比: 16.8% ⚠️ <strong>超過上限</strong>
-- 損益: -$6,365 (<span class="status-negative">-12.4%</span>)</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $44.15
-- 變化: <span class="status-negative">-1.05%</span> (-$0.47)
-- 區間: $43.51 - $45.15
-- 成交量: 5.2M</p>
-<p><strong>選擇權約束</strong>: 
-- Sell Call -2 @ $45.00 (12/05) - 價外安全 (明天到期)</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🔴 <strong>分批減碼至 12-15%</strong>
-- <strong>理由</strong>: 
-  - 倉位 16.8% 超過建議上限 15%
-  - 虧損 <span class="status-negative">-12.4%</span>,表現不如預期
-  - 遊戲引擎競爭激烈 (Unreal Engine)
-  - 需釋放資金加碼 GOOGL
-- <strong>具體操作</strong>: 
-  - 若股價反彈至 $46-48 → 賣出 200-300股
-  - 或賣出 Covered Call @ $48-50 (12/20到期)
-  - 目標倉位: 700-800股 (12-15%)
-  - 回收資金: $9,000-13,500
-- <strong>風險提示</strong>: 
-  - 倉位過重風險
-  - AI 對遊戲開發影響不確定</p>
-<hr>
-<h4 id="upst---upstart-holdings">📊 UPST - Upstart Holdings 🟢</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 300 股
-- 成本價: $49.67
-- 當前價: $47.13
-- 市值: $14,139
-- 倉位佔比: 5.5%
-- 損益: -$762 (<span class="status-negative">-5.1%</span>)</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $47.13
-- 變化: <span class="status-positive">+4.04%</span> (+$1.83) 🌟
-- 區間: $45.01 - $47.24
-- 成交量: 4.9M</p>
-<p><strong>選擇權約束</strong>: 
-- Sell Call -1 @ $48.00 (12/05) - 價外 (明天到期)
-- Sell Call -2 @ $50.00 (12/05) - 價外 (明天到期)</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟢 <strong>持有,若突破 $50 考慮加碼</strong>
-- <strong>理由</strong>: 
-  - 今日強漲 <span class="status-positive">+4.04%</span>,技術面轉強
-  - AI 驅動借貸模型優勢
-  - 倉位 5.5% 合理
-  - 虧損僅 <span class="status-negative">-5.1%</span>,接近成本
-- <strong>具體操作</strong>: 
-  - 12/05 Calls 讓到期,權利金收入
-  - 若突破 $50 → 加碼 50-100股至 6-7%
-  - 或賣出 Put $45 (12/20) 建倉
-- <strong>風險提示</strong>: 
-  - 利率政策影響借貸需求
-  - GAAP 仍虧損</p>
-<hr>
-<h4 id="amrz---amrize-inc">📊 AMRZ - Amrize Inc. ⭐⭐⭐⭐☆</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 400 股
-- 成本價: $53.08
-- 當前價: $52.74
-- 市值: $21,096
-- 倉位佔比: 8.2%
-- 損益: -$136 (<span class="status-negative">-0.6%</span>)</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $52.74
-- 變化: <span class="status-positive">+0.23%</span> (+$0.12)
-- 區間: $52.12 - $52.83
-- 成交量: 3.1M</p>
-<p><strong>選擇權約束</strong>: 
-- Sell Call -2 @ $55.00 (12/19) - 價外安全</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟢 <strong>持有,維持 8-10%</strong>
-- <strong>理由</strong>: 
-  - ⭐⭐⭐⭐☆ 評級優良
-  - 基建投資持續強勁 (IIJA法案)
-  - 幾乎打平成本 (<span class="status-negative">-0.6%</span>)
-  - 倉位 8.2% 適中
-- <strong>具體操作</strong>: 
-  - 繼續持有
-  - 若 Call 被執行 @ $55 → 獲利 <span class="status-positive">+3.6%</span>,可考慮回購
-- <strong>風險提示</strong>: 
-  - 住宅市場疲軟
-  - 水泥設備故障風險</p>
-<hr>
-<h4 id="ups---united-parcel-service">📊 UPS - United Parcel Service ⭐⭐⭐⭐☆</h4>
-<p><strong>基本資訊</strong>:
-- 持股: 100 股
-- 成本價: $92.00
-- 當前價: $94.76
-- 市值: $9,476
-- 倉位佔比: 3.7%
-- 損益: +$276 (<span class="status-positive">+3.0%</span>)</p>
-<p><strong>今日表現</strong>:
-- 收盤價: $94.76
-- 變化: <span class="status-negative">-3.51%</span> (-$3.45)
-- 區間: $94.50 - $98.69
-- 成交量: 8.3M</p>
-<p><strong>選擇權約束</strong>: 
-- Sell Put -1 @ $90.00 (12/19) - 價外安全
-- Sell Call -1 @ $105.00 (12/19) - 價外安全</p>
-<p><strong>操作建議</strong>:
-- <strong>建議</strong>: 🟢 <strong>今日回調是加碼良機</strong>
-- <strong>理由</strong>: 
-  - ⭐⭐⭐⭐☆ 評級優良
-  - 7.59% 高股息,提供下行保護
-  - Q3 超預期,轉型成功
-  - 目標價 $145-160 (+53-69% 潛力)
-  - 今日 <span class="status-negative">-3.51%</span> 回調提供買點
-  - 倉位僅 3.7% vs 建議 6-8%
-- <strong>具體操作</strong>: 
-  - 買入 40-60股 @ $94-96
-  - 資金需求: $3,760-5,760
-  - 目標倉位: 140-160股 (6-7%)
-  - 或賣出 Put $92 (12/20) × 1-2張
-- <strong>風險提示</strong>: 
-  - 貿易政策變化
-  - 國際利潤率恢復需時</p>
-<hr>
-<h2 id="倉位結構分析">⚖️ 倉位結構分析</h2>
-<h3 id="倉位分佈">倉位分佈</h3>
-<div class="table-wrapper"><table>
-<thead>
-<tr>
-<th>倉位級別</th>
-<th>股票數量</th>
-<th>佔比</th>
-<th>評估</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>核心持倉 (&gt;10%)</td>
-<td>2 檔</td>
-<td>29.4%</td>
-<td>🔴 過度集中 (U 16.8%, INTC 12.6%)</td>
-</tr>
-<tr>
-<td>主要持倉 (5-10%)</td>
-<td>2 檔</td>
-<td>13.7%</td>
-<td>🟢 合理 (AMRZ 8.2%, UPST 5.5%)</td>
-</tr>
-<tr>
-<td>一般持倉 (2-5%)</td>
-<td>4 檔</td>
-<td>14.5%</td>
-<td>🟢 合理</td>
-</tr>
-<tr>
-<td>小倉位 (&lt;2%)</td>
-<td>5 檔</td>
-<td>6.1%</td>
-<td>🟢 合理</td>
-</tr>
-</tbody>
-</table></div>
-<p><strong>問題識別</strong>:
-1. ❌ <strong>U 倉位過重</strong> (16.8% &gt; 15% 上限)
-2. ❌ <strong>INTC 倉位接近上限</strong> (12.6% ≈ 15%),且今日暴跌
-3. ❌ <strong>核心倉位集中</strong> - U + INTC = 29.4% (兩檔近 1/3)
-4. ❌ <strong>GOOGL 嚴重不足</strong> (3.7% vs 應有 15-25%)</p>
-<h3 id="產業集中度">產業集中度</h3>
-<div class="table-wrapper"><table>
-<thead>
-<tr>
-<th>產業</th>
 <th>股票</th>
-<th>佔比</th>
-<th>評估</th>
+<th>持股</th>
+<th>成本</th>
+<th>現價</th>
+<th>損益</th>
+<th>倉位</th>
+<th>今日</th>
+<th>選擇權</th>
+<th>建議</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>科技/軟體</td>
-<td>U, GOOGL, UPST, PINS</td>
-<td>28.9%</td>
-<td>🟢 合理</td>
-</tr>
-<tr>
-<td>半導體</td>
-<td>INTC, MBLY</td>
-<td>13.5%</td>
-<td>🟡 INTC 風險需關注</td>
-</tr>
-<tr>
-<td>工業/物流</td>
-<td>UPS, AMRZ</td>
-<td>11.9%</td>
-<td>🟢 合理</td>
-</tr>
-<tr>
-<td>運輸</td>
-<td>ALK</td>
-<td>1.8%</td>
-<td>🟢 低</td>
-</tr>
-<tr>
-<td>電動車</td>
-<td>TSLA</td>
+<td><strong>TSLA</strong></td>
+<td>20</td>
+<td>$298.88</td>
+<td>$454.53</td>
+<td>🟢 <span class="status-positive">+52.1%</span></td>
 <td>3.5%</td>
-<td>🟢 合理</td>
+<td>🚀 <span class="status-positive">+1.74%</span></td>
+<td>無</td>
+<td>持有</td>
 </tr>
 <tr>
-<td>醫療</td>
-<td>OSCR, OPCH</td>
-<td>2.6%</td>
-<td>🟢 低</td>
+<td><strong>ALK</strong></td>
+<td>100</td>
+<td>$40.00</td>
+<td>$47.32</td>
+<td>🟢 <span class="status-positive">+18.3%</span></td>
+<td>1.9%</td>
+<td>🚀 <span class="status-positive">+4.30%</span></td>
+<td>有</td>
+<td>持有</td>
 </tr>
 <tr>
-<td>其他</td>
-<td>MTN</td>
+<td><strong>UPST</strong></td>
+<td>300</td>
+<td>$49.67</td>
+<td>$47.13</td>
+<td>🔴 <span class="status-negative">-5.1%</span></td>
+<td>5.5%</td>
+<td>🟢 <span class="status-positive">+4.04%</span></td>
+<td>有</td>
+<td>持有</td>
+</tr>
+<tr>
+<td><strong>UPST</strong></td>
+<td>300</td>
+<td>$49.67</td>
+<td>$47.13</td>
+<td>🔴 <span class="status-negative">-5.1%</span></td>
+<td>5.5%</td>
+<td>🟢 <span class="status-positive">+4.04%</span></td>
+<td>有</td>
+<td>持有</td>
+</tr>
+<tr>
+<td><strong>OSCR</strong></td>
+<td>200</td>
+<td>$18.50</td>
+<td>$17.18</td>
+<td>🔴 <span class="status-negative">-7.1%</span></td>
+<td>1.3%</td>
+<td>🟢 <span class="status-positive">+0.47%</span></td>
+<td>有</td>
+<td>持有</td>
+</tr>
+<tr>
+<td><strong>MTN</strong></td>
+<td>50</td>
+<td>$163.76</td>
+<td>$141.45</td>
+<td>🔴 <span class="status-negative">-13.6%</span></td>
 <td>2.7%</td>
-<td>🟢 低</td>
+<td>🟢 <span class="status-positive">+0.29%</span></td>
+<td>無</td>
+<td>持有</td>
+</tr>
+<tr>
+<td><strong>AMRZ</strong></td>
+<td>400</td>
+<td>$53.08</td>
+<td>$52.74</td>
+<td>🔴 <span class="status-negative">-0.6%</span></td>
+<td>8.2%</td>
+<td>🟢 <span class="status-positive">+0.23%</span></td>
+<td>有</td>
+<td>持有</td>
+</tr>
+<tr>
+<td><strong>GOOGL</strong></td>
+<td>30</td>
+<td>$87.87</td>
+<td>$317.62</td>
+<td>🟢 <span class="status-positive">+261.5%</span></td>
+<td>3.7%</td>
+<td>🔴 <span class="status-negative">-0.63%</span></td>
+<td>無</td>
+<td>⭐ 大幅加碼</td>
+</tr>
+<tr>
+<td><strong>PINS</strong></td>
+<td>500</td>
+<td>$33.60</td>
+<td>$27.23</td>
+<td>🔴 <span class="status-negative">-19.0%</span></td>
+<td>5.3%</td>
+<td>🔴 <span class="status-negative">-0.66%</span></td>
+<td>無</td>
+<td>觀察</td>
+</tr>
+<tr>
+<td><strong>GOOG</strong></td>
+<td>0</td>
+<td>-</td>
+<td>$318.39</td>
+<td>-</td>
+<td>0%</td>
+<td>🔴 <span class="status-negative">-0.70%</span></td>
+<td>有</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>U</strong></td>
+<td>1020</td>
+<td>$50.39</td>
+<td>$44.15</td>
+<td>🔴 <span class="status-negative">-12.4%</span></td>
+<td>17.4%</td>
+<td>🔴 <span class="status-negative">-1.05%</span></td>
+<td>有</td>
+<td>逐步減碼</td>
+</tr>
+<tr>
+<td><strong>MBLY</strong></td>
+<td>200</td>
+<td>$17.00</td>
+<td>$11.83</td>
+<td>🔴 <span class="status-negative">-30.4%</span></td>
+<td>0.9%</td>
+<td>🔴 <span class="status-negative">-1.09%</span></td>
+<td>有</td>
+<td>觀察</td>
+</tr>
+<tr>
+<td><strong>OPCH</strong></td>
+<td>100</td>
+<td>$28.01</td>
+<td>$29.90</td>
+<td>🟢 <span class="status-positive">+6.7%</span></td>
+<td>1.2%</td>
+<td>🔴 <span class="status-negative">-1.19%</span></td>
+<td>有</td>
+<td>持有</td>
+</tr>
+<tr>
+<td><strong>UPS</strong></td>
+<td>100</td>
+<td>$92.00</td>
+<td>$94.76</td>
+<td>🟢 <span class="status-positive">+3.0%</span></td>
+<td>3.7%</td>
+<td>🔴 <span class="status-negative">-3.51%</span></td>
+<td>有</td>
+<td>加碼至8%</td>
+</tr>
+<tr>
+<td><strong>INTC</strong></td>
+<td>800</td>
+<td>$45.82</td>
+<td>$40.50</td>
+<td>🔴 <span class="status-negative">-11.6%</span></td>
+<td>12.5%</td>
+<td>⚠️ <span class="status-negative">-7.45%</span></td>
+<td>無</td>
+<td>⚠️ 檢視</td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>風險評估</strong>:
-- 🟡 科技股合計 42.4%,略高但可接受
-- 🟡 半導體 13.5%,INTC 今日暴跌需警惕
-- 🟢 整體產業分散度良好</p>
+<p><strong>倉位分佈</strong>:
+- 🔴 <strong>U 倉位過重</strong>: 17.4% (超過15%上限2.4%)
+- 🔴 <strong>INTC 倉位達上限</strong>: 12.5% (接近15%上限)
+- 🟡 <strong>GOOGL 倉位嚴重不足</strong>: 3.7% (建議15-25%)</p>
 <hr>
-<h2 id="倉位調整建議">🎯 倉位調整建議</h2>
-<h3 id="高優先級操作本週內">高優先級操作（本週內）⚠️⚠️⚠️</h3>
-<h4 id="加碼建議">加碼建議 🟢🟢🟢</h4>
-<h5 id="1-googl---alphabet-最高優先級">1. <strong>GOOGL - Alphabet</strong> ⭐⭐⭐⭐⭐ (最高優先級)</h5>
-<p><strong>當前倉位</strong>: 3.7% | <strong>目標倉位</strong>: 10-12% (第一階段)</p>
-<p><strong>加碼計劃</strong>:
-- 建議股數: 80-100股
-- 建議價位: $315-320 (當前 $317.62 ✅)
-- 資金需求: $25,200-$32,000
-- 目標倉位: 110-130股 (10-12%)</p>
-<p><strong>理由</strong>:
-- ⭐⭐⭐⭐⭐ 唯一 5星評級核心標的
-- 倉位嚴重不足 (3.7% vs 應有 15-25%)
-- 當前價 $317 處於優質買點
-- Q3 財報驗證 AI 全棧領導地位
-- 目標價 $350-420 (+10-32% 潛力)</p>
-<p><strong>執行方式</strong>:
-- 市價買入 80股 @ $317 = $25,360
-- 或限價 $315 買入 100股 = $31,500
-- 若 GOOG Put 執行 → 額外獲 100股 @ $315</p>
-<p><strong>預期結果</strong>:
-- 新倉位: 110-130股 (10-12%)
-- 平均成本: ~$220 (混合舊成本 $87.87)
-- 配置改善: 3.7% → 10-12% ✅</p>
-<hr>
-<h5 id="2-ups---united-parcel-service">2. <strong>UPS - United Parcel Service</strong> ⭐⭐⭐⭐☆</h5>
-<p><strong>當前倉位</strong>: 3.7% | <strong>目標倉位</strong>: 6-7%</p>
-<p><strong>加碼計劃</strong>:
-- 建議股數: 40-60股
-- 建議價位: $94-96 (今日回調至 $94.76 ✅)
-- 資金需求: $3,760-$5,760
-- 目標倉位: 140-160股 (6-7%)</p>
-<p><strong>理由</strong>:
-- 今日 <span class="status-negative">-3.51%</span> 回調提供買點
-- 7.59% 高股息提供下行保護
-- Q3 轉型成功,目標價 $145-160
-- 倉位不足 (3.7% vs 應有 6-8%)</p>
-<p><strong>執行方式</strong>:
-- 限價買入 50股 @ $95 = $4,750
-- 或賣出 Put $92 (12/20) × 2張,看多建倉</p>
-<hr>
-<h5 id="3-tsla---tesla-選擇性加碼">3. <strong>TSLA - Tesla</strong> (選擇性加碼)</h5>
-<p><strong>當前倉位</strong>: 3.5% | <strong>目標倉位</strong>: 5-6%</p>
-<p><strong>加碼計劃</strong>:
-- 建議股數: 10-15股
-- 建議價位: $445-455 (當前 $454.53)
-- 資金需求: $4,450-$6,825
-- 目標倉位: 30-35股 (5-6%)</p>
-<p><strong>理由</strong>:
-- 獲利 <span class="status-positive">+52.1%</span>,動能強勁
-- 倉位僅 3.5%,有加碼空間
-- Q4 交付數據即將公布</p>
-<hr>
-<h4 id="減碼建議">減碼建議 🔴</h4>
-<h5 id="1-u---unity-software-倉位過重">1. <strong>U - Unity Software</strong> (倉位過重)</h5>
-<p><strong>當前倉位</strong>: 16.8% | <strong>目標倉位</strong>: 12-15%</p>
-<p><strong>減碼計劃</strong>:
-- 建議股數: 200-300股
-- 建議價位: $46-48+ (當前 $44.15,等反彈)
-- 預期回收: $9,200-$14,400
-- 目標倉位: 720-820股 (12-15%)</p>
-<p><strong>理由</strong>:
-- 倉位超標 (16.8% &gt; 15%)
-- 虧損 <span class="status-negative">-12.4%</span>,表現不佳
-- 需釋放資金加碼 GOOGL</p>
-<p><strong>執行方式</strong>:
-- 等反彈至 $46+ 賣出 200股
-- 或賣出 Covered Call @ $48 (12/20) × 2-3張</p>
-<hr>
-<h5 id="2-intc---intel-觀察減碼">2. <strong>INTC - Intel</strong> (觀察減碼)</h5>
-<p><strong>當前倉位</strong>: 12.6% | <strong>目標倉位</strong>: 8-10%</p>
-<p><strong>減碼計劃</strong>:
-- 建議股數: 200-300股
-- 建議價位: $43+ (等反彈,當前 $40.50)
-- 預期回收: $8,600-$12,900
-- 目標倉位: 500-600股 (8-10%)</p>
-<p><strong>理由</strong>:
-- 今日暴跌 <span class="status-negative">-7.45%</span>,需確認原因
-- 倉位接近上限 (12.6% ≈ 15%)
-- AI 晶片競爭力不足</p>
-<p><strong>執行時機</strong>:
-- 待調查暴跌原因
-- 若反彈至 $43+ 執行減碼
-- 若持續下跌至 $38 立即減碼止損</p>
-<hr>
-<h5 id="3-alk---alaska-air-選擇權獲利了結">3. <strong>ALK - Alaska Air</strong> (選擇權獲利了結)</h5>
-<p><strong>當前倉位</strong>: 1.8% | <strong>操作</strong>: 讓 Call 執行</p>
-<p><strong>獲利計劃</strong>:
-- Call 執行價: $47.50
-- 當前價: $47.32
-- 獲利: +$750 (<span class="status-positive">+18.8%</span>)
-- 回收資金: $4,750</p>
-<p><strong>理由</strong>:
-- 17天獲利 <span class="status-positive">+18.8%</span>,表現優異
-- 航空股波動大,獲利了結
-- 釋放資金加碼 GOOGL</p>
-<hr>
-<h4 id="觀望持有">觀望持有 🟡</h4>
+<h3 id="重點持股分析">📌 重點持股分析</h3>
+<h4 id="intc---intel-corporation-125--116">🚨 INTC - Intel Corporation (12.5%, <span class="status-negative">-11.6%</span>)</h4>
 <ul>
-<li><strong>AMRZ</strong> (8.2%) - ⭐⭐⭐⭐☆ 優質持倉,繼續持有</li>
-<li><strong>PINS</strong> (5.1%) - 觀察 Q4 財報</li>
-<li><strong>UPST</strong> (5.5%) - 今日強漲,持續觀察</li>
-<li><strong>MTN</strong> (2.7%) - 待分析</li>
-<li><strong>OSCR, OPCH, MBLY</strong> - 小倉位,觀望</li>
+<li><strong>狀態</strong>: 今日重挫-7.45%，拖累投資組合表現，盤中跌破$40關口。成交量放大至1.07億股(正常3-4千萬)，顯示恐慌性拋售。</li>
+<li><strong>建議</strong>: ⚠️ <strong>檢視持有理由</strong> - 需確認是否有重大負面消息(財報預警、客戶流失、競爭加劇等)。若無基本面惡化，可視為短期波動；若有結構性問題，考慮減碼至8-10%。</li>
+<li><strong>風險</strong>: 倉位達12.5%，單日下跌對組合影響過大(<span class="status-negative">-0.93%</span>貢獻)。AMD/NVIDIA競爭壓力持續，AI晶片市場份額流失風險。</li>
 </ul>
-<hr>
-<h3 id="中期操作1-4週">中期操作（1-4週）</h3>
-<h4 id="12月中旬-1215-1220">12月中旬 (12/15-12/20)</h4>
-<ol>
-<li><strong>完成 GOOGL 第一階段加碼</strong> → 10-12%</li>
-<li><strong>完成 UPS 加碼</strong> → 6-7%</li>
-<li><strong>U 減碼</strong> (若反彈) → 12-15%</li>
-<li><strong>INTC 評估</strong> (依暴跌原因) → 可能減至 8-10%</li>
-</ol>
-<h4 id="12月底-1220-1231">12月底 (12/20-12/31)</h4>
-<ol>
-<li><strong>GOOGL 持續加碼</strong> → 15-18%</li>
-<li><strong>TSLA 評估 Q4 交付</strong> → 可能加碼至 5-6%</li>
-<li><strong>季度投資組合檢討</strong></li>
-</ol>
-<hr>
-<h3 id="資金使用計劃">資金使用計劃</h3>
-<p><strong>可用資金</strong>: $83,342</p>
-<p><strong>高優先級配置</strong>:
-- GOOGL 加碼: $25,000-$31,000 (80-100股)
-- UPS 加碼: $4,000-$5,000 (40-50股)
-- TSLA 加碼: $4,500-$7,000 (10-15股)
-- <strong>小計</strong>: $33,500-$43,000</p>
-<p><strong>預期釋放資金</strong>:
-- ALK Call 執行: +$4,750
-- U 減碼 (未來): +$9,000-$14,000
-- INTC 減碼 (未來): +$8,600-$12,900</p>
-<p><strong>執行後現金</strong>:
-- 使用: $33,500-$43,000
-- 剩餘: $40,000-$50,000 (15-19%) ✅ 健康</p>
-<hr>
-<h2 id="風險提示">⚠️ 風險提示</h2>
-<h3 id="高風險點">高風險點 🔴</h3>
-<h4 id="1-1205-選擇權到期風險-明天">1. <strong>12/05 選擇權到期風險</strong> (明天) ⚠️⚠️⚠️</h4>
-<p><strong>需立即處理</strong>:
-- ✅ DKNG 2張 Put $31/$32 - 安全,讓到期
-- 🟡 GOOG Put $315 - 可能執行,<strong>建議讓執行接股</strong>
-- ✅ U, UPST, MBLY Calls - 價外,讓到期
-- 🔍 BA Put - 確認狀態</p>
-<p><strong>行動</strong>:
-- [ ] 今日收盤前確認 GOOG Put 決策
-- [ ] 準備 $31,500 接 GOOG 100股 (若執行)
-- [ ] 監控其他部位</p>
-<hr>
-<h4 id="2-intc-暴跌風險--745">2. <strong>INTC 暴跌風險</strong> (<span class="status-negative">-7.45%</span>) 🔴</h4>
-<p><strong>當前狀況</strong>:
-- 單日暴跌 <span class="status-negative">-7.45%</span> (成交量 103.5M 異常)
-- 倉位 12.6%,影響組合 <span class="status-negative">-0.94%</span>
-- 虧損擴大至 <span class="status-negative">-11.6%</span></p>
-<p><strong>應對措施</strong>:
-- [ ] 立即調查暴跌原因 (財報、新聞、產業)
-- [ ] 若反彈至 $43+ → 減碼 200-300股至 8-10%
-- [ ] 若跌破 $38 → 立即減碼止損
-- [ ] 設定止損點 $38 (vs 成本 $45.82, <span class="status-negative">-17%</span>)</p>
-<hr>
-<h4 id="3-倉位集中風險">3. <strong>倉位集中風險</strong> 🔴</h4>
-<p><strong>問題</strong>:
-- U (16.8%) + INTC (12.6%) = 29.4% (兩檔近 1/3)
-- GOOGL 嚴重不足 (3.7% vs 應有 15-25%)</p>
-<p><strong>應對措施</strong>:
-- [ ] 本週完成 GOOGL 加碼至 10-12%
-- [ ] U 反彈減碼至 12-15%
-- [ ] INTC 評估減碼至 8-10%
-- [ ] 2週內改善核心持倉結構</p>
-<hr>
-<h4 id="4-選擇權被執行風險-1219">4. <strong>選擇權被執行風險</strong> (12/19)</h4>
-<p><strong>可能被執行</strong>:
-- ALK Call $47.50 (當前 $47.32) - 獲利 <span class="status-positive">+18.8%</span>
-- OPCH Call $30.00 (當前 $29.90) - 獲利 <span class="status-positive">+7.1%</span></p>
-<p><strong>應對措施</strong>:
-- [ ] ALK: 讓執行獲利了結 (釋放 $4,750)
-- [ ] OPCH: 讓執行獲利了結 (釋放 $3,000)
-- [ ] 回收資金用於 GOOGL 加碼</p>
-<hr>
-<h3 id="中風險點">中風險點 🟡</h3>
-<h4 id="5-現金比例偏高-311">5. <strong>現金比例偏高</strong> (31.1%)</h4>
+<h4 id="googl---alphabet-inc-37-2615">⭐ GOOGL - Alphabet Inc. (3.7%, <span class="status-positive">+261.5%</span>)</h4>
 <ul>
-<li>當前: 31.1% vs 建議上限 30%</li>
-<li>機會成本: 市場上漲時資金閒置</li>
+<li><strong>狀態</strong>: 投資組合最佳持股，報酬率+261.5%，但倉位嚴重不足(3.7% vs 建議15-25%)。今日小幅回調-0.63%為加碼良機。</li>
+<li><strong>建議</strong>: 🌟 <strong>最優先加碼</strong> - 建議分三階段建立核心持倉：</li>
+<li>階段一: 買入100-150股 @ $315-320 → 增至7-8%</li>
+<li>階段二: 再買入100-150股 @ 回調時 → 增至12-15%</li>
+<li>階段三: 長期目標20-25%核心倉位</li>
+<li><strong>風險</strong>: 當前倉位配置最大失誤，錯失⭐⭐⭐⭐⭐評級標的加碼機會。</li>
 </ul>
-<p><strong>應對措施</strong>:
-- [ ] 本週執行 GOOGL + UPS 加碼 (使用 $30-40K)
-- [ ] 降至 18-22% 健康水平</p>
-<hr>
-<h4 id="6-市場系統性風險">6. <strong>市場系統性風險</strong></h4>
+<h4 id="u---unity-software-174--124">🔴 U - Unity Software (17.4%, <span class="status-negative">-12.4%</span>)</h4>
 <ul>
-<li>科技股佔比 42.4%</li>
-<li>大盤若回調影響較大</li>
+<li><strong>狀態</strong>: 倉位過重(17.4% &gt; 15%上限)，損益-12.4%。今日-1.05%，選擇權$45 Call將到期(價外安全)。</li>
+<li><strong>建議</strong>: <strong>逐步減碼至12-15%</strong> - 若股價反彈至$46-48，考慮賣出200-300股，回收資金$9,200-14,400轉投GOOGL。</li>
+<li><strong>風險</strong>: 單一持股過度集中，遊戲引擎市場競爭加劇(Unreal Engine)，變現能力疑慮持續。</li>
 </ul>
-<p><strong>應對措施</strong>:
-- 維持 20% 現金緩衝
-- 選擇權策略提供下行保護
-- 高股息股 (UPS 7.59%) 提供穩定性</p>
-<hr>
-<h2 id="行動清單">✅ 行動清單</h2>
-<h3 id="立即執行今日-1205">🔴 立即執行（今日 12/05）</h3>
+<h4 id="tsla---tesla-35-521">🚀 TSLA - Tesla (3.5%, <span class="status-positive">+52.1%</span>)</h4>
 <ul>
-<li>[ ] <strong>監控 12/05 到期選擇權</strong> (明天到期)</li>
-<li>[ ] 確認 GOOG Put $315 決策 (建議讓執行)</li>
-<li>[ ] 準備 $31,500 接股資金</li>
-<li>
-<p>[ ] 確認 DKNG, U, UPST, MBLY 狀態</p>
-</li>
-<li>
-<p>[ ] <strong>調查 INTC 暴跌原因</strong></p>
-</li>
-<li>[ ] 檢查財報、新聞</li>
-<li>[ ] 評估產業趨勢</li>
-<li>
-<p>[ ] 決定是否止損/減碼</p>
-</li>
-<li>
-<p>[ ] <strong>GOOGL 加碼第一階段執行</strong></p>
-</li>
-<li>[ ] 買入 80-100股 @ $315-320</li>
-<li>[ ] 資金: $25,200-$32,000</li>
+<li><strong>狀態</strong>: 表現優異，報酬率+52.1%，今日續漲+1.74%。小倉位限制了對組合貢獻。</li>
+<li><strong>建議</strong>: <strong>持有觀察</strong> - 倉位合理(3.5%)，考慮若突破$460加碼至5%，或在$420-430設置停利保護。</li>
+<li><strong>風險</strong>: 高估值(P/E &gt;100)，Cybertruck量產進度、自駕監管風險。</li>
 </ul>
-<hr>
-<h3 id="本週執行-1205-1209">🟡 本週執行 (12/05-12/09)</h3>
+<h4 id="alk---alaska-air-group-19-183">📈 ALK - Alaska Air Group (1.9%, <span class="status-positive">+18.3%</span>)</h4>
 <ul>
-<li>[ ] <strong>UPS 加碼</strong></li>
-<li>[ ] 買入 40-60股 @ $94-96</li>
-<li>
-<p>[ ] 資金: $3,760-$5,760</p>
-</li>
-<li>
-<p>[ ] <strong>TSLA 評估加碼</strong> (選擇性)</p>
-</li>
-<li>[ ] 買入 10-15股 @ $445-455</li>
-<li>
-<p>[ ] 或賣出 Put $440 (12/20)</p>
-</li>
-<li>
-<p>[ ] <strong>監控 ALK/OPCH Call</strong> (12/19到期)</p>
-</li>
-<li>
-<p>[ ] 決定讓執行或回補</p>
-</li>
-<li>
-<p>[ ] <strong>設定 INTC 止損點</strong> ($38)</p>
-</li>
+<li><strong>狀態</strong>: 今日強勢上漲+4.30%，報酬率+18.3%。$47.50 Call接近價內(距離$0.18)。</li>
+<li><strong>建議</strong>: <strong>密切監控選擇權</strong> - 若12/19被Call Away @ $47.50，實現+18.8%獲利，可考慮$42-44回購。航空業旺季(聖誕假期)表現值得期待。</li>
+<li><strong>風險</strong>: 小倉位(1.9%)，油價波動、冬季天氣影響航班。</li>
 </ul>
-<hr>
-<h3 id="本月執行-12月">🟢 本月執行 (12月)</h3>
+<h4 id="ups---united-parcel-service-37-30">📊 UPS - United Parcel Service (3.7%, <span class="status-positive">+3.0%</span>)</h4>
 <ul>
-<li>[ ] <strong>GOOGL 持續加碼至 15-18%</strong></li>
-<li>[ ] 第二階段: 再買 50-80股</li>
-<li>
-<p>[ ] 目標: 180-210股總計</p>
-</li>
-<li>
-<p>[ ] <strong>U 減碼至 12-15%</strong></p>
-</li>
-<li>[ ] 等反彈至 $46-48</li>
-<li>
-<p>[ ] 賣出 200-300股</p>
-</li>
-<li>
-<p>[ ] <strong>INTC 評估減碼</strong></p>
-</li>
-<li>[ ] 依暴跌調查結果</li>
-<li>
-<p>[ ] 可能減至 8-10%</p>
-</li>
-<li>
-<p>[ ] <strong>完成至少 2 個待分析標的</strong></p>
-</li>
-<li>[ ] TSLA Q4 交付分析</li>
-<li>
-<p>[ ] MTN 深度分析</p>
-</li>
-<li>
-<p>[ ] <strong>季度投資組合檢討</strong></p>
-</li>
+<li><strong>狀態</strong>: 今日下跌-3.51%，但整體仍獲利+3.0%，且有7.59%高股息保護。倉位低於目標(3.7% vs 建議6-8%)。</li>
+<li><strong>建議</strong>: <strong>逢低加碼至8%</strong> - 今日回調至$94.76為加碼機會，建議買入80-100股 @ $92-95，Q4旺季(購物季)物流需求強勁。</li>
+<li><strong>風險</strong>: Amazon減量計劃持續、國際業務利潤率恢復緩慢。</li>
 </ul>
-<hr>
-<h3 id="持續監控">📊 持續監控</h3>
+<h4 id="pins---pinterest-53--190">🔻 PINS - Pinterest (5.3%, <span class="status-negative">-19.0%</span>)</h4>
 <ul>
-<li>[ ] <strong>每日監控選擇權狀態</strong></li>
-<li>12/05 到期: DKNG, GOOG, U, UPST, MBLY, BA</li>
-<li>
-<p>12/19 到期: ALK, UPS, OSCR, OPCH, AMRZ</p>
-</li>
-<li>
-<p>[ ] <strong>每週檢視倉位</strong></p>
-</li>
-<li>GOOGL 加碼進度</li>
-<li>U/INTC 減碼時機</li>
-<li>
-<p>現金比例 (目標 18-25%)</p>
-</li>
-<li>
-<p>[ ] <strong>追蹤重點股票</strong></p>
-</li>
-<li>INTC 暴跌後走勢</li>
-<li>TSLA Q4 交付數據</li>
-<li>
-<p>GOOGL AI 產品進展</p>
-</li>
-<li>
-<p>[ ] <strong>市場環境監控</strong></p>
-</li>
-<li>Fed 利率政策</li>
-<li>AI 產業趨勢</li>
-<li>科技股估值水平</li>
+<li><strong>狀態</strong>: 11/16已加碼至500股，但損益仍-19.0%。社群平台廣告市場競爭激烈。</li>
+<li><strong>建議</strong>: <strong>短期持有觀察</strong> - 等待Q4財報(電商旺季表現)，若無改善考慮減碼至3-4%。</li>
+<li><strong>風險</strong>: MAU增長放緩、TikTok/Instagram競爭加劇、廣告ARPU下降。</li>
+</ul>
+<h4 id="mbly---mobileye-09--304">⚠️ MBLY - Mobileye (0.9%, <span class="status-negative">-30.4%</span>)</h4>
+<ul>
+<li><strong>狀態</strong>: 最差持股，損益-30.4%。自駕技術商業化不如預期，Intel拆分計劃延宕。</li>
+<li><strong>建議</strong>: <strong>考慮停損</strong> - 若跌破$11支撐位，建議清倉止損(損失約$1,036)。釋放資金轉投更優質標的(GOOGL/UPS)。</li>
+<li><strong>風險</strong>: 小倉位(0.9%)，但-30.4%侵蝕本金。自駕監管不確定性、中國市場競爭。</li>
 </ul>
 <hr>
 <h2 id="績效追蹤">📊 績效追蹤</h2>
-<h3 id="本月績效1201-1205">本月績效（12/01-12/05）</h3>
+<h3 id="本月績效截至今日">本月績效（截至今日）</h3>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
 <th>指標</th>
 <th>數值</th>
+<th>評估</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>月度報酬率</td>
-<td><span class="status-positive">+1.9%</span> (vs 11/29: $257,723 → $262,659)</td>
+<td><span class="status-negative">-4.0%</span></td>
+<td>🟢 持續改善</td>
 </tr>
 <tr>
-<td>vs S&amp;P 500</td>
-<td>待更新</td>
+<td>vs 11/29</td>
+<td><span class="status-positive">+1.8%</span></td>
+<td>🟢 損益收斂</td>
 </tr>
 <tr>
 <td>最佳持股</td>
-<td>GOOGL (<span class="status-positive">+261.5%</span>), TSLA (<span class="status-positive">+52.1%</span>), ALK (<span class="status-positive">+18.3%</span>)</td>
+<td>GOOGL (<span class="status-positive">+261.5%</span>)</td>
+<td>⭐</td>
+</tr>
+<tr>
+<td>次佳持股</td>
+<td>TSLA (<span class="status-positive">+52.1%</span>)</td>
+<td>🚀</td>
 </tr>
 <tr>
 <td>最差持股</td>
-<td>U (<span class="status-negative">-12.4%</span>), INTC (<span class="status-negative">-11.6%</span>), PINS (<span class="status-negative">-22.3%</span>)</td>
+<td>MBLY (<span class="status-negative">-30.4%</span>)</td>
+<td>🔴</td>
 </tr>
 <tr>
-<td>未實現損益改善</td>
-<td>-$10,903 (11/29) → -$7,592 (12/05), <strong><span class="status-positive">+30.4%</span></strong></td>
+<td>次差持股</td>
+<td>PINS (<span class="status-negative">-19.0%</span>)</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>勝率</td>
+<td>46.7% (7/15)</td>
+<td>🟡</td>
 </tr>
 </tbody>
 </table></div>
-<h3 id="2025年累計績效">2025年累計績效</h3>
+<h3 id="年度績效截至今日">年度績效（截至今日）</h3>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
@@ -1139,109 +559,122 @@
 </thead>
 <tbody>
 <tr>
-<td>年初至今報酬率</td>
-<td><span class="status-negative">-4.0%</span> (未實現損益 / 成本)</td>
+<td>年度報酬率</td>
+<td><span class="status-negative">-4.0%</span> (股票部位)</td>
 </tr>
 <tr>
-<td>資產增長</td>
-<td>待計算 (需年初數據)</td>
+<td>vs 11/16</td>
+<td><span class="status-positive">+16.1%</span> (11/16至今)</td>
 </tr>
 <tr>
-<td>最佳交易</td>
-<td>GOOGL (<span class="status-positive">+261.5%</span>), TSLA (<span class="status-positive">+52.1%</span>)</td>
-</tr>
-<tr>
-<td>待改善</td>
-<td>PINS (<span class="status-negative">-22.3%</span>), U (<span class="status-negative">-12.4%</span>)</td>
+<td>未實現損益改善</td>
+<td>+$30,431 (從-$38,023至-$7,592)</td>
 </tr>
 </tbody>
 </table></div>
-<h3 id="關鍵指標改善趨勢">關鍵指標改善趨勢</h3>
+<h3 id="組合健康度評估">📈 組合健康度評估</h3>
 <div class="table-wrapper"><table>
 <thead>
 <tr>
-<th>日期</th>
-<th>未實現損益</th>
-<th>總報酬率</th>
-<th>組合評級</th>
+<th>維度</th>
+<th>評分</th>
+<th>說明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>2025-11-16</td>
-<td>-$38,023</td>
-<td><span class="status-negative">-20.1%</span></td>
-<td>⭐⭐☆☆☆</td>
+<td>資產配置</td>
+<td>⭐⭐⭐⭐☆</td>
+<td>現金32%充裕，股票68%適中</td>
 </tr>
 <tr>
-<td>2025-11-29</td>
-<td>-$10,903</td>
-<td><span class="status-negative">-5.8%</span></td>
-<td>⭐⭐⭐⭐☆</td>
+<td>倉位管理</td>
+<td>⭐⭐⭐☆☆</td>
+<td>U過重、GOOGL不足需調整</td>
 </tr>
 <tr>
-<td>2025-12-05</td>
-<td>-$7,592</td>
-<td><span class="status-negative">-4.0%</span></td>
+<td>風險控制</td>
 <td>⭐⭐⭐⭐☆</td>
+<td>選擇權管理得當，今日全數安全到期</td>
+</tr>
+<tr>
+<td>績效表現</td>
+<td>⭐⭐⭐☆☆</td>
+<td>損益持續改善，但仍虧損-4.0%</td>
+</tr>
+<tr>
+<td><strong>整體評級</strong></td>
+<td><strong>⭐⭐⭐⭐☆</strong></td>
+<td><strong>大幅改善，需優化倉位配置</strong></td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>改善幅度</strong>: 
-- 19天改善 $30,431 (<span class="status-positive">+80.0%</span>) 🌟🌟🌟
-- 報酬率提升 16.1pp
-- 評級升級 2星</p>
 <hr>
-<h2 id="投資策略總結">💡 投資策略總結</h2>
-<h3 id="本次分析核心結論">本次分析核心結論 🎯</h3>
-<h4 id="1-googl-嚴重低配---最高優先級">1. <strong>GOOGL 嚴重低配</strong> - 最高優先級 🔴🔴🔴</h4>
-<ul>
-<li>當前: 3.7% | 應有: 15-25%</li>
-<li><strong>立即行動</strong>: 本週加碼至 10-12%</li>
-<li>資金: $25,000-$32,000</li>
-<li>預期回報: +10-52% (12-24M)</li>
-</ul>
-<h4 id="2-倉位結構失衡---需調整">2. <strong>倉位結構失衡</strong> - 需調整 🔴</h4>
-<ul>
-<li>U (16.8%) 過重 → 減至 12-15%</li>
-<li>INTC (12.6%) 接近上限且暴跌 → 評估減至 8-10%</li>
-<li>兩檔佔 29.4%,過度集中</li>
-</ul>
-<h4 id="3-選擇權管理良好---繼續維持">3. <strong>選擇權管理良好</strong> - 繼續維持 🟢</h4>
-<ul>
-<li>12/05 到期部位大多安全</li>
-<li>GOOG Put 執行是加碼良機</li>
-<li>Covered Call 策略有效降低成本</li>
-</ul>
-<h4 id="4-現金管理健康---微調優化">4. <strong>現金管理健康</strong> - 微調優化 🟢</h4>
-<ul>
-<li>當前 31.1%,略高</li>
-<li>執行加碼後降至 18-22% ✅</li>
-</ul>
-<h4 id="5-組合表現改善---持續優化">5. <strong>組合表現改善</strong> - 持續優化 🟢</h4>
-<ul>
-<li>未實現損益 19天改善 $30,431 (<span class="status-positive">+80%</span>)</li>
-<li>上漲股佔 57%,健康結構</li>
-<li>需處理 INTC 暴跌風險</li>
-</ul>
-<hr>
-<h3 id="投資紀律提醒">投資紀律提醒 ✅</h3>
+<h2 id="本週行動計畫">💡 本週行動計畫</h2>
+<h3 id="緊急優先-今日-明日">🔴 緊急優先 (今日-明日)</h3>
 <ol>
-<li>✅ <strong>嚴格執行 GOOGL 加碼</strong> - 不可拖延</li>
-<li>✅ <strong>紀律減碼超標倉位</strong> - U 反彈即減</li>
-<li>✅ <strong>設定明確止損</strong> - INTC $38 止損</li>
-<li>✅ <strong>理性應對波動</strong> - INTC 暴跌不恐慌</li>
-<li>✅ <strong>持續選擇權策略</strong> - 有效降成本</li>
+<li>✅ <strong>確認今日到期選擇權</strong> - 7個合約將順利到期，確認權利金入帳</li>
+<li>⚠️ <strong>檢視INTC重挫原因</strong> - 研究今日-7.45%是否有重大負面消息</li>
+<li>📊 <strong>監控ALK選擇權</strong> - $47.50 Call接近價內，評估被執行影響</li>
+</ol>
+<h3 id="重要任務-本週內">🟡 重要任務 (本週內)</h3>
+<ol start="4">
+<li>🌟 <strong>GOOGL加碼階段一</strong> - 買入100-150股 @ $315-320，增至7-8%倉位</li>
+<li>📈 <strong>UPS逢低加碼</strong> - 若回調至$92-95，買入80-100股增至6-7%</li>
+<li>🔻 <strong>U減碼準備</strong> - 若反彈至$46-48，賣出200-300股降至12-15%</li>
+</ol>
+<h3 id="持續優化-本月內">🟢 持續優化 (本月內)</h3>
+<ol start="7">
+<li>📊 <strong>完成待分析標的</strong> - 優先完成TSLA、MTN深度分析</li>
+<li>🔍 <strong>MBLY停損評估</strong> - 若跌破$11考慮清倉</li>
+<li>📋 <strong>12/19選擇權管理</strong> - 監控ALK/OPCH接近價內的Call</li>
 </ol>
 <hr>
-<h2 id="免責聲明">⚠️ 免責聲明</h2>
-<p>本報告僅供參考,不構成投資建議。投資有風險,請根據自身情況做出獨立決策。所有數據基於 2025-12-05 市場收盤價,實際執行時請以即時報價為準。</p>
+<h2 id="風險提示">⚠️ 風險提示</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>風險類別</th>
+<th>風險等級</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集中度風險</td>
+<td>🟡 中度</td>
+<td>U+INTC佔29.9%，需分散</td>
+</tr>
+<tr>
+<td>市場風險</td>
+<td>🟡 中度</td>
+<td>科技股回調壓力(Fed利率政策)</td>
+</tr>
+<tr>
+<td>個股風險</td>
+<td>🔴 高度</td>
+<td>INTC今日暴跌，需檢視基本面</td>
+</tr>
+<tr>
+<td>機會成本</td>
+<td>🔴 高度</td>
+<td>GOOGL倉位嚴重不足，錯失強勢標的</td>
+</tr>
+<tr>
+<td>選擇權風險</td>
+<td>🟢 低度</td>
+<td>今日到期全數安全，12/19需監控</td>
+</tr>
+</tbody>
+</table></div>
 <hr>
-<p><strong>報告製作</strong>: Market Intelligence System
-<strong>分析引擎</strong>: Claude (Sonnet 4.5)
-<strong>數據來源</strong>: Portfolio Management System
-<strong>報告版本</strong>: v2.0
-<strong>生成時間</strong>: 2025-12-05 09:06 UTC</p>
+<h2 id="免責聲明">⚠️ 免責聲明</h2>
+<p>本報告僅供參考，不構成投資建議。投資有風險，請根據自身情況做出獨立決策。</p>
+<hr>
+<p><strong>報告製作</strong>: Market Intelligence System<br>
+<strong>分析引擎</strong>: Claude (Sonnet 4.5)<br>
+<strong>數據來源</strong>: Portfolio Management System<br>
+<strong>報告版本</strong>: v3.0 (簡化版)</p>
 <hr>
             </section>
         </main>

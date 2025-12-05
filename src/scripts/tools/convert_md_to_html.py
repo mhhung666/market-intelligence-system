@@ -38,7 +38,7 @@ def parse_args() -> argparse.Namespace:
         "page_type",
         nargs="?",
         default="market",
-        choices=["market", "holdings", "home"],
+        choices=["market", "holdings", "home", "stock"],
         help="用於設定導航高亮, 預設 market",
     )
     return parser.parse_args()
@@ -55,8 +55,8 @@ def slugify_heading(value: str, separator: str = "-") -> str:
     return cleaned.strip(separator)
 
 
-def extract_title_and_date(content: str, source_path: Path) -> Tuple[str, str]:
-    """從 markdown 抓 title 與日期 (優先抓正文, 再退回檔名)."""
+def extract_title_and_date(content: str, source_path: Path) -> Tuple[str, str, str]:
+    """從 markdown 抓 title、日期與股票代碼 (優先抓正文, 再退回檔名)."""
     title_match = re.search(r"^#\s+(.+?)$", content, re.MULTILINE)
     title = title_match.group(1).strip() if title_match else "Analysis Report"
 
@@ -67,7 +67,18 @@ def extract_title_and_date(content: str, source_path: Path) -> Tuple[str, str]:
         file_match = re.search(r"(\d{4}-\d{2}-\d{2})", source_path.name)
         date = file_match.group(1) if file_match else localized_now().strftime("%Y-%m-%d")
 
-    return title, date
+    # 提取股票代碼 (從檔名或內容)
+    stock_symbol = ""
+    stock_match = re.search(r"stock-([A-Z]+)-", source_path.name)
+    if stock_match:
+        stock_symbol = stock_match.group(1)
+    else:
+        # 從內容中的 metadata 提取
+        symbol_match = re.search(r"[*]{2}股票代碼[*]{2}:\s*([A-Z]+)", content)
+        if symbol_match:
+            stock_symbol = symbol_match.group(1)
+
+    return title, date, stock_symbol
 
 
 def strip_leading_emoji(text: str) -> str:
@@ -125,16 +136,41 @@ def markdown_to_html(md_content: str) -> str:
     return post_process_html(html)
 
 
-def create_html_page(title: str, date: str, content_html: str, page_type: str) -> str:
+def create_html_page(title: str, date: str, content_html: str, page_type: str, stock_symbol: str = "") -> str:
     """建立完整頁面 HTML。"""
     display_title = strip_leading_emoji(title)
-    page_names = {"market": "Market Analysis", "holdings": "Holdings Analysis", "home": "Home"}
+    page_names = {
+        "market": "Market Analysis",
+        "holdings": "Holdings Analysis",
+        "home": "Home",
+        "stock": "Stock Analysis"
+    }
     current_page = page_names.get(page_type, "Analysis")
     generated_at_dt = localized_now()
     generated_at = generated_at_dt.strftime("%Y-%m-%d %H:%M %Z%z").strip()
 
     def active_class(target: str) -> str:
         return ' class="nav-link active"' if target == page_type else ' class="nav-link"'
+
+    # 個股頁面的麵包屑導航
+    breadcrumb = ""
+    if page_type == "stock" and stock_symbol:
+        breadcrumb = f'''
+        <nav class="breadcrumb">
+            <a href="../index.html">Home</a>
+            <span class="separator">›</span>
+            <a href="index.html">Stocks</a>
+            <span class="separator">›</span>
+            <span class="current">{stock_symbol}</span>
+        </nav>
+        '''
+
+    # 根據頁面類型調整 CSS/JS 路徑
+    css_path = "../styles.css" if page_type == "stock" else "styles.css"
+    home_path = "../index.html" if page_type == "stock" else "index.html"
+    market_path = "../market.html" if page_type == "stock" else "market.html"
+    holdings_path = "../holdings.html" if page_type == "stock" else "holdings.html"
+    stocks_path = "index.html" if page_type == "stock" else "stocks/index.html"
 
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
@@ -143,18 +179,18 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{display_title} | Market Intelligence System</title>
     <meta name="description" content="Markdown 報告自動轉換的 {current_page}">
-    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{css_path}">
 </head>
 <body class="page-{page_type} theme-dark">
     <div class="page-shell">
         <nav class="top-nav">
             <span class="nav-brand">📊 Market Intelligence System</span>
             <div class="nav-links">
-                <a href="index.html"{active_class("home")}>Home</a>
-                <a href="market.html"{active_class("market")}>Market Analysis</a>
-                <a href="holdings.html"{active_class("holdings")}>Holdings Analysis</a>
+                <a href="{home_path}"{active_class("home")}>Home</a>
+                <a href="{market_path}"{active_class("market")}>Market Analysis</a>
+                <a href="{holdings_path}"{active_class("holdings")}>Holdings Analysis</a>
+                <a href="{stocks_path}"{active_class("stock")}>Stocks</a>
             </div>
             <div class="nav-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
@@ -162,7 +198,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str) -
                 </button>
             </div>
         </nav>
-
+{breadcrumb}
         <header class="report-hero">
             <div>
                 <p class="eyebrow">{current_page}</p>
@@ -267,9 +303,9 @@ def main() -> None:
     print(f"Converting {input_file} → {output_file} ({page_type})")
 
     md_content = read_file(input_file)
-    title, date = extract_title_and_date(md_content, input_file)
+    title, date, stock_symbol = extract_title_and_date(md_content, input_file)
     content_html = markdown_to_html(md_content)
-    html_page = create_html_page(title, date, content_html, page_type)
+    html_page = create_html_page(title, date, content_html, page_type, stock_symbol)
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.write_text(html_page, encoding="utf-8")
@@ -277,6 +313,8 @@ def main() -> None:
     print(f"✅ Conversion complete: {output_file}")
     print(f"   Title: {title}")
     print(f"   Date: {date}")
+    if stock_symbol:
+        print(f"   Symbol: {stock_symbol}")
     print(f"   Type: {page_type}")
 
 

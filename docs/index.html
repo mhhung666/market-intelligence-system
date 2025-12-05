@@ -4,18 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Intelligence System</title>
-    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="theme-dark">
-    <div class="container">
-        <header>
-            <h1>Market Intelligence System</h1>
+<body class="page-home theme-dark">
+    <div class="page-shell">
+        <nav class="top-nav">
+            <span class="nav-brand">📊 Market Intelligence System</span>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="market.html" class="nav-link">Market Analysis</a>
+                <a href="holdings.html" class="nav-link">Holdings Analysis</a>
+                <a href="stocks/index.html" class="nav-link">Stocks</a>
+            </div>
             <div class="nav-actions">
                 <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
                     <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
                 </button>
+            </div>
+        </nav>
+
+        <header class="report-hero">
+            <div>
+                <p class="eyebrow">Welcome</p>
+                <h1>📊 Market Intelligence System</h1>
+                <p class="hero-note">AI 驅動的市場分析與投資決策支援系統</p>
             </div>
         </header>
 
@@ -38,6 +51,16 @@
                     <div class="card-footer">
                         <span class="badge">最新報告</span>
                         <span class="date">2025-12-05</span>
+                    </div>
+                </a>
+
+                <a href="stocks/index.html" class="card">
+                    <div class="card-icon">📈</div>
+                    <h2>個股追蹤</h2>
+                    <p>重點個股的深度分析、新聞追蹤與投資建議</p>
+                    <div class="card-footer">
+                        <span class="badge">11 檔個股</span>
+                        <span class="date">即時更新</span>
                     </div>
                 </a>
             </div>
@@ -70,6 +93,8 @@
             </section>
         </main>
 
+        <button class="back-to-top" id="backToTop" aria-label="回到頂部">↑</button>
+
         <footer>
             <p>Powered by Market Intelligence System | MH Hung | © 2025</p>
         </footer>
@@ -98,8 +123,31 @@
             }
         }
 
+        function handleBackToTop() {
+            const btn = document.getElementById('backToTop');
+            if (window.pageYOffset > 320) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             applyTheme(getPreferredTheme());
+            handleBackToTop();
+
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    handleBackToTop();
+                }, 60);
+            });
+
+            document.getElementById('backToTop').addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) {
                 themeToggle.addEventListener('click', () => {

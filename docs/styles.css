@@ -98,6 +98,35 @@ body.theme-light .top-nav {
     background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(14, 165, 233, 0.08));
 }
 
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0 0;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.breadcrumb a {
+    color: var(--accent);
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--accent-2);
+}
+
+.breadcrumb .separator {
+    color: var(--border);
+    user-select: none;
+}
+
+.breadcrumb .current {
+    color: var(--text);
+    font-weight: 600;
+}
+
 .nav-brand,
 .nav-home {
     font-weight: 800;
