@@ -112,7 +112,7 @@ clean-old-reports:
 		ls reports/markdown/holdings-analysis-*.md 2>/dev/null | grep -v "$$latest_holdings" | xargs -I {} mv {} reports/archive/ 2>/dev/null || true; \
 		echo "  ✅ Kept in markdown: $$latest_holdings"; \
 	fi; \
-	@archived_count=$$(ls reports/archive/*.md 2>/dev/null | wc -l); \
+	archived_count=$$(ls reports/archive/*.md 2>/dev/null | wc -l); \
 	echo "  📦 Archived reports: $$archived_count"
 
 # GitHub Pages targets
