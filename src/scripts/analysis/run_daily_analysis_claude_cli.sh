@@ -150,6 +150,41 @@ collect_news_files() {
     printf '%s\n' "${news_files[@]}"
 }
 
+# 從 holdings.yaml 中提取啟用的股票代碼
+get_enabled_holdings() {
+    if [[ ! -f "${HOLDINGS_CONFIG}" ]]; then
+        echo "" >&2
+        return 1
+    fi
+
+    # 提取所有 symbol 且 enabled: true 和 fetch_news: true 的股票
+    # 使用 grep 和 awk 簡單解析 YAML
+    grep -A 3 "symbol:" "${HOLDINGS_CONFIG}" | \
+    awk '
+        /symbol:/ {
+            gsub(/"/, "", $2);
+            symbol=$2
+        }
+        /fetch_news: true/ {
+            fetch_news=1
+        }
+        /enabled: true/ {
+            enabled=1
+        }
+        /^--$/ || /^[^ ]/ {
+            if (symbol && fetch_news && enabled) {
+                print symbol
+            }
+            symbol=""; fetch_news=0; enabled=0
+        }
+        END {
+            if (symbol && fetch_news && enabled) {
+                print symbol
+            }
+        }
+    ' | sort -u
+}
+
 # 清理臨時檔案
 cleanup() {
     rm -f "${MARKET_PROMPT_FILE}" "${HOLDINGS_PROMPT_FILE}"
@@ -159,54 +194,96 @@ cleanup() {
 # Step 2: 個股分析報告生成
 ###############################################################################
 
+# 檢查新聞是否為近期 (2-3天內)
+check_recent_news() {
+    local news_file="$1"
+    local cutoff_date=$(date -d "3 days ago" +"%Y-%m-%d" 2>/dev/null || date -v-3d +"%Y-%m-%d" 2>/dev/null)
+
+    # 檢查新聞檔案中是否有近期新聞 (發布時間在3天內)
+    # 搜尋 "發布時間" 或 "Dec 0[3-5]" 格式
+    if grep -E "(發布時間.*$(date +"%b %d")|發布時間.*$(date -d "1 day ago" +"%b %d" 2>/dev/null || date -v-1d +"%b %d" 2>/dev/null)|發布時間.*$(date -d "2 days ago" +"%b %d" 2>/dev/null || date -v-2d +"%b %d" 2>/dev/null))" "${news_file}" > /dev/null 2>&1; then
+        return 0  # 有近期新聞
+    else
+        return 1  # 沒有近期新聞
+    fi
+}
+
 # 生成個股分析檔案
 generate_stock_analysis_files() {
     echo -e "${BLUE}📊 生成個股分析檔案...${NC}"
+    echo -e "${YELLOW}   (僅分析 holdings.yaml 中啟用且有近期新聞的持股)${NC}"
+    echo ""
 
-    # 收集所有新聞檔案
-    local news_files
-    news_files=()
-    while IFS= read -r line; do
-        news_files+=("$line")
-    done < <(collect_news_files)
+    # 獲取啟用的持股列表
+    local enabled_holdings
+    enabled_holdings=()
+    while IFS= read -r symbol; do
+        [[ -n "$symbol" ]] && enabled_holdings+=("$symbol")
+    done < <(get_enabled_holdings)
+
+    if [[ ${#enabled_holdings[@]} -eq 0 ]]; then
+        echo -e "${YELLOW}   ⚠️  警告: holdings.yaml 中沒有啟用的持股${NC}"
+        echo ""
+        return
+    fi
+
+    echo -e "${GREEN}   📋 持股清單: ${enabled_holdings[@]}${NC}"
+    echo ""
 
     local count=0
-    for news_file in "${news_files[@]}"; do
-        if [[ -f "${news_file}" ]]; then
-            local symbol
-            symbol=$(basename "${news_file}" | sed "s/-${TODAY}.md//")
+    local skipped_no_news=0
+    local skipped_old_news=0
+    local skipped_not_holding=0
 
-            # 跳過指數類的股票代碼 (以 ^ 開頭,如 ^GSPC, ^DJI, ^VIX)
-            if [[ "${symbol}" =~ ^\^ ]]; then
-                continue
-            fi
+    # 遍歷啟用的持股
+    for symbol in "${enabled_holdings[@]}"; do
+        local news_file="${NEWS_DIR}/${symbol}-${TODAY}.md"
 
-            local stock_analysis_file="${REPORTS_DIR}/stock-${symbol}-${TODAY}-${TIME_SUFFIX}.md"
-            local stock_prompt_file="/tmp/stock-${symbol}-prompt-${TODAY}-${TIME_SUFFIX}.txt"
+        # 檢查新聞檔案是否存在
+        if [[ ! -f "${news_file}" ]]; then
+            echo -e "${YELLOW}   ⏭️  跳過 ${symbol} (無新聞檔案)${NC}"
+            skipped_no_news=$((skipped_no_news + 1))
+            continue
+        fi
 
-            # 讀取新聞內容
-            local news_content
-            news_content=$(<"${news_file}")
+        # 檢查是否有近期新聞
+        if ! check_recent_news "${news_file}"; then
+            echo -e "${YELLOW}   ⏭️  跳過 ${symbol} (無近期2-3天新聞)${NC}"
+            skipped_old_news=$((skipped_old_news + 1))
+            continue
+        fi
 
-            # 讀取持倉價格資訊 (如果該股票在持倉中)
-            local price_info=""
-            if [[ -f "${PRICES}" ]] && grep -q "${symbol}" "${PRICES}" 2>/dev/null; then
-                price_info=$(grep -A 10 "## ${symbol}" "${PRICES}" 2>/dev/null || echo "")
-            fi
+        local stock_analysis_file="${REPORTS_DIR}/stock-${symbol}-${TODAY}-${TIME_SUFFIX}.md"
+        local stock_prompt_file="/tmp/stock-${symbol}-prompt-${TODAY}-${TIME_SUFFIX}.txt"
 
-            # 生成個股分析 prompt
-            cat > "${stock_prompt_file}" <<EOF
+        # 讀取新聞內容
+        local news_content
+        news_content=$(<"${news_file}")
+
+        # 讀取持倉價格資訊
+        local price_info=""
+        if [[ -f "${PRICES}" ]] && grep -q "${symbol}" "${PRICES}" 2>/dev/null; then
+            price_info=$(grep -A 10 "## ${symbol}" "${PRICES}" 2>/dev/null || echo "")
+        fi
+
+        # 生成個股分析 prompt
+        cat > "${stock_prompt_file}" <<EOF
 你是一位專業的個股分析師,擅長分析個別股票的新聞、價格走勢和投資價值。
 
 ## 📋 分析任務
 
-請針對 **${symbol}** 這檔股票,基於今日的新聞和價格資訊,生成一份**個股分析報告**。
+請針對 **${symbol}** 這檔股票,基於**近期2-3天的新聞**和價格資訊,生成一份**個股分析報告**。
 
 ### 核心要求:
-1. **新聞摘要**: 總結今日重要新聞,並標註新聞來源
+1. **新聞摘要**: 總結近期重要新聞(優先關注最新的),並標註新聞來源和發布時間
 2. **影響分析**: 評估新聞對股價的潛在影響 (正面/負面/中性)
 3. **價格走勢**: 分析當前價格表現和技術面
 4. **投資建議**: 提供明確的操作建議 (買入/持有/賣出/觀望)
+
+### 重要提示:
+- **僅關注近期2-3天的新聞**,舊新聞可以忽略或簡述
+- 重點分析最新發展對股價的影響
+- 如果新聞較少,請深入分析每則新聞的影響
 
 ### 報告風格:
 - 簡潔明瞭,重點突出
@@ -336,21 +413,33 @@ fi)
 請直接開始生成完整的個股分析報告,從標題開始,不要有任何前置說明或詢問。
 EOF
 
-            # 調用 Claude 生成個股分析
-            echo -e "${YELLOW}   ⏳ 分析 ${symbol}...${NC}"
-            if cat "${stock_prompt_file}" | "${CLAUDE_BIN}" > "${stock_analysis_file}" 2>&1; then
-                echo -e "${GREEN}   ✅ ${symbol} 分析完成${NC}"
-                count=$((count + 1))
-            else
-                echo -e "${RED}   ❌ ${symbol} 分析失敗${NC}"
-            fi
-
-            # 清理臨時檔案
-            rm -f "${stock_prompt_file}"
+        # 調用 Claude 生成個股分析
+        echo -e "${YELLOW}   ⏳ 分析 ${symbol}...${NC}"
+        if cat "${stock_prompt_file}" | "${CLAUDE_BIN}" > "${stock_analysis_file}" 2>&1; then
+            echo -e "${GREEN}   ✅ ${symbol} 分析完成${NC}"
+            count=$((count + 1))
+        else
+            echo -e "${RED}   ❌ ${symbol} 分析失敗${NC}"
         fi
+
+        # 清理臨時檔案
+        rm -f "${stock_prompt_file}"
     done
 
-    echo -e "${GREEN}   ✅ 已生成 ${count} 個股票分析檔案${NC}"
+    echo ""
+    echo -e "${GREEN}   ✅ 個股分析完成!${NC}"
+    echo -e "${GREEN}      生成: ${count} 檔${NC}"
+
+    local total_skipped=$((skipped_no_news + skipped_old_news))
+    if [[ ${total_skipped} -gt 0 ]]; then
+        echo -e "${YELLOW}      跳過: ${total_skipped} 檔${NC}"
+        if [[ ${skipped_no_news} -gt 0 ]]; then
+            echo -e "${YELLOW}        - 無新聞檔案: ${skipped_no_news} 檔${NC}"
+        fi
+        if [[ ${skipped_old_news} -gt 0 ]]; then
+            echo -e "${YELLOW}        - 無近期新聞: ${skipped_old_news} 檔${NC}"
+        fi
+    fi
     echo ""
 }
 
