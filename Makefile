@@ -117,26 +117,8 @@ clean-old-reports:
 
 # GitHub Pages targets
 update-pages: install
-	@echo "Updating GitHub Pages HTML from latest reports (local converter)..."
-	@latest_market=$$(ls reports/markdown/market-analysis-*.md 2>/dev/null | sort -r | head -1); \
-	latest_holdings=$$(ls reports/markdown/holdings-analysis-*.md 2>/dev/null | sort -r | head -1); \
-	if [ -z "$$latest_market" ] && [ -z "$$latest_holdings" ]; then \
-		echo "No markdown reports found in reports/markdown/"; exit 1; \
-	fi; \
-	if [ -n "$$latest_market" ]; then \
-		echo "  -> market: $$latest_market"; \
-		$(PYTHON_BIN) src/scripts/tools/convert_md_to_html.py "$$latest_market" docs/market.html market; \
-	fi; \
-	if [ -n "$$latest_holdings" ]; then \
-		echo "  -> holdings: $$latest_holdings"; \
-		$(PYTHON_BIN) src/scripts/tools/convert_md_to_html.py "$$latest_holdings" docs/holdings.html holdings; \
-	fi; \
-	today=$$(date +%Y-%m-%d); \
-	if [ -f docs/index.html ]; then \
-		sed -i "s/最後更新: [0-9-]\\+/最後更新: $$today/g" docs/index.html; \
-		sed -i "s/<span class=\"date\">[0-9-]\\+<\\/span>/<span class=\"date\">$$today<\\/span>/g" docs/index.html; \
-	fi; \
-	echo "✅ GitHub Pages HTML updated."
+	@echo "🚀 Generating GitHub Pages from latest reports..."
+	$(PYTHON_BIN) src/scripts/tools/generate_github_pages.py
 
 preview-pages: install
 	@echo "Starting preview server at http://localhost:8000"
