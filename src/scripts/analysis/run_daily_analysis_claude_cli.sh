@@ -158,31 +158,37 @@ get_enabled_holdings() {
     fi
 
     # 提取所有 symbol 且 enabled: true 和 fetch_news: true 的股票
-    # 使用 grep 和 awk 簡單解析 YAML
-    grep -A 3 "symbol:" "${HOLDINGS_CONFIG}" | \
+    # 策略：遇到 symbol 時記錄，遇到股票名稱行時檢查並輸出
     awk '
+        # 遇到股票名稱行（4個空格縮排，以冒號結尾）
+        /^    [^ ].*:$/ {
+            # 如果上一個股票符合條件，輸出
+            if (symbol && fetch_news && enabled) {
+                print symbol
+            }
+            # 重置變數
+            symbol=""; fetch_news=0; enabled=0
+        }
+        # 遇到 symbol 行
         /symbol:/ {
             gsub(/"/, "", $2);
             symbol=$2
         }
+        # 遇到 fetch_news: true
         /fetch_news: true/ {
             fetch_news=1
         }
+        # 遇到 enabled: true
         /enabled: true/ {
             enabled=1
         }
-        /^--$/ || /^[^ ]/ {
-            if (symbol && fetch_news && enabled) {
-                print symbol
-            }
-            symbol=""; fetch_news=0; enabled=0
-        }
+        # 文件結尾處理最後一個股票
         END {
             if (symbol && fetch_news && enabled) {
                 print symbol
             }
         }
-    ' | sort -u
+    ' "${HOLDINGS_CONFIG}" | sort -u
 }
 
 # 清理臨時檔案
@@ -197,11 +203,14 @@ cleanup() {
 # 檢查新聞是否為近期 (2-3天內)
 check_recent_news() {
     local news_file="$1"
-    local cutoff_date=$(date -d "3 days ago" +"%Y-%m-%d" 2>/dev/null || date -v-3d +"%Y-%m-%d" 2>/dev/null)
+
+    # 獲取近3天的日期 (格式: Dec 05)
+    local today=$(date +"%b %d")
+    local yesterday=$(date -d "1 day ago" +"%b %d" 2>/dev/null || date -v-1d +"%b %d" 2>/dev/null)
+    local day_before=$(date -d "2 days ago" +"%b %d" 2>/dev/null || date -v-2d +"%b %d" 2>/dev/null)
 
     # 檢查新聞檔案中是否有近期新聞 (發布時間在3天內)
-    # 搜尋 "發布時間" 或 "Dec 0[3-5]" 格式
-    if grep -E "(發布時間.*$(date +"%b %d")|發布時間.*$(date -d "1 day ago" +"%b %d" 2>/dev/null || date -v-1d +"%b %d" 2>/dev/null)|發布時間.*$(date -d "2 days ago" +"%b %d" 2>/dev/null || date -v-2d +"%b %d" 2>/dev/null))" "${news_file}" > /dev/null 2>&1; then
+    if grep -E "發布時間.*(${today}|${yesterday}|${day_before})" "${news_file}" > /dev/null 2>&1; then
         return 0  # 有近期新聞
     else
         return 1  # 沒有近期新聞
@@ -315,7 +324,7 @@ fi)
 # 📊 ${symbol} 個股分析 - ${TODAY}
 
 > **報告生成時間**: $(date +"%Y-%m-%d %H:%M UTC")
-> **分析引擎**: Market Intelligence System v2.0
+> **分析引擎**: Market Intelligence System v2.1
 > **股票代碼**: ${symbol}
 
 ---
@@ -406,7 +415,7 @@ fi)
 **報告製作**: Market Intelligence System
 **分析引擎**: Claude (Sonnet 4.5)
 **數據來源**: Yahoo Finance
-**報告版本**: v2.0
+**報告版本**: v2.1
 
 ---
 
@@ -525,7 +534,7 @@ ${news_data}
 # 📈 全球市場分析 - ${TODAY}
 
 > **報告生成時間**: $(date +"%Y-%m-%d %H:%M UTC")
-> **分析引擎**: Market Intelligence System v2.0
+> **分析引擎**: Market Intelligence System v2.1
 > **報告類型**: 全球市場情報
 
 ---
@@ -716,7 +725,7 @@ ${news_data}
 **報告製作**: Market Intelligence System
 **分析引擎**: Claude (Sonnet 4.5)
 **數據來源**: Yahoo Finance
-**報告版本**: v2.0
+**報告版本**: v2.1
 
 ---
 
@@ -818,7 +827,7 @@ ${prices_data}
 # 💼 投資組合分析 - ${TODAY}
 
 > **報告生成時間**: $(date +"%Y-%m-%d %H:%M UTC")
-> **分析引擎**: Market Intelligence System v3.0
+> **分析引擎**: Market Intelligence System v2.1
 > **報告類型**: 持倉分析(簡化版)
 
 ---
@@ -905,7 +914,7 @@ ${prices_data}
 **報告製作**: Market Intelligence System
 **分析引擎**: Claude (Sonnet 4.5)
 **數據來源**: Portfolio Management System
-**報告版本**: v3.0 (簡化版)
+**報告版本**: v2.1
 
 ---
 
