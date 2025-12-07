@@ -6,17 +6,17 @@
 # fetch_news: true/false - 控制該股票是否爬取新聞
 # enabled: true/false - 控制該股票是否啟用（用於暫停某些股票而不刪除配置）
 
-# 投資組合概況 (基於 2025-12-04 數據)
+# 投資組合概況 (基於 2025-12-05 數據)
 portfolio_summary:
-  net_liquidation: $262,659.00
-  stock_value: $181,171.04
-  cash_balance: $83,342.89
-  equity_with_loan: $263,416.98
-  buying_power: $756,760.52
-  available_funds: $189,190.13
-  maintenance_margin: $70,461.29
-  cushion: 0.734624
-  last_updated: "2025-12-04"
+  net_liquidation: $265,799.23
+  stock_value: $210,673.52
+  cash_balance: $57,373.45
+  equity_with_loan: $266,375.74
+  buying_power: $828,668.91
+  available_funds: $207,167.23
+  maintenance_margin: $55,390.95
+  cushion: 0.795747
+  last_updated: "2025-12-05"
 
 holdings:
   # 核心持倉
@@ -25,73 +25,73 @@ holdings:
       symbol: "U"
       fetch_news: true
       enabled: true
-      position: 16.8%
-      shares: 1020
+      position: 14.2%
+      shares: 820
       cost: $50.39
-      current_price: $42.52
+      current_price: $45.78
 
     Intel:
       symbol: "INTC"
       fetch_news: true
       enabled: true
-      position: 12.6%
+      position: 12.5%
       shares: 800
       cost: $45.82
-      current_price: $40.56
+      current_price: $41.41
 
     Amrize Inc.:
       symbol: "AMRZ"
       fetch_news: true
       enabled: true
-      position: 8.0%
+      position: 8.3%
       shares: 400
       cost: $53.08
-      current_price: $51.51
+      current_price: $54.74
 
     Pinterest:
       symbol: "PINS"
       fetch_news: true
       enabled: true
-      position: 5.1%
+      position: 5.0%
       shares: 500
       cost: $33.60
-      current_price: $26.12
+      current_price: $26.75
 
     Upstart:
       symbol: "UPST"
       fetch_news: true
       enabled: true
-      position: 5.2%
+      position: 5.3%
       shares: 300
       cost: $49.67
-      current_price: $44.96
+      current_price: $46.75
 
     United Parcel Service:
       symbol: "UPS"
       fetch_news: true
       enabled: true
-      position: 3.7%
+      position: 3.6%
       shares: 100
       cost: $92.00
-      current_price: $95.79
+      current_price: $94.87
 
     Alphabet:
       symbol: "GOOGL"
       fetch_news: true
       enabled: true
-      position: 3.7%
-      shares: 30
-      cost: $87.87
-      current_price: $320.18
+      position: 15.7%
+      shares: 130
+      cost: $267.98
+      current_price: $321.27
 
     Tesla:
       symbol: "TSLA"
       fetch_news: true
       enabled: true
-      position: 3.3%
+      position: 3.4%
       shares: 20
       cost: $298.88
-      current_price: $430.17
+      current_price: $455.00
 
   # 一般持倉
   一般持倉:
@@ -102,34 +102,34 @@ holdings:
       position: 2.7%
       shares: 50
       cost: $163.76
-      current_price: $140.21
+      current_price: $144.36
 
     Alaska Air Group:
       symbol: "ALK"
       fetch_news: true
       enabled: true
-      position: 1.7%
+      position: 1.9%
       shares: 100
       cost: $40.00
-      current_price: $42.86
+      current_price: $49.65
 
     Oscar Health:
       symbol: "OSCR"
       fetch_news: false
       enabled: true
-      position: 1.4%
+      position: 1.3%
       shares: 200
       cost: $18.50
-      current_price: $17.97
+      current_price: $16.77
 
     Option Care Health:
       symbol: "OPCH"
       fetch_news: false
       enabled: true
-      position: 1.2%
+      position: 1.1%
       shares: 100
       cost: $28.01
-      current_price: $31.10
+      current_price: $29.89
 
     Mobileye:
       symbol: "MBLY"
@@ -138,7 +138,7 @@ holdings:
       position: 0.9%
       shares: 200
       cost: $17.00
-      current_price: $11.82
+      current_price: $11.70
 
   # 小倉位 / 其他
   小倉位:
@@ -146,45 +146,36 @@ holdings:
       symbol: "SET.SI"
       fetch_news: false
       enabled: false
-      position: 1.6%
+      position: 1.5%
       shares: 2500
       cost: "€2.04"
-      current_price: "€1.53"
+      current_price: "€1.56"
       note: "新加坡股票，yfinance可能不支援"
+
+    DraftKings:
+      symbol: "DKNG"
+      fetch_news: true
+      enabled: true
+      position: 1.3%
+      shares: 100
+      cost: $35.01
+      current_price: $34.00
 
   # 選擇權部位
   選擇權部位:
     # 持股相關選擇權
-    Unity Software (U):
-      symbol: "U"
-      options:
-        - type: "Sell Call"
-          quantity: -2
-          strike: $45.00
-          expiry: "2025-12-05"
-          status: "接近價內"
-
     Upstart (UPST):
       symbol: "UPST"
       options:
         - type: "Sell Call"
           quantity: -1
-          strike: $48.00
-          expiry: "2025-12-05"
-          status: "接近價內"
-        - type: "Sell Call"
-          quantity: -2
           strike: $50.00
-          expiry: "2025-12-05"
+          expiry: "2025-12-12"
           status: "價外安全"
-
-    Mobileye (MBLY):
-      symbol: "MBLY"
-      options:
         - type: "Sell Call"
           quantity: -2
-          strike: $12.00
-          expiry: "2025-12-05"
+          strike: $52.00
+          expiry: "2025-12-12"
           status: "價外安全"
 
     United Parcel Service (UPS):
@@ -213,7 +204,7 @@ holdings:
           quantity: -1
           strike: $47.50
           expiry: "2025-12-19"
-          status: "價外安全"
+          status: "價內風險"
 
     Oscar Health (OSCR):
       symbol: "OSCR"
@@ -248,44 +239,17 @@ holdings:
       fetch_news: true
       enabled: true
       options:
-        - type: "Sell Put"
+        - type: "Sell Call"
           quantity: -1
-          strike: $31.00
-          expiry: "2025-12-05"
+          strike: $37.00
+          expiry: "2025-12-12"
           status: "價外安全"
-        - type: "Sell Put"
-          quantity: -1
-          strike: $32.00
-          expiry: "2025-12-05"
-          status: "接近價內"
 
     Alphabet (GOOG):
       symbol: "GOOG"
       options:
-        - type: "Sell Put"
+        - type: "Sell Call"
           quantity: -1
-          strike: $315.00
-          expiry: "2025-12-05"
-          status: "接近價內"
-
-    Boeing (BA):
-      symbol: "BA"
-      fetch_news: false
-      enabled: false
-      options:
-        - type: "Sell Put"
-          quantity: -1
-          strike: $200.00
-          expiry: "2025-12-05"
+          strike: $330.00
+          expiry: "2025-12-12"
           status: "價外安全"
-
-    QQQ ETF:
-      symbol: "QQQ"
-      fetch_news: false
-      enabled: false
-      options:
-        - type: "Sell Put"
-          quantity: -1
-          strike: $615.00
-          expiry: "2025-12-04"
-          status: "即將到期"
