@@ -87,6 +87,11 @@ def strip_leading_emoji(text: str) -> str:
     return cleaned or text
 
 
+def strip_trailing_date(text: str) -> str:
+    """移除標題結尾的日期 (如 " - 2025-12-08"), 僅保留主標題。"""
+    return re.sub(r"\s*[-–—]\s*\d{4}-\d{2}-\d{2}\s*$", "", text).strip()
+
+
 def localized_now() -> datetime:
     """Return current time with a stable tz (default Asia/Taipei, overridable via env)."""
     tz_name = os.environ.get("MIS_REPORT_TZ") or os.environ.get("TZ") or "Asia/Taipei"
@@ -139,6 +144,11 @@ def markdown_to_html(md_content: str) -> str:
 def create_html_page(title: str, date: str, content_html: str, page_type: str, stock_symbol: str = "") -> str:
     """建立完整頁面 HTML。"""
     display_title = strip_leading_emoji(title)
+    heading_title = display_title
+    hero_note_text = "Market Intelligence System"
+    if page_type in {"market", "holdings"}:
+        heading_title = strip_trailing_date(display_title)
+        hero_note_text = f"更新日期 {date}"
     page_names = {
         "market": "Market Analysis",
         "holdings": "Holdings Analysis",
@@ -201,8 +211,8 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
         <header class="report-hero">
             <div>
                 <p class="eyebrow">{current_page}</p>
-                <h1>{display_title}</h1>
-                <p class="hero-note">Market Intelligence System</p>
+                <h1>{heading_title}</h1>
+                <p class="hero-note">{hero_note_text}</p>
                 <div class="hero-meta">
                     <span class="pill">📅 {date}</span>
                     <span class="pill pill-ghost">🕐 {generated_at}</span>
