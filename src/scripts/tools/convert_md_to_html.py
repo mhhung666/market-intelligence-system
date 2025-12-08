@@ -179,22 +179,21 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{display_title} | Market Intelligence System</title>
     <meta name="description" content="Markdown 報告自動轉換的 {current_page}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bx1RjgqPsuwZuC9Anb3iqN+EgZScFTG49YB35G5FbKFtE+08sZzIcGcav6pDgZuuWpbOEtxzKqrD+9Y+YrbMtw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="{css_path}">
 </head>
-<body class="page-{page_type} theme-dark">
+<body class="notion-theme page-{page_type}" id="theme-typography">
     <div class="page-shell">
         <nav class="top-nav">
             <span class="nav-brand">📊 Market Intelligence System</span>
             <div class="nav-links">
                 <a href="{home_path}"{active_class("home")}>Home</a>
-                <a href="{market_path}"{active_class("market")}>Market Analysis</a>
-                <a href="{holdings_path}"{active_class("holdings")}>Holdings Analysis</a>
+                <a href="{market_path}"{active_class("market")}>Market</a>
+                <a href="{holdings_path}"{active_class("holdings")}>Holdings</a>
                 <a href="{stocks_path}"{active_class("stock")}>Stocks</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle" aria-label="切換深/淺色模式">
-                    <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
+                <button class="theme-toggle" id="themeToggle" aria-label="切換主題" title="Toggle theme">
+                    <span id="themeIcon">☀️</span>
                 </button>
             </div>
         </nav>
@@ -203,11 +202,11 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
             <div>
                 <p class="eyebrow">{current_page}</p>
                 <h1>{display_title}</h1>
-                <p class="hero-note">MIS · Market Intelligence System — 智能報告與市場分析一站完成。</p>
+                <p class="hero-note">Market Intelligence System</p>
                 <div class="hero-meta">
-                    <span class="pill">報告日期 {date}</span>
-                    <span class="pill pill-ghost">生成時間 {generated_at}</span>
-                    <span class="pill pill-outline">{current_page}</span>
+                    <span class="pill">📅 {date}</span>
+                    <span class="pill pill-ghost">🕐 {generated_at}</span>
+                    <span class="pill pill-outline">📊 {current_page}</span>
                 </div>
             </div>
         </header>
@@ -218,19 +217,20 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
             </section>
         </main>
 
-        <button class="back-to-top" id="backToTop" aria-label="回到頂部">↑</button>
+        <button class="back-to-top" id="backToTop" aria-label="回到頂部" title="Back to top">↑</button>
 
         <footer>
-            <p>Powered by Market Intelligence System | MH Hung | © 2025</p>
+            <p>Market Intelligence System | MH Hung © 2025</p>
         </footer>
     </div>
 
     <script>
-        // 主題切換
+        // 主題切換 (Notion-style)
         function getPreferredTheme() {{
             const stored = localStorage.getItem('mis-theme');
             if (stored === 'light' || stored === 'dark') return stored;
-            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            // Notion 預設為淺色模式
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }}
 
         function applyTheme(theme) {{
@@ -239,21 +239,21 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
             body.classList.toggle('theme-dark', theme === 'dark');
             localStorage.setItem('mis-theme', theme);
 
-            const toggle = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
+            if (icon) {{
+                icon.textContent = theme === 'light' ? '🌙' : '☀️';
+            }}
+
+            const toggle = document.getElementById('themeToggle');
             if (toggle) {{
-                if (icon) {{
-                    icon.classList.remove('fa-solid', 'fa-regular');
-                    icon.classList.add(theme === 'light' ? 'fa-regular' : 'fa-solid', 'fa-moon');
-                }}
-                toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '夜間' : '日間'}}模式`);
+                toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '深色' : '淺色'}}模式`);
             }}
         }}
 
         // Back to top
         function handleBackToTop() {{
             const btn = document.getElementById('backToTop');
-            if (window.pageYOffset > 320) {{
+            if (window.pageYOffset > 300) {{
                 btn.classList.add('visible');
             }} else {{
                 btn.classList.remove('visible');
@@ -269,7 +269,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(() => {{
                     handleBackToTop();
-                }}, 60);
+                }}, 100);
             }});
 
             document.getElementById('backToTop').addEventListener('click', () => {{
