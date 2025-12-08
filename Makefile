@@ -112,8 +112,19 @@ clean-old-reports:
 		ls reports/markdown/holdings-analysis-*.md 2>/dev/null | grep -v "$$latest_holdings" | xargs -I {} mv {} reports/archive/ 2>/dev/null || true; \
 		echo "  ✅ Kept in markdown: $$latest_holdings"; \
 	fi; \
+	stock_count=0; \
+	for ticker in $$(ls reports/markdown/stock-*.md 2>/dev/null | sed 's/.*stock-\([^-]*\)-.*/\1/' | sort -u); do \
+		latest_stock=$$(ls reports/markdown/stock-$$ticker-*.md 2>/dev/null | sort -r | head -1); \
+		if [ -n "$$latest_stock" ]; then \
+			archived=$$(ls reports/markdown/stock-$$ticker-*.md 2>/dev/null | grep -v "$$latest_stock" | wc -l); \
+			ls reports/markdown/stock-$$ticker-*.md 2>/dev/null | grep -v "$$latest_stock" | xargs -I {} mv {} reports/archive/ 2>/dev/null || true; \
+			stock_count=$$((stock_count + archived)); \
+			echo "  ✅ Kept in markdown for $$ticker: $$latest_stock"; \
+		fi; \
+	done; \
 	archived_count=$$(ls reports/archive/*.md 2>/dev/null | wc -l); \
-	echo "  📦 Archived reports: $$archived_count"
+	echo "  📦 Archived stock reports: $$stock_count"; \
+	echo "  📦 Total archived reports: $$archived_count"
 
 # GitHub Pages targets
 update-pages: install
