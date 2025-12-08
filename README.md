@@ -36,9 +36,10 @@
 - **無需 API Key**: 使用 Claude CLI,已登入即可使用
 
 ### 3. 自動化流程 ⚙️
-- Docker 容器化部署
-- Cron 定時任務 (亞洲市場 08:00、美歐市場 21:00)
-- 自動生成帶日期的分析報告
+- **三種自動化方案**: macOS launchd / Docker cron / macOS cron
+- **智能排程**: 亞洲市場 08:00、美歐市場 21:00（僅平日執行）
+- **自動生成報告**: 帶時間戳記的 Markdown 報告
+- 詳見 [AUTOMATION_SETUP.md](AUTOMATION_SETUP.md) 和 [LAUNCHD_SETUP.md](LAUNCHD_SETUP.md)
 
 ## 專案結構
 
@@ -208,18 +209,25 @@ make help            # 顯示所有可用命令
 
 ## 🤖 自動化執行
 
-設定 cron 定時任務:
+本專案提供三種自動化方案，請根據你的環境選擇：
 
-```bash
-# 編輯 crontab
-crontab -e
+### 方案 1: macOS launchd（推薦）
 
-# 每天早上 8:00 執行 (亞洲市場收盤後)
-0 8 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
+Apple 官方推薦的排程系統，支援錯過任務補執行、系統重啟自動恢復。
 
-# 每天晚上 21:00 執行 (美國市場收盤後)
-0 21 * * * cd /path/to/market-intelligence-system && make daily >> /tmp/mis.log 2>&1
-```
+詳細設定請參考：**[LAUNCHD_SETUP.md](LAUNCHD_SETUP.md)**
+
+### 方案 2: Docker + cron
+
+適合跨平台部署，環境隔離更穩定。
+
+詳細設定請參考：**[docker/README.md](docker/README.md)**
+
+### 方案 3: 完整比較與選擇
+
+查看所有方案的詳細比較、設定步驟、故障排除：
+
+**[AUTOMATION_SETUP.md](AUTOMATION_SETUP.md)** - 自動化設定完整指南
 
 ---
 
