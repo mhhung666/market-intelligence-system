@@ -146,7 +146,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
     display_title = strip_leading_emoji(title)
     heading_title = display_title
     hero_note_text = "Market Intelligence System"
-    if page_type in {"market", "holdings"}:
+    if page_type in {"market", "holdings", "stock"}:
         heading_title = strip_trailing_date(display_title)
         hero_note_text = f"更新日期 {date}"
     page_names = {
