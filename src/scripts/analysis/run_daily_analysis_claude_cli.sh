@@ -63,6 +63,7 @@ CONFIG_DIR="${PROJECT_ROOT}/config"
 GLOBAL_INDICES="${DAILY_DIR}/global-indices-${TODAY}.md"
 PRICES="${DAILY_DIR}/holdings-prices-${TODAY}.md"
 HOLDINGS_CONFIG="${CONFIG_DIR}/holdings.yaml"
+PORTFOLIO_SUMMARY="${CONFIG_DIR}/portfolio_summary.yaml"
 PORTFOLIO_HOLDINGS="${PROJECT_ROOT}/../financial-analysis-system/portfolio/${YEAR}/holdings.md"
 
 # 輸出檔案
@@ -768,6 +769,12 @@ generate_holdings_analysis_prompt() {
         holdings_config=$(<"${HOLDINGS_CONFIG}")
     fi
 
+    # 讀取投資組合績效快照數據
+    local portfolio_summary=""
+    if [[ -f "${PORTFOLIO_SUMMARY}" ]]; then
+        portfolio_summary=$(<"${PORTFOLIO_SUMMARY}")
+    fi
+
     # 讀取投資組合完整資訊
     local portfolio_data=""
     if [[ -f "${PORTFOLIO_HOLDINGS}" ]]; then
@@ -802,6 +809,11 @@ EOF
 
     cat >> "${HOLDINGS_PROMPT_FILE}" <<EOF
 ${portfolio_data}
+\`\`\`
+
+### 資產績效快照
+\`\`\`yaml
+${portfolio_summary}
 \`\`\`
 
 ### 持倉配置詳情

@@ -6,18 +6,6 @@
 # fetch_news: true/false - 控制該股票是否爬取新聞
 # enabled: true/false - 控制該股票是否啟用（用於暫停某些股票而不刪除配置）
 
-# 投資組合概況 (基於 2025-12-05 數據)
-portfolio_summary:
-  net_liquidation: $265,799.23
-  stock_value: $210,673.52
-  cash_balance: $57,373.45
-  equity_with_loan: $266,375.74
-  buying_power: $828,668.91
-  available_funds: $207,167.23
-  maintenance_margin: $55,390.95
-  cushion: 0.795747
-  last_updated: "2025-12-05"
-
 holdings:
   # 核心持倉
   核心持倉:
