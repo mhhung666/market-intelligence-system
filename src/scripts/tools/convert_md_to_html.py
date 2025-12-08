@@ -148,7 +148,7 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
     hero_note_text = "Market Intelligence System"
     if page_type in {"market", "holdings", "stock"}:
         heading_title = strip_trailing_date(display_title)
-        hero_note_text = f"更新日期 {date}"
+        hero_note_text = f"更新於 {date}"
     page_names = {
         "market": "Market Analysis",
         "holdings": "Holdings Analysis",
