@@ -412,9 +412,7 @@ fi)
 
 ---
 
-**報告製作**: Market Intelligence System
 **分析引擎**: Claude (Sonnet 4.5)
-**數據來源**: Yahoo Finance
 **報告版本**: v2.1
 
 ---
@@ -722,9 +720,7 @@ ${news_data}
 
 ---
 
-**報告製作**: Market Intelligence System
 **分析引擎**: Claude (Sonnet 4.5)
-**數據來源**: Yahoo Finance
 **報告版本**: v2.1
 
 ---
@@ -828,7 +824,7 @@ ${prices_data}
 
 > **報告生成時間**: $(date +"%Y-%m-%d %H:%M UTC")
 > **分析引擎**: Market Intelligence System v2.1
-> **報告類型**: 持倉分析(簡化版)
+> **報告類型**: 持倉分析
 
 ---
 
@@ -911,9 +907,7 @@ ${prices_data}
 
 ---
 
-**報告製作**: Market Intelligence System
 **分析引擎**: Claude (Sonnet 4.5)
-**數據來源**: Portfolio Management System
 **報告版本**: v2.1
 
 ---
