@@ -783,6 +783,42 @@ ${holdings_config}
 ${prices_data}
 \`\`\`
 
+### 觀察清單新聞 (如果有)
+\`\`\`markdown
+EOF
+
+    # 收集觀察清單的新聞
+    local watchlist_news=""
+    if [[ -f "${HOLDINGS_CONFIG}" ]]; then
+        # 從 holdings.yaml 提取觀察清單的股票代碼
+        local watchlist_symbols
+        watchlist_symbols=($(awk '
+            /^watchlist:/ { in_watchlist=1; next }
+            in_watchlist && /^[^ ]/ { in_watchlist=0 }
+            in_watchlist && /symbol:/ {
+                gsub(/"/, "", $2);
+                print $2
+            }
+        ' "${HOLDINGS_CONFIG}" 2>/dev/null || true))
+
+        for symbol in "${watchlist_symbols[@]}"; do
+            local watchlist_news_file="${NEWS_DIR}/${symbol}-${TODAY}.md"
+            if [[ -f "${watchlist_news_file}" ]]; then
+                local news_content
+                news_content=$(<"${watchlist_news_file}")
+                watchlist_news="${watchlist_news}
+
+### ${symbol} 觀察清單新聞
+${news_content}
+"
+            fi
+        done
+    fi
+
+    cat >> "${HOLDINGS_PROMPT_FILE}" <<EOF
+${watchlist_news}
+\`\`\`
+
 ---
 
 ## 📄 報告結構
@@ -867,6 +903,30 @@ ${prices_data}
 |------|------|
 | 年度報酬率 | ±X.XX% |
 | vs S&P 500 | ±X.XX% |
+
+---
+
+## 👀 觀察清單分析
+
+[如果有觀察清單股票且有新聞,分析這些非持股的標的:]
+
+### 📊 觀察標的概況
+
+| 股票 | 當前價 | 今日漲跌 | 新聞情緒 | 評估 |
+|------|--------|----------|---------|------|
+| TICKER | \\\$XX.XX | ±X.XX% | 🟢/🟡/🔴 | 簡述 |
+
+### 重點觀察標的
+
+[針對有重要新聞或價格異動的觀察標的進行分析:]
+
+#### 📌 TICKER
+- **最新動態**: [總結最新新聞]
+- **價格表現**: [價格走勢分析]
+- **投資價值**: [是否值得考慮建倉]
+- **風險因素**: [主要風險點]
+
+[如果沒有觀察清單或沒有相關新聞,則省略此區塊]
 
 ---
 
