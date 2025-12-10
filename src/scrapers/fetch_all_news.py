@@ -29,6 +29,9 @@ def extract_symbols_from_holdings(config):
         return symbols
 
     for category, stocks in config['holdings'].items():
+        # 檢查群組是否為空
+        if stocks is None:
+            continue
         for name, data in stocks.items():
             if data.get('enabled', True) and data.get('fetch_news', False):
                 symbols.append({
@@ -47,6 +50,9 @@ def extract_symbols_from_watchlist(config):
         return symbols
 
     for category, stocks in config['watchlist'].items():
+        # 檢查群組是否為空
+        if stocks is None:
+            continue
         for name, data in stocks.items():
             if data.get('enabled', True) and data.get('fetch_news', False):
                 symbols.append({
@@ -65,6 +71,9 @@ def extract_symbols_from_indices(config):
         return symbols
 
     for region, indices in config['global_indices'].items():
+        # 檢查群組是否為空
+        if indices is None:
+            continue
         for name, data in indices.items():
             if data.get('fetch_news', False):
                 symbols.append({

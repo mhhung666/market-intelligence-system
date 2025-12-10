@@ -44,6 +44,9 @@ def extract_holdings_from_yaml(holdings_file):
             safe_exit(False)
 
         for group_name, stocks in config['holdings'].items():
+            # 檢查群組是否為空
+            if stocks is None:
+                continue
             for stock_name, stock_info in stocks.items():
                 # 只提取啟用的股票
                 if stock_info.get('enabled', True):  # 預設為啟用
@@ -54,6 +57,9 @@ def extract_holdings_from_yaml(holdings_file):
         # 遍歷觀察清單
         if 'watchlist' in config:
             for group_name, stocks in config['watchlist'].items():
+                # 檢查群組是否為空
+                if stocks is None:
+                    continue
                 for stock_name, stock_info in stocks.items():
                     # 只提取啟用的股票
                     if stock_info.get('enabled', True):
