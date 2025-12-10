@@ -44,6 +44,9 @@ def extract_holdings_from_yaml(holdings_file):
             safe_exit(False)
 
         for group_name, stocks in config['holdings'].items():
+            # 檢查群組是否為空
+            if stocks is None:
+                continue
             for stock_name, stock_info in stocks.items():
                 # 只提取啟用的股票
                 if stock_info.get('enabled', True):  # 預設為啟用
@@ -51,7 +54,20 @@ def extract_holdings_from_yaml(holdings_file):
                     if symbol:
                         holdings.append(symbol)
 
-        print_status(f"從 {holdings_file} 中提取到 {len(holdings)} 隻啟用的股票")
+        # 遍歷觀察清單
+        if 'watchlist' in config:
+            for group_name, stocks in config['watchlist'].items():
+                # 檢查群組是否為空
+                if stocks is None:
+                    continue
+                for stock_name, stock_info in stocks.items():
+                    # 只提取啟用的股票
+                    if stock_info.get('enabled', True):
+                        symbol = stock_info.get('symbol')
+                        if symbol and symbol not in holdings:  # 避免重複
+                            holdings.append(symbol)
+
+        print_status(f"從 {holdings_file} 中提取到 {len(holdings)} 隻啟用的股票（包含觀察清單）")
 
     except FileNotFoundError:
         print_error(f"找不到檔案 {holdings_file}")

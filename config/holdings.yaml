@@ -241,3 +241,24 @@ holdings:
           strike: $330.00
           expiry: "2025-12-12"
           status: "價外安全"
+
+# 觀察清單 - 非持股但想追蹤的股票
+watchlist:
+  # 觀察清單說明：
+  # 這些股票不是你的持股，但你想追蹤其新聞和價格走勢
+  # fetch_news: true - 會抓取新聞並在持倉分析中顯示觀察清單分析
+  # enabled: true - 啟用追蹤
+
+  潛在投資標的:
+    # 範例：可以加入你想關注的股票
+    # NVIDIA:
+    #   symbol: "NVDA"
+    #   fetch_news: true
+    #   enabled: true
+    #   note: "關注 AI 晶片市場動向"
+    #
+    # Microsoft:
+    #   symbol: "MSFT"
+    #   fetch_news: true
+    #   enabled: true
+    #   note: "關注雲端業務成長"

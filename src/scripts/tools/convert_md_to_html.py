@@ -255,9 +255,68 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
             }}
 
             const toggle = document.getElementById('themeToggle');
-            if (toggle) {{
-                toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '深色' : '淺色'}}模式`);
+        if (toggle) {{
+            toggle.setAttribute('aria-label', `切換為${{theme === 'light' ? '深色' : '淺色'}}模式`);
+        }}
+    }}
+
+        // Mobile nav toggle
+        function setupMobileNav() {{
+            const nav = document.querySelector('.top-nav');
+            const navLinks = nav?.querySelector('.nav-links');
+            const navActions = nav?.querySelector('.nav-actions');
+            const navBrand = nav?.querySelector('.nav-brand');
+            if (!nav || !navLinks || !navActions || !navBrand) return;
+
+            let toggle = document.getElementById('menuToggle');
+            if (!toggle) {{
+                toggle = document.createElement('button');
+                toggle.id = 'menuToggle';
+                toggle.type = 'button';
+                toggle.className = 'menu-toggle';
+                toggle.setAttribute('aria-label', '開啟選單');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.textContent = '☰';
+                nav.insertBefore(toggle, navBrand);
             }}
+
+            let backdrop = document.getElementById('navBackdrop');
+            if (!backdrop) {{
+                backdrop = document.createElement('div');
+                backdrop.id = 'navBackdrop';
+                backdrop.className = 'nav-backdrop';
+                document.body.appendChild(backdrop);
+            }}
+
+            const closeNav = () => {{
+                document.body.classList.remove('nav-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }};
+
+            const openNav = () => {{
+                document.body.classList.add('nav-open');
+                toggle.setAttribute('aria-expanded', 'true');
+            }};
+
+            toggle.addEventListener('click', () => {{
+                const isOpen = document.body.classList.contains('nav-open');
+                isOpen ? closeNav() : openNav();
+            }});
+
+            backdrop.addEventListener('click', closeNav);
+            navLinks.addEventListener('click', (event) => {{
+                if (event.target instanceof HTMLElement && event.target.tagName === 'A') {{
+                    closeNav();
+                }}
+            }});
+
+            window.addEventListener('resize', () => {{
+                if (window.innerWidth > 768) {{
+                    closeNav();
+                }}
+            }});
+
+            document.body.classList.add('nav-ready');
         }}
 
         // Back to top
@@ -293,6 +352,8 @@ def create_html_page(title: str, date: str, content_html: str, page_type: str, s
                     applyTheme(nextTheme);
                 }});
             }}
+
+            setupMobileNav();
         }});
     </script>
 </body>

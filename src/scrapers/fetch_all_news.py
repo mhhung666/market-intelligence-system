@@ -29,12 +29,36 @@ def extract_symbols_from_holdings(config):
         return symbols
 
     for category, stocks in config['holdings'].items():
+        # 檢查群組是否為空
+        if stocks is None:
+            continue
         for name, data in stocks.items():
             if data.get('enabled', True) and data.get('fetch_news', False):
                 symbols.append({
                     'symbol': data['symbol'],
                     'name': name,
                     'type': 'stock'
+                })
+
+    return symbols
+
+
+def extract_symbols_from_watchlist(config):
+    """從 holdings.yaml 提取觀察清單中需要爬取新聞的股票代碼"""
+    symbols = []
+    if not config or 'watchlist' not in config:
+        return symbols
+
+    for category, stocks in config['watchlist'].items():
+        # 檢查群組是否為空
+        if stocks is None:
+            continue
+        for name, data in stocks.items():
+            if data.get('enabled', True) and data.get('fetch_news', False):
+                symbols.append({
+                    'symbol': data['symbol'],
+                    'name': name,
+                    'type': 'watchlist'
                 })
 
     return symbols
@@ -47,6 +71,9 @@ def extract_symbols_from_indices(config):
         return symbols
 
     for region, indices in config['global_indices'].items():
+        # 檢查群組是否為空
+        if indices is None:
+            continue
         for name, data in indices.items():
             if data.get('fetch_news', False):
                 symbols.append({
@@ -81,6 +108,10 @@ def main():
         stock_symbols = extract_symbols_from_holdings(holdings_config)
         symbols.extend(stock_symbols)
         print_status(f"從 holdings.yaml 找到 {len(stock_symbols)} 隻需要爬取新聞的股票")
+
+        watchlist_symbols = extract_symbols_from_watchlist(holdings_config)
+        symbols.extend(watchlist_symbols)
+        print_status(f"從 holdings.yaml 找到 {len(watchlist_symbols)} 隻觀察清單股票")
 
     if indices_config:
         index_symbols = extract_symbols_from_indices(indices_config)
